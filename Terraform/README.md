@@ -7,6 +7,10 @@ These are different modules used in Terraform to define the infrasturucture.
 ## Main Module
 This is the main module that will define other modules, and the general/common components used by those modules.
 
+### Constant
+- SSH key-pair algorithm is RSA.
+- SSH key-pair RSA byte size is 2048.
+
 ### Variables
 #### General Infrastructure
 - Infrastrucutre region (AWS region).
