@@ -40,6 +40,11 @@ variable "default_access_ports" { # DO NOT REPLACE WITH USER-INPUT
 	}
 }
 
+# Security Group specifications
+variable "security_group" {
+
+}
+
 # EC2 specifications
 variable "ec2_instances" {
 	description = "Specifications for creating the EC2 instances requried for the project."
