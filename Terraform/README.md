@@ -19,6 +19,11 @@ This is the main module that will define other modules, and the general/common c
 - SonarQube port for external access.
 - SSH port for external access to EC2 instances.
 
+#### EC2 Instance Specifications
+- Instance names
+- Instance type
+- Root block volume sizes
+
 ## Security Group Module
 This module handles the definitions of Security Group used by this project.
 
