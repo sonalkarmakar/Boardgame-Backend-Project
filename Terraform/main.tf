@@ -12,7 +12,7 @@ resource "local_file" "private_key" {
 # Saving public key to file
 resource "local_file" "public_key" {
 	content         = tls_private_key.ec2_ssh_key.public_key_openssh
-	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ec2_ssh_key_name}.pem"
+	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ec2_ssh_key_name}.pub"
 	file_permission = "0644"
 }
 
