@@ -45,6 +45,12 @@ variable "security_group" {
 
 }
 
+variable "sg_name" {
+	description = "Name of the Security Group created and used for the project."
+	type        = string
+	default     = "Security_Group"
+}
+
 # EC2 specifications
 variable "ec2_instances" {
 	description = "Specifications for creating the EC2 instances requried for the project."
