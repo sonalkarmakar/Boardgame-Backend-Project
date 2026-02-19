@@ -4,10 +4,10 @@ data "aws_vpc" "default" {
 	default = true
 }
 # Select the default Subnet of the VPC
-data "aws_subnet" "default" {
-	region = var.infra_region
-	vpc_id = data.aws_vpc.default.id
-}
+# data "aws_subnet" "default" {
+# 	region = var.infra_region
+# 	vpc_id = data.aws_vpc.default.id
+# }
 
 # Define Security Group for the EC2 instances
 resource "aws_security_group" "project_security_group" {
