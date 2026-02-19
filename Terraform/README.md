@@ -32,7 +32,9 @@ This is the main module that will define other modules, and the general/common c
 This module handles the definitions of Security Group used by this project.
 
 ### Constants
-- External access must be allowed from everywhere (CIDR 0.0.0.0/0)
+- External access must be allowed from everywhere (CIDR 0.0.0.0/0).
+- VPC must be the default one of the region.
+- Subnet must be the default one of the VPC used.
 
 ### Variables
 
