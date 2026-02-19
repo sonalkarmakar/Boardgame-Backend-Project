@@ -20,7 +20,7 @@ variable "ec2_ssh_key_name" {
 # Application access ports
 variable "external_access_ports" { # Should be replaced with user-input
 	description = "Ports used for accessing project resources externally."
-	type        = map()
+	type        = map(number)
 	default     = {
 		Jenkins   = 8080
 		Nexus     = 8081
@@ -31,7 +31,7 @@ variable "external_access_ports" { # Should be replaced with user-input
 
 variable "default_access_ports" { # DO NOT REPLACE WITH USER-INPUT
 	description = "Default ports used by the respective application for access. DO NOT REPLACE WITH USER-INPUT!"
-	type        = map()
+	type        = map(number)
 	default     = {
 		Jenkins   = 8080
 		Nexus     = 8081
