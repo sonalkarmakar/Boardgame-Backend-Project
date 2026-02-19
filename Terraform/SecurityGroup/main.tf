@@ -15,7 +15,7 @@ resource "aws_security_group" "project_security_group" {
 	name_prefix = var.project_prefix
 
 	tags = {
-		Name = "${var.sg_name}" #"${var.project_prefix}-${var.sg_name}"
+		Name = "${var.project_prefix}-${var.sg_name}"
 	}
 }
 
