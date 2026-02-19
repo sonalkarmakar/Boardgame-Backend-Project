@@ -11,6 +11,9 @@ external_access_ports = {
 	SSH       = 22
 }
 
+# Security Group specifications
+sg_name = "Security_Group"
+
 # EC2 instance specifications
 ec2_instances = {
 	Ansible = {

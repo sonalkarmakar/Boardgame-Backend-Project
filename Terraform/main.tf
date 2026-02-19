@@ -19,6 +19,9 @@ resource "local_file" "public_key" {
 # Security Group module
 module "sg_module" {
 	source = "${path.root}/SecurityGroup"
+
+	infra_region   = var.infra_region
+	project_prefix = var.project_prefix
 }
 
 # EC2 Instance module
