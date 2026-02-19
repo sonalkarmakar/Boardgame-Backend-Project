@@ -18,13 +18,14 @@ resource "local_file" "public_key" {
 
 # Security Group module
 module "sg_module" {
-	source = "${path.root}/SecurityGroup"
+	source = "./SecurityGroup" #"${path.root}/SecurityGroup"
 
 	infra_region   = var.infra_region
 	project_prefix = var.project_prefix
+	sg_name        = var.sg_name
 }
 
 # EC2 Instance module
 module "ec2_module" {
-	source = "${path.root}/EC2"
+	source = "./EC2" #"${path.root}/EC2"
 }
