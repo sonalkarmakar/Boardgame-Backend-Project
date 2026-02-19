@@ -41,10 +41,6 @@ variable "default_access_ports" { # DO NOT REPLACE WITH USER-INPUT
 }
 
 # Security Group specifications
-variable "security_group" {
-
-}
-
 variable "sg_name" {
 	description = "Name of the Security Group created and used for the project."
 	type        = string
