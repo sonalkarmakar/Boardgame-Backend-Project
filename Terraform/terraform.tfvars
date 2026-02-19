@@ -1,7 +1,7 @@
 # General infrastructure specifications
-infra_region   = "ap-south-1"
-project_prefix = "BoardGame_Backend"
-ssh_key_name   = "EC2_SSH_key"
+infra_region     = "ap-south-1"
+project_prefix   = "BoardGame_Backend"
+ec2_ssh_key_name = "EC2_SSH_key"
 
 # External access ports
 external_access_ports = {
