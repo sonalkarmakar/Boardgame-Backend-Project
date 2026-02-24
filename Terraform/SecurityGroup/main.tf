@@ -20,7 +20,7 @@ resource "aws_security_group" "project_security_group" {
 }
 
 # Define Inbound Rules for Security Group
-resource "aws_security_group_rule" "inboun_access" {
+resource "aws_security_group_rule" "inbound_access" {
 	type              = "ingress"
 	from_port         = var.inbound_access_port
 	to_port           = var.inbound_access_port
