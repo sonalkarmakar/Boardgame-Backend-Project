@@ -19,10 +19,12 @@ resource "local_file" "public_key" {
 # Security Group module
 module "sg_module" {
 	source = "./SecurityGroup" #"${path.root}/SecurityGroup"
+	for_each = var.external_access_ports
 
-	infra_region   = var.infra_region
-	project_prefix = var.project_prefix
-	sg_name        = var.sg_name
+	infra_region        = var.infra_region
+	project_prefix      = var.project_prefix
+	sg_name             = var.sg_name
+	inbound_access_port = each.value
 }
 
 # EC2 Instance module
