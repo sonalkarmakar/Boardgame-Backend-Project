@@ -12,6 +12,7 @@ This is the main module that will define other modules, and the general/common c
 - SSH key-pair RSA byte size is 2048.
 
 ### Variables
+
 #### General Infrastructure
 - Infrastrucutre region (AWS region).
 - Project prefix to be used for naming resources.
