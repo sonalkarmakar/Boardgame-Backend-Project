@@ -27,6 +27,12 @@ module "sg_module" {
 	inbound_access_port = each.value
 }
 
+# Add key-pair to AWS
+resource "aws_key_pair" "ec2_ssh_key" {
+	key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
+	public_key = tls_private_key.ec2_ssh_key.public_key_openssh
+}
+
 # EC2 Instance module
 module "ec2_module" {
 	source = "./EC2" #"${path.root}/EC2"
@@ -37,5 +43,5 @@ module "ec2_module" {
 	instance_type  = each.value.type
 	root_vol_size  = each.value.root_size
 	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
-	ssh_public_key = tls_private_key.ec2_ssh_key.public_key_openssh
+	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
 }
