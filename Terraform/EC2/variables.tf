@@ -30,5 +30,5 @@ variable "ssh_public_key" {
 variable "instance_sg" {
 	description = "List of Security Groups associated with the EC2 instance."
 	type        = list(string)
-	default     = [ "default" ]
+	default     = [  ]
 }

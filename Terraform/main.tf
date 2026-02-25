@@ -24,8 +24,7 @@ resource "aws_key_pair" "ec2_ssh_key" {
 
 # Security Group module
 module "sg_module" {
-	source = "./SecurityGroup" #"${path.root}/SecurityGroup"
-	# for_each = var.external_access_ports
+	source = "./SecurityGroup"
 
 	infra_region        = var.infra_region
 	project_prefix      = var.project_prefix
@@ -33,16 +32,16 @@ module "sg_module" {
 	inbound_access_port = var.external_access_ports
 }
 
-# # EC2 Instance module
-# module "ec2_module" {
-# 	source = "./EC2" #"${path.root}/EC2"
+# EC2 Instance module
+module "ec2_module" {
+	source = "./EC2"
 
-# 	for_each = var.ec2_instances
+	for_each = var.ec2_instances
 
-# 	instance_name  = "${var.project_prefix}-${each.value.name}"
-# 	instance_type  = each.value.type
-# 	instance_sg    = [ module.sg_module.security_group_id ]
-# 	root_vol_size  = each.value.root_size
-# 	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
-# 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
-# }
+	instance_name  = "${var.project_prefix}-${each.value.name}"
+	instance_type  = each.value.type
+	instance_sg    = [ module.sg_module.security_group_id ]
+	root_vol_size  = each.value.root_size
+	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
+	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
+}
