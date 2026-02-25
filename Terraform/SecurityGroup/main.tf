@@ -21,9 +21,11 @@ resource "aws_security_group" "project_security_group" {
 
 # Define Inbound Rules for Security Group
 resource "aws_security_group_rule" "inbound_access" {
+	for_each          = var.inbound_access_port
+	
 	type              = "ingress"
-	from_port         = var.inbound_access_port
-	to_port           = var.inbound_access_port
+	from_port         = each.value
+	to_port           = each.value
 	protocol          = "tcp"
 	cidr_blocks       = [ "0.0.0.0/0" ]
 	security_group_id = aws_security_group.project_security_group.id

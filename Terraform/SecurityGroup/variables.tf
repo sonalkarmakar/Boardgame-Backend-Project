@@ -19,6 +19,11 @@ variable "sg_name" {
 
 variable "inbound_access_port" {
 	description = "Port for allowing external access to applications."
-	type        = number
-	default     = 22
+	type        = map(number)
+	default     = {
+		Jenkins   = 8080
+		Nexus     = 8081
+		SonarQube = 9000
+		SSH       = 22
+	}
 }
