@@ -5,10 +5,11 @@ ec2_ssh_key_name = "EC2_SSH_key"
 
 # External access ports
 external_access_ports = {
-	Jenkins   = 8080
-	Nexus     = 8081
-	SonarQube = 9000
-	SSH       = 22
+	Jenkins    = 8080
+	Kubernetes = 6443
+	Nexus      = 8081
+	SonarQube  = 9000
+	SSH        = 22
 }
 
 # Security Group specifications
