@@ -33,10 +33,11 @@ variable "default_access_ports" { # DO NOT REPLACE WITH USER-INPUT
 	description = "Default ports used by the respective application for access. DO NOT REPLACE WITH USER-INPUT!"
 	type        = map(number)
 	default     = {
-		Jenkins   = 8080
-		Nexus     = 8081
-		SonarQube = 9000
-		SSH       = 22
+		Jenkins    = 8080
+		Kubernetes = 6443
+		Nexus      = 8081
+		SonarQube  = 9000
+		SSH        = 22
 	}
 }
 
