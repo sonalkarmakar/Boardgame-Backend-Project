@@ -3,11 +3,6 @@ data "aws_vpc" "default" {
 	region  = var.infra_region
 	default = true
 }
-# Select the default Subnet of the VPC
-# data "aws_subnet" "default" {
-# 	region = var.infra_region
-# 	vpc_id = data.aws_vpc.default.id
-# }
 
 # Define Security Group for the EC2 instances
 resource "aws_security_group" "project_security_group" {
@@ -21,7 +16,7 @@ resource "aws_security_group" "project_security_group" {
 
 # Define Inbound Rules for Security Group
 resource "aws_security_group_rule" "inbound_access" {
-	for_each          = var.inbound_access_port
+	for_each = var.inbound_access_port
 	
 	type              = "ingress"
 	from_port         = each.value
