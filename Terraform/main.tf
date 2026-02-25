@@ -1,3 +1,4 @@
+# SSH Key-Pair for EC2 Instance
 # Generating SSH key-pair
 resource "tls_private_key" "ec2_ssh_key" {
 	algorithm = "RSA"
@@ -15,6 +16,11 @@ resource "local_file" "public_key" {
 	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ec2_ssh_key_name}.pub"
 	file_permission = "0644"
 }
+# Add key-pair to AWS
+resource "aws_key_pair" "ec2_ssh_key" {
+	key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
+	public_key = tls_private_key.ec2_ssh_key.public_key_openssh
+}
 
 # Security Group module
 module "sg_module" {
@@ -27,12 +33,6 @@ module "sg_module" {
 	inbound_access_port = each.value
 }
 
-# Add key-pair to AWS
-resource "aws_key_pair" "ec2_ssh_key" {
-	key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
-	public_key = tls_private_key.ec2_ssh_key.public_key_openssh
-}
-
 # EC2 Instance module
 module "ec2_module" {
 	source = "./EC2" #"${path.root}/EC2"
@@ -41,6 +41,7 @@ module "ec2_module" {
 
 	instance_name  = "${var.project_prefix}-${each.value.name}"
 	instance_type  = each.value.type
+	instance_sg    = [ module.sg_module.group_id ]
 	root_vol_size  = each.value.root_size
 	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
