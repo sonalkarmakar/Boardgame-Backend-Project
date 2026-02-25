@@ -30,4 +30,12 @@ module "sg_module" {
 # EC2 Instance module
 module "ec2_module" {
 	source = "./EC2" #"${path.root}/EC2"
+
+	for_each = var.ec2_instances
+
+	instance_name  = "${var.project_prefix}-${each.value.name}"
+	instance_type  = each.value.type
+	root_vol_size  = each.value.root_size
+	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
+	ssh_public_key = tls_private_key.ec2_ssh_key.public_key_openssh
 }
