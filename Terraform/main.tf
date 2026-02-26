@@ -42,6 +42,5 @@ module "ec2_module" {
 	instance_type  = each.value.type
 	instance_sg    = [ module.sg_module.security_group_id ]
 	root_vol_size  = each.value.root_size
-	ssh_key_name   = "${var.project_prefix}-${var.ec2_ssh_key_name}"
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
 }
