@@ -1,3 +1,22 @@
+# SSH Key-Pair for Ansible
+# Generating SSH key-pair
+resource "tls_private_key" "ansible_ssh_key" {
+	algorithm = "RSA"
+	rsa_bits  = 2048
+}
+# Saving private key to file
+resource "local_file" "ansible_private_key" {
+	content         = tls_private_key.ansible_ssh_key.private_key_pem
+	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ansible_ssh_key_name}.pem"
+	file_permission = "0600"
+}
+# Saving public key to file
+resource "local_file" "ansible_public_key" {
+	content         = tls_private_key.ansible_ssh_key.public_key_openssh
+	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ansible_ssh_key_name}.pub"
+	file_permission = "0644"
+}
+
 # SSH Key-Pair for EC2 Instance
 # Generating SSH key-pair
 resource "tls_private_key" "ec2_ssh_key" {
@@ -5,13 +24,13 @@ resource "tls_private_key" "ec2_ssh_key" {
 	rsa_bits  = 2048
 }
 # Saving private key to file
-resource "local_file" "private_key" {
+resource "local_file" "ec2_private_key" {
 	content         = tls_private_key.ec2_ssh_key.private_key_pem
 	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ec2_ssh_key_name}.pem"
 	file_permission = "0600"
 }
 # Saving public key to file
-resource "local_file" "public_key" {
+resource "local_file" "ec2_public_key" {
 	content         = tls_private_key.ec2_ssh_key.public_key_openssh
 	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ec2_ssh_key_name}.pub"
 	file_permission = "0644"

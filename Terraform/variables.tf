@@ -17,6 +17,12 @@ variable "ec2_ssh_key_name" {
 	default     = "EC2_SSH_key"
 }
 
+variable "ansible_ssh_key_name" {
+	description = "Name of the SSH key-pair to be used by Ansible to manage nodes."
+	type        = string
+	default     = "Ansible_SSH_key"
+}
+
 # Application access ports
 variable "external_access_ports" { # Should be replaced with user-input
 	description = "Ports used for accessing project resources externally."
