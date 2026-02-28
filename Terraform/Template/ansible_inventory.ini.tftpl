@@ -1,0 +1,13 @@
+%{ for name, node in managed_nodes ~}
+[${lower(name)}]
+${node.public_ip}
+%{ endfor ~}
+
+[servers]
+%{ for name in keys(managed_nodes) ~}
+${lower(name)}
+%{ endfor ~}
+
+[servers:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=/home/ubuntu/.ssh/${ansible_key_name}
