@@ -63,3 +63,21 @@ module "ec2_module" {
 	root_vol_size  = each.value.root_size
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
 }
+
+# Exclude Ansible control node
+locals {
+	compute_instances = {
+		for key, instance in module.ec2_module : key => {
+			public_ip = instance.public_ip
+		}
+		if key != "Ansible"
+	}
+}
+
+resource "local_file" "ansible_inventory" {
+	content = templatefile("${path.root}/Template/ansible_inventory.ini.tftpl", {
+		managed_nodes = local.compute_instances
+		ansible_key_name = "${var.ansible_ssh_key_name}.pem"
+	})
+	filename = "${path.root}/../Ansible/inventory.ini"
+}
