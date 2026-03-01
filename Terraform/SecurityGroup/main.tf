@@ -25,3 +25,13 @@ resource "aws_security_group_rule" "inbound_access" {
 	cidr_blocks       = [ "0.0.0.0/0" ]
 	security_group_id = aws_security_group.project_security_group.id
 }
+
+# Define Outbound Rule for Security Group
+resource "aws_security_group_rule" "outbound_access" {
+	type              = "egress"
+	from_port         = 0
+	to_port           = 0
+	protocol          = "-1"
+	cidr_blocks       = [ "0.0.0.0/0" ]
+	security_group_id = aws_security_group.project_security_group.id
+}
