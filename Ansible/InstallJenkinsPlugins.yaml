@@ -1,0 +1,36 @@
+- name: Wait for Jenkins to be ready
+  uri:
+    url: http://localhost:8080
+    method: GET
+    status_code: 200
+  register: jenkins_ready
+  retries: 30
+  delay: 10
+  until: jenkins_ready.status == 200
+
+- name: Install required Jenkins plugins
+  community.general.jenkins_plugin:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - pipeline-stage-view
+    - blueocean
+    - docker-workflow
+    - ansible  # For Ansible integration
+  register: jenkins_plugins
+  notify: restart jenkins container
+
+- name: Wait for Jenkins after plugin install
+  uri:
+    url: http://localhost:8080
+    status_code: 200
+  retries: 20
+  delay: 10
+
+handlers:
+  - name: restart jenkins container
+    docker_container:
+      name: jenkins
+      state: started
+      restart: true
