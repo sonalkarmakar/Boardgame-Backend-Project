@@ -1,0 +1,53 @@
+---
+- name: Deploy Jenkins container
+  hosts: jenkins
+  become: true
+  tasks:
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins_container
+        image: jenkins/jenkins:slim
+        ports:
+          - "8080:8080"
+        volumes:
+          - jenkins_home:/var/jenkins_home
+        state: started
+        restart_policy: always
+        restart_retry_attempts: 3
+
+- name: Deploy Nexus container  
+  hosts: nexus_container
+  become: true
+  tasks:
+    - name: Run Nexus container
+      docker_container:
+        name: nexus
+        image: sonatype/nexus3:3.89.1-alpine
+        ports:
+          - "8081:8081"
+          - "5000:5000"
+        volumes:
+          - nexus_data:/nexus-data
+        state: started
+        restart_policy: always
+        restart_retry_attempts: 3
+
+- name: Deploy SonarQube container
+  hosts: sonarqube_container
+  become: true
+  tasks:
+    - name: Run SonarQube container
+      docker_container:
+        name: sonarqube
+        image: sonarqube:community
+        ports:
+          - "9000:9000"
+        volumes:
+          - sonarqube_data:/opt/sonarqube/data
+          - sonarqube_extensions:/opt/sonarqube/extensions
+          - sonarqube_logs:/opt/sonarqube/logs
+        environment:
+          - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
+        state: started
+        restart_policy: always
+        restart_retry_attempts: 3
