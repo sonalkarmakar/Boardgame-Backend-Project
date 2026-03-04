@@ -3,7 +3,7 @@
 ${node.public_ip}
 %{ endfor ~}
 
-[servers]
+[servers:children]
 %{ for name in keys(managed_nodes) ~}
 ${lower(name)}
 %{ endfor ~}
