@@ -70,32 +70,32 @@ variable "ec2_instances" {
 		root_size = number
 	}))
 	default = {
-		Ansible = {
+		Ansible = { # Ansible control node
 			name      = "Ansible"
 			type      = "t2.nano"
 			root_size = 8
 		}
-		Jenkins = {
+		Jenkins = { # Jenkins host
 			name      = "Jenkins"
 			type      = "t2.small"
 			root_size = 20
 		}
-		# Kubernetes = {
-		# 	name      = "Kubernetes_Cluster"
+		# Kubernetes = { # Kubernetes cluster unit
+		# 	name      = "Kube_Cluster"
 		# 	type      = "t2.small"
 		# 	root_size = 20
 		# }
-		# Monitoring = { # Will run Prometheus, Blackbox exporter and Grafana
+		# Monitoring = { # Hosts Prometheus, Blackbox exporter and Grafana for monitoring
 		# 	name      = "Monitoring"
 		# 	type      = "t2.small"
 		# 	root_size = 16
 		# }
-		Nexus = {
+		Nexus = { # Nexus repository host
 			name      = "Nexus"
 			type      = "t2.small"
 			root_size = 20
 		}
-		SonarQube = {
+		SonarQube = { # SonarQube host
 			name      = "SonarQube"
 			type      = "t2.medium"
 			root_size = 20
