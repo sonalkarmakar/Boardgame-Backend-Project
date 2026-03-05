@@ -72,23 +72,23 @@ variable "ec2_instances" {
 	default = {
 		Ansible = {
 			name      = "Ansible"
-			type      = "t2.micro"
-			root_size = 24
+			type      = "t2.nano"
+			root_size = 8
 		}
 		Jenkins = {
 			name      = "Jenkins"
-			type      = "t2.micro"
-			root_size = 24
+			type      = "t2.small"
+			root_size = 20
 		}
 		Nexus = {
 			name      = "Nexus"
-			type      = "t2.medium"
-			root_size = 24
+			type      = "t2.small"
+			root_size = 20
 		}
 		SonarQube = {
 			name      = "SonarQube"
 			type      = "t2.medium"
-			root_size = 24
+			root_size = 20
 		}
 	}
 }
