@@ -1,6 +1,7 @@
 %{ for name, node in managed_nodes ~}
 [${lower(name)}]
 ${node.public_ip}
+
 %{ endfor ~}
 
 [servers:children]
