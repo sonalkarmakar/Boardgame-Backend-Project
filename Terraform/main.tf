@@ -8,7 +8,7 @@ resource "tls_private_key" "ansible_ssh_key" {
 resource "local_file" "ansible_private_key" {
 	content         = tls_private_key.ansible_ssh_key.private_key_pem
 	filename        = "${path.root}/.ssh/${var.project_prefix}-${var.ansible_ssh_key_name}.pem"
-	file_permission = "0600"
+	file_permission = "0400"
 }
 # Saving public key to file
 resource "local_file" "ansible_public_key" {
