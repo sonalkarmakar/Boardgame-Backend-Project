@@ -14,16 +14,6 @@
         state: started
         restart_policy: unless-stopped
 
-    - name: Get initial Jenkins admin password
-      shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
-      register: jenkins_password
-      changed_when: false
-
-    - name: Display Jenkins initial password
-      debug:
-        msg: "Jenkins initial admin password: {{ jenkins_password.stdout }}"
-      when: jenkins_password.stdout is defined
-
 - name: Deploy Nexus container
   hosts: nexus
   become: true
@@ -39,16 +29,6 @@
           - nexus_data:/nexus-data
         state: started
         restart_policy: unless-stopped
-
-    - name: Retrieve Nexus admin password
-      slurp:
-        src: /nexus-data/admin.password
-      register: admin_password
-
-    - name: Extract and display password
-      set_fact:
-        nexus_password: "{{ (admin_password.content | b64decode | trim) }}"
-      no_log: true
 
 - name: Deploy SonarQube container
   hosts: sonarqube
