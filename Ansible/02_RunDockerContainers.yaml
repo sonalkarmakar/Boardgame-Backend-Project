@@ -2,11 +2,13 @@
 - name: Deploy Jenkins container
   hosts: jenkins
   become: true
+  vars:
+    jenkins_image: jenkins/jenkins:slim
   tasks:
     - name: Run Jenkins container
       docker_container:
         name: jenkins_container
-        image: jenkins/jenkins:slim
+        image: "{{ jenkins_image }}"
         ports:
           - "8080:8080"
         volumes:
@@ -17,11 +19,13 @@
 - name: Deploy Nexus container
   hosts: nexus
   become: true
+  vars:
+    nexus_image: sonatype/nexus3:3.89.1-alpine
   tasks:
     - name: Run Nexus container
       docker_container:
         name: nexus_container
-        image: sonatype/nexus3:3.89.1-alpine
+        image: "{{ nexus_image }}"
         ports:
           - "8081:8081"
           - "5000:5000"
@@ -33,11 +37,13 @@
 - name: Deploy SonarQube container
   hosts: sonarqube
   become: true
+  vars:
+    sonarqube_image: sonarqube:community
   tasks:
     - name: Run SonarQube container
       docker_container:
         name: sonarqube_container
-        image: sonarqube:community
+        image: "{{ sonarqube_image }}"
         ports:
           - "9000:9000"
         volumes:
