@@ -1,7 +1,24 @@
 ---
+- name: Install Trivy inside Jenkins container
+  hosts: jenkins
+  tasks:
+    - name: Run Docker exec commands to install Trivy
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            apt-get update -y &&
+            apt-get install -y wget gnupg &&
+            wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null &&
+            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | tee -a /etc/apt/sources.list.d/trivy.list &&
+            apt-get update -y &&
+            apt-get install -y trivy
+
 - name: Install Required Jenkins Plugins
   hosts: jenkins
-  become: true
   tasks:
     - name: Retrieve initial Jenkins admin password
       shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword

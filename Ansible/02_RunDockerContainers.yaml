@@ -1,7 +1,6 @@
 ---
 - name: Deploy Jenkins container
   hosts: jenkins
-  become: true
   vars:
     jenkins_image: jenkins/jenkins:slim
   tasks:
@@ -18,7 +17,6 @@
 
 - name: Deploy Nexus container
   hosts: nexus
-  become: true
   vars:
     nexus_image: sonatype/nexus3:3.89.1-alpine
   tasks:
@@ -36,7 +34,6 @@
 
 - name: Deploy SonarQube container
   hosts: sonarqube
-  become: true
   vars:
     sonarqube_image: sonarqube:community
   tasks:
