@@ -43,7 +43,7 @@ resource "aws_key_pair" "ec2_ssh_key" {
 
 # Security Group module
 module "sg_module" {
-	source = "./SecurityGroup"
+	source = "./Modules/SecurityGroup"
 
 	infra_region        = var.infra_region
 	project_prefix      = var.project_prefix
@@ -53,7 +53,7 @@ module "sg_module" {
 
 # EC2 Instance module
 module "ec2_module" {
-	source = "./EC2"
+	source = "./Modules/EC2"
 
 	for_each = var.ec2_instances
 
