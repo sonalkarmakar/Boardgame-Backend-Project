@@ -1,0 +1,191 @@
+pipeline {
+	agent any
+
+	tools {
+		jdk "JDK 17"
+		maven "Maven3"
+	}
+
+	environment {
+		// Git specifications
+		GIT_REPO_URL    = "https://github.com/TANVIP-6M/Board_game_DBproject.git"
+		GIT_BRANCH_NAME = "main"
+
+		// SonarQube specifications
+		SONARQUBE_SERVER_NAME = "SonarQube Server"
+
+		// Trivy specifications
+		TRIVY_FILES_DIR       = "Trivy"
+		TRIVY_REPORTS_DIR     = "${env.TRIVY_FILES_DIR}/reports"
+		TRIVY_TEMPLATE_URL    = "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl"
+		TRIVY_TEMPLATE_FILE   = "${env.TRIVY_FILES_DIR}/trivy-template.tpl"
+		TRIVY_FS_REPORT_FILE  = "trivy-fs-report.html"
+		TRIVY_FS_REPORT_NAME  = "Trivy File-system Scan Report"
+		TRIVY_BLD_REPORT_FILE = "trivy-bld-report.html"
+		TRIVY_BLD_REPORT_NAME = "Trivy Build Scan Report"
+		TRIVY_IMG_REPORT_FILE = "trivy-img-report.html"
+		TRIVY_IMG_REPORT_NAME = "Trivy Image Scan Report"
+
+		// Docker specifications
+		DOCKER_NAMESPACE  = "sonalkarmakar"
+		DOCKER_REPOSITORY = "board-game-project"
+		DOCKER_IMAGE_TAG  = "latest"
+		DOCKER_IMAGE_NAME = "${env.DOCKER_NAMESPACE}/${env.DOCKER_REPOSITORY}:${env.DOCKER_IMAGE_TAG}"
+		DOCKER_CRED_ID    = "docker-credentials"
+		DOCKER_REPO_URL   = "https://index.docker.io/v1/"
+
+		// EKS Cluster specifications
+		AWS_REGION  = "ap-south-1"
+		AWS_CRED_ID = "aws-credentials"
+		EKS_CLUSTER_NAME = "BoardGame-Deployment-Cluster"
+	}
+
+	stages {
+		stage("Cloning Git Repository") {
+			steps {
+				git branch: "${GIT_BRANCH_NAME}", url: "${GIT_REPO_URL}"
+			}
+		}
+		stage("Compiling with Maven") {
+			steps {
+				sh 'mvn compile'
+			}
+		}
+		stage("Testing with Maven") {
+			steps {
+				sh 'mvn test'
+			}
+		}
+		stage("Analysing with SonarQube") {
+			steps {
+				withSonarQubeEnv("${SONARQUBE_SERVER_NAME}") {
+					sh 'mvn verify sonar:sonar -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame'
+				}
+			}
+		}
+		stage("Scanning File-system with Trivy") {
+			steps {
+				sh '''
+				mkdir -p "${TRIVY_REPORTS_DIR}"
+				trivy fs --format table .
+				curl -L -o "${TRIVY_TEMPLATE_FILE}" "${TRIVY_TEMPLATE_URL}"
+				trivy fs . --format template --template "@${TRIVY_TEMPLATE_FILE}" -o "${TRIVY_REPORTS_DIR}/${TRIVY_FS_REPORT_FILE}"
+				'''
+			}
+		}
+		stage("Publishing Trivy Report for File-system") {
+			steps {
+				publishHTML([
+					allowMissing:          false,
+					alwaysLinkToLastBuild: true,
+					keepAll:               true,
+					reportDir:             "${TRIVY_REPORTS_DIR}",
+					reportFiles:           "${TRIVY_FS_REPORT_FILE}",
+					reportName:            "${TRIVY_FS_REPORT_NAME}",
+				])
+			}
+		}
+		stage("Packaging with Maven") {
+			steps {
+				sh 'mvn package'
+			}
+		}
+		stage("Scanning Build with Trivy") {
+			steps {
+				sh '''
+				curl -fsSL -o "${TRIVY_TEMPLATE_FILE}" "${TRIVY_TEMPLATE_URL}"
+				trivy fs target/database_service_project-0.0.7-SNAPSHOT.jar --format table
+				trivy fs target/database_service_project-0.0.7-SNAPSHOT.jar --format template --template "@${TRIVY_TEMPLATE_FILE}" -o "${TRIVY_REPORTS_DIR}/${TRIVY_BLD_REPORT_FILE}"
+				'''
+			}
+		}
+		stage("Publishing Trivy Report for Build") {
+			steps {
+				publishHTML([
+					allowMissing:          false,
+					alwaysLinkToLastBuild: true,
+					keepAll:               true,
+					reportDir:             "${TRIVY_REPORTS_DIR}",
+					reportFiles:           "${TRIVY_BLD_REPORT_FILE}",
+					reportName:            "${TRIVY_BLD_REPORT_NAME}",
+				])
+			}
+		}
+		stage("Deploying Artifact to Nexus") {
+			steps {
+				withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'openjdk-17', maven: 'maven', traceability: true) {
+					sh 'mvn clean deploy'
+				}
+			}
+		}
+		stage("Building Docker Image") {
+			steps {
+				withDockerRegistry(credentialsId: "${DOCKER_CRED_ID}", url: 'https://index.docker.io/v1/') {
+					sh 'docker build -t "${DOCKER_NAMESPACE}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}" .'
+				}
+			}
+		}
+		stage("Scanning Docker Image with Trivy") {
+			steps {
+				sh '''
+				curl -fsSL -o "${TRIVY_TEMPLATE_FILE}" "${TRIVY_TEMPLATE_URL}"
+				trivy image --format table "${DOCKER_NAMESPACE}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+				trivy image "${DOCKER_NAMESPACE}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}" --format template --template "@${TRIVY_TEMPLATE_FILE}" -o "${TRIVY_REPORTS_DIR}/${TRIVY_FS_REPORT_FILE}"
+				'''
+			}
+		}
+		stage("Publishing Trivy Report for Docker Image") {
+			steps {
+				publishHTML([
+					allowMissing:          false,
+					alwaysLinkToLastBuild: true,
+					keepAll:               true,
+					reportDir:             "${TRIVY_REPORTS_DIR}",
+					reportFiles:           "${TRIVY_IMG_REPORT_FILE}",
+					reportName:            "${TRIVY_IMG_REPORT_NAME}",
+				])
+			}
+		}
+		stage("Pushing Image to Docker Hub") {
+			steps {
+				withDockerRegistry(credentialsId: "${DOCKER_CRED_ID}", url: "${DOCKER_REPO_URL}") {
+					//sh '''
+					//docker tag tanvip6h/e3boardgameprojectimage tanvip6h/e3boardgameprojectimage:latest
+					//docker push tanvip6h/e3boardgameprojectimage
+					//'''
+					sh 'docker push "${DOCKER_NAMESPACE}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}"'
+				}
+			}
+		}
+		stage("Deploying Application in EKS Cluster") {
+			steps {
+				withAWS(credentials: "${AWS_CRED_ID}", region: "${AWS_REGION}") {
+					sh '''
+					aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER_NAME}
+					kubectl apply -f deployment-service.yaml
+					'''
+				}
+			}
+		}
+	}
+	post {
+		success {
+			from:     '',
+			to:       'efg@gmail.com',
+			cc:       'abc@gmail.com',
+			mail bcc: '',
+			replyTo:  '',
+			body:     'Hello, this mail is to notify that the deployment is success',
+			subject:  'Deployment success mail',
+		}
+		failure {
+			from:     '',
+			to:       'efg@gmail.com'
+			cc:       'abc@gmail.com',
+			mail bcc: '',
+			replyTo:  '',
+			body:     'Hello, this mail is to notify that the deployment is failed',
+			subject:  'Deployment failure mail',
+		}
+	}
+}
