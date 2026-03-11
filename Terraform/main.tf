@@ -87,7 +87,7 @@ resource "local_file" "ansible_inventory" {
 resource "local_file" "maven_pom_xml" {
 	content    = replace(
 		file("${path.root}/../pom_template.xml"),
-		"{NEXUS_IP_ADDRESS}",
+		"<!--NEXUS_IP_ADDRESS-->",
 		local.compute_instances["Nexus"].public_ip
 	)
 	filename   = "${path.root}/../pom.xml"
