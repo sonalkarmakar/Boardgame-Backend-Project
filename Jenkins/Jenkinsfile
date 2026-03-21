@@ -14,6 +14,9 @@ pipeline {
 		// SonarQube specifications
 		SONARQUBE_SERVER_NAME = "SonarQube Server"
 
+		// Maven specifications
+		MAVEN_GLOBAL_SETTINGS_CONFIG = "BoardGame_Backend-Global_Maven_Settings"
+
 		// Trivy specifications
 		TRIVY_FILES_DIR       = "Trivy"
 		TRIVY_REPORTS_DIR     = "${env.TRIVY_FILES_DIR}/reports"
@@ -31,12 +34,12 @@ pipeline {
 		DOCKER_REPOSITORY = "board-game-project"
 		DOCKER_IMAGE_TAG  = "latest"
 		DOCKER_IMAGE_NAME = "${env.DOCKER_NAMESPACE}/${env.DOCKER_REPOSITORY}:${env.DOCKER_IMAGE_TAG}"
-		DOCKER_CRED_ID    = "docker-credentials"
+		DOCKER_CRED_ID    = "DockerHub-Credentials"
 		DOCKER_REPO_URL   = "https://index.docker.io/v1/"
 
 		// EKS Cluster specifications
 		AWS_REGION  = "ap-south-1"
-		AWS_CRED_ID = "aws-credentials"
+		AWS_CRED_ID = "AWS-Credentials"
 		EKS_CLUSTER_NAME = "BoardGame-Deployment-Cluster"
 	}
 
@@ -113,7 +116,7 @@ pipeline {
 		}
 		stage("Deploying Artifact to Nexus") {
 			steps {
-				withMaven(globalMavenSettingsConfig: 'maven-settings', jdk: 'openjdk-17', maven: 'maven', traceability: true) {
+				withMaven(globalMavenSettingsConfig: "${MAVEN_GLOBAL_SETTINGS_CONFIG}", traceability: true) {
 					sh 'mvn clean deploy'
 				}
 			}
