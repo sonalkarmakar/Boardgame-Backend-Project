@@ -75,7 +75,7 @@ locals {
 }
 # Write the Ansible inventory file as per template
 resource "local_file" "ansible_inventory" {
-	content = templatefile("${path.root}/Template/ansible_inventory.ini.tftpl", {
+	content = templatefile("${path.root}/Templates/ansible_inventory.ini.tftpl", {
 		managed_nodes    = local.compute_instances
 		ansible_key_name = "${var.ansible_ssh_key_name}.pem"
 	})
@@ -86,7 +86,7 @@ resource "local_file" "ansible_inventory" {
 # Add the Nexus instance public IP address as per template
 resource "local_file" "maven_pom_xml" {
 	content    = replace(
-		file("${path.root}/../pom_template.xml"),
+		file("${path.root}/Templates/pom_template.xml"),
 		"<!--NEXUS_IP_ADDRESS-->",
 		local.compute_instances["Nexus"].public_ip
 	)
