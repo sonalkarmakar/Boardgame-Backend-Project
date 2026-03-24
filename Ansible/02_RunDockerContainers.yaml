@@ -3,15 +3,25 @@
   hosts: jenkins
   vars:
     jenkins_image: jenkins/jenkins:slim
+  pre_tasks:
+    - name: Get host Docker group GID
+      shell: "getent group docker | cut -d: -f3"
+      register: docker_gid
+      changed_when: false
   tasks:
     - name: Run Jenkins container
       docker_container:
         name: jenkins_container
         image: "{{ jenkins_image }}"
+        groups:
+          - "{{ docker_gid.stdout }}"
         ports:
           - "8080:8080"
         volumes:
           - jenkins_home:/var/jenkins_home
+          # Give Jenkins container access to host Docker
+          - /var/run/docker.sock:/var/run/docker.sock
+          - /usr/bin/docker:/usr/bin/docker:ro
         state: started
         restart_policy: unless-stopped
 
