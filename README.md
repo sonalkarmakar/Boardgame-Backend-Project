@@ -1,6 +1,6 @@
 # 🚧 WORK IN PROGRESS 🚧
 
-[BoardGame Source Code](https://github.com/TANVIP-6M/Board_game_DBproject)
+[BoardGame Source Code](https://github.com/jaiswaladi246/Boardgame)
 
 List of required Jenkins plugins, taken from [Jenkins Plugin Index](https://plugins.jenkins.io/)--
 - AWS Credentials (`aws-credentials`)
