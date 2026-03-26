@@ -21,9 +21,13 @@ variable "inbound_access_port" {
 	description = "Port for allowing external access to applications."
 	type        = map(number)
 	default     = {
-		Jenkins   = 8080
-		Nexus     = 8081
-		SonarQube = 9000
-		SSH       = 22
+		Blackbox   = 9115
+		Grafana    = 3000
+		Jenkins    = 8080
+		Kubernetes = 6443
+		Nexus      = 8081
+		Prometheus = 9090
+		SonarQube  = 9000
+		SSH        = 22
 	}
 }
