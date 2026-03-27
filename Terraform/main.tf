@@ -64,15 +64,18 @@ module "ec2_module" {
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
 }
 
-# Get public IP address and key name excluding Ansible control node
+# Get public IP address, access port and SSH key name excluding Ansible control node
 locals {
 	compute_instances = {
-		for key, instance in module.ec2_module : key => {
-			public_ip = instance.public_ip
-		}
-		if key != "Ansible"
+		for key, instance in module.ec2_module :
+			key => {
+				public_ip = instance.public_ip
+				host_port = module.sg_module.external_access_ports[key]
+			}
+			if key != "Ansible"
 	}
 }
+
 # Write the Ansible inventory file as per template
 resource "local_file" "ansible_inventory" {
 	content = templatefile("${path.root}/Templates/ansible_inventory.ini.tftpl", {
@@ -83,6 +86,7 @@ resource "local_file" "ansible_inventory" {
 
 	depends_on = [ module.ec2_module ]
 }
+
 # Add the Nexus instance public IP address as per template
 resource "local_file" "maven_pom_xml" {
 	content    = replace(

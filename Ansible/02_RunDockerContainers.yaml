@@ -16,7 +16,7 @@
         groups:
           - "{{ docker_gid.stdout }}"
         ports:
-          - "8080:8080"
+          - "{{ access_port }}:8080"
         volumes:
           - jenkins_home:/var/jenkins_home
           # Give Jenkins container access to host Docker
@@ -35,7 +35,7 @@
         name: nexus_container
         image: "{{ nexus_image }}"
         ports:
-          - "8081:8081"
+          - "{{ access_port }}:8081"
           - "5000:5000"
         volumes:
           - nexus_data:/nexus-data
@@ -52,7 +52,7 @@
         name: sonarqube_container
         image: "{{ sonarqube_image }}"
         ports:
-          - "9000:9000"
+          - "{{ access_port }}:9000"
         volumes:
           - sonarqube_data:/opt/sonarqube/data
           - sonarqube_extensions:/opt/sonarqube/extensions
