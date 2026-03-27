@@ -27,7 +27,7 @@
 
     - name: Install required Jenkins plugins
       community.general.jenkins_plugin:
-        url: "http://{{ ansible_host }}:8080"
+        url: "http://{{ ansible_host }}:{{ access_port }}"
         url_username: admin
         url_password: "{{ jenkins_password.stdout }}"
         name: "{{ item }}"
