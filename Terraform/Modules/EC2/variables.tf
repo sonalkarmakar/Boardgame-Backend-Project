@@ -26,3 +26,9 @@ variable "instance_sg" {
 	type        = list(string)
 	default     = [  ]
 }
+
+variable "user_data" {
+	description = "Custom script to be executed on EC2 instance launch."
+	type        = string
+	default     = ""
+}

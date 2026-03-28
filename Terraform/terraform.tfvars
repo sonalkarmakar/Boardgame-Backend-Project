@@ -1,7 +1,11 @@
+# Project specifications
+secrets_dir = ".ssh"
+
 # General infrastructure specifications
 infra_region         = "ap-south-1"
 project_prefix       = "BoardGame_Backend"
 ec2_ssh_key_name     = "EC2_SSH_key"
+ec2_username         = "ubuntu"
 ansible_ssh_key_name = "Ansible_SSH_key"
 
 # External access ports
@@ -14,6 +18,7 @@ external_access_ports = {
 	Prometheus = 9090
 	SonarQube  = 9000
 	SSH        = 22
+	SSH_Alt    = 443
 }
 
 # Security Group specifications
