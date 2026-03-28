@@ -29,5 +29,6 @@ variable "inbound_access_port" {
 		Prometheus = 9090
 		SonarQube  = 9000
 		SSH        = 22
+		SSH_Alt    = 443
 	}
 }

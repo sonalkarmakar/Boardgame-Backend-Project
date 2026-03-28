@@ -1,3 +1,10 @@
+# Project specifications
+variable "secrets_dir" {
+	description = "Name of the directory containing secrets like SSH keys and AWS access keys."
+	type        = string
+	default     = ".ssh"
+}
+
 # General infrastructure specifications
 variable "infra_region" {
 	description = "AWS Region where the infrastrucure will be created."
@@ -15,6 +22,12 @@ variable "ec2_ssh_key_name" {
 	description = "Name of the SSH key-pair to be used to access EC2 instances."
 	type        = string
 	default     = "EC2_SSH_key"
+}
+
+variable "ec2_username" {
+	description = "Default username of the primary EC2 instance user."
+	type        = string
+	default     = "ubuntu"
 }
 
 variable "ansible_ssh_key_name" {
@@ -36,6 +49,7 @@ variable "external_access_ports" { # Should be replaced with user-input
 		Prometheus = 9090
 		SonarQube  = 9000
 		SSH        = 22
+		SSH_Alt    = 443
 	}
 }
 
@@ -51,6 +65,7 @@ variable "default_access_ports" { # DO NOT REPLACE WITH USER-INPUT
 		Prometheus = 9090
 		SonarQube  = 9000
 		SSH        = 22
+		SSH_Alt    = 443
 	}
 }
 

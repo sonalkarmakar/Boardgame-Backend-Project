@@ -3,6 +3,7 @@ resource "aws_instance" "compute_instance" {
 	instance_type          = var.instance_type
 	key_name               = var.ssh_public_key
 	vpc_security_group_ids = var.instance_sg
+	user_data              = var.user_data
 
 	tags = {
 		Name = var.instance_name
