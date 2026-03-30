@@ -42,6 +42,24 @@ pipeline {
 		AWS_REGION  = "ap-south-1"
 		AWS_CRED_ID = "AWS-Credentials"
 		EKS_CLUSTER_NAME = "BoardGame-Deployment-Cluster"
+
+		// Email Notification specifications
+		// Build Success
+		PASS_MAIL_FROM  = ""
+		PASS_MAIL_TO    = "abc@mail.com"
+		PASS_MAIL_CC    = "efg@mail.com"
+		PASS_MAIL_BCC   = "hij@mail.com"
+		PASS_MAIL_REPLY = "" // Used in the field "replyTo"
+		PASS_MAIL_SUBJ  = "Build SUCCESSFUL notification"
+		PASS_MAIL_BODY  = "Hello, this email is to notify the successful build and deployment."
+		// Build Failure
+		FAIL_MAIL_FROM  = ""
+		FAIL_MAIL_TO    = "xyz@mail.com"
+		FAIL_MAIL_CC    = "uvw@mail.com"
+		FAIL_MAIL_BCC   = "rst@mail.com"
+		FAIL_MAIL_REPLY = "" // Used in the field "replyTo"
+		FAIL_MAIL_SUBJ  = "Build FAILURE notification"
+		FAIL_MAIL_BODY  = "Hello, this email is to notify the failure of build and deployment."
 	}
 
 	stages {
@@ -153,10 +171,6 @@ pipeline {
 		stage("Pushing Image to Docker Hub") {
 			steps {
 				withDockerRegistry(credentialsId: "${DOCKER_CRED_ID}", url: "${DOCKER_REPO_URL}") {
-					//sh '''
-					//docker tag tanvip6h/e3boardgameprojectimage tanvip6h/e3boardgameprojectimage:latest
-					//docker push tanvip6h/e3boardgameprojectimage
-					//'''
 					sh 'docker push "${DOCKER_NAMESPACE}/${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG}"'
 				}
 			}
@@ -174,22 +188,22 @@ pipeline {
 	}
 	post {
 		success {
-			from:     '',
-			to:       'efg@gmail.com',
-			cc:       'abc@gmail.com',
-			mail bcc: '',
-			replyTo:  '',
-			body:     'Hello, this mail is to notify that the deployment is success',
-			subject:  'Deployment success mail',
+			from:     "${PASS_MAIL_FROM}",
+			to:       "${PASS_MAIL_TO}",
+			cc:       "${PASS_MAIL_CC}",
+			mail bcc: "${PASS_MAIL_BCC}",
+			replyTo:  "${PASS_MAIL_REPLY}",
+			subject:  "${PASS_MAIL_SUBJ}",
+			body:     "${PASS_MAIL_BODY}",
 		}
 		failure {
-			from:     '',
-			to:       'efg@gmail.com'
-			cc:       'abc@gmail.com',
-			mail bcc: '',
-			replyTo:  '',
-			body:     'Hello, this mail is to notify that the deployment is failed',
-			subject:  'Deployment failure mail',
+			from:     "${FAIL_MAIL_FROM}",
+			to:       "${FAIL_MAIL_TO}",
+			cc:       "${FAIL_MAIL_CC}",
+			mail bcc: "${FAIL_MAIL_BCC}",
+			replyTo:  "${FAIL_MAIL_REPLY}",
+			subject:  "${FAIL_MAIL_SUBJ}",
+			body:     "${FAIL_MAIL_BODY}",
 		}
 	}
 }
