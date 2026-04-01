@@ -188,22 +188,26 @@ pipeline {
 	}
 	post {
 		success {
-			from:     "${PASS_MAIL_FROM}",
-			to:       "${PASS_MAIL_TO}",
-			cc:       "${PASS_MAIL_CC}",
-			mail bcc: "${PASS_MAIL_BCC}",
-			replyTo:  "${PASS_MAIL_REPLY}",
-			subject:  "${PASS_MAIL_SUBJ}",
-			body:     "${PASS_MAIL_BODY}",
+			mail(
+				from:    "${PASS_MAIL_FROM}",
+				to:      "${PASS_MAIL_TO}",
+				cc:      "${PASS_MAIL_CC}",
+				bcc:     "${PASS_MAIL_BCC}",
+				replyTo: "${PASS_MAIL_REPLY}",
+				subject: "${PASS_MAIL_SUBJ}",
+				body:    "${PASS_MAIL_BODY}",
+			)
 		}
 		failure {
-			from:     "${FAIL_MAIL_FROM}",
-			to:       "${FAIL_MAIL_TO}",
-			cc:       "${FAIL_MAIL_CC}",
-			mail bcc: "${FAIL_MAIL_BCC}",
-			replyTo:  "${FAIL_MAIL_REPLY}",
-			subject:  "${FAIL_MAIL_SUBJ}",
-			body:     "${FAIL_MAIL_BODY}",
+			mail(
+				from:    "${FAIL_MAIL_FROM}",
+				to:      "${FAIL_MAIL_TO}",
+				cc:      "${FAIL_MAIL_CC}",
+				bcc:     "${FAIL_MAIL_BCC}",
+				replyTo: "${FAIL_MAIL_REPLY}",
+				subject: "${FAIL_MAIL_SUBJ}",
+				body:    "${FAIL_MAIL_BODY}",
+			)
 		}
 	}
 }
