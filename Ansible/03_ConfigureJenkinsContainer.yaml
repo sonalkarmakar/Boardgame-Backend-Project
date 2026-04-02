@@ -1,0 +1,125 @@
+---
+- name: Install dependencies inside Jenkins container
+  hosts: jenkins
+  pre_tasks:
+    - name: Update APT cache
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            apt-get update -y
+  tasks:
+    - name: Install ca-certificates, curl, gnupg and unzip
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            apt-get install -y ca-certificates curl gnupg unzip
+
+- name: Install Trivy inside Jenkins container
+  hosts: jenkins
+  tasks:
+    - name: Run Docker exec commands to install Trivy
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            curl -s https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null;
+            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | tee -a /etc/apt/sources.list.d/trivy.list;
+            apt-get update -y;
+            apt-get install -y trivy
+
+- name: Install cluster tools inside Jenkins container
+  hosts: jenkins
+  tasks:
+    - name: Run Docker exec commands to install kubectl
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            mkdir -p -m 755 /etc/apt/keyrings;
+            curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;
+            chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg; # allow unprivileged APT programs to read this keyring
+            echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list;
+            chmod 644 /etc/apt/sources.list.d/kubernetes.list; # helps tools such as command-not-found to work correctly
+            apt-get update -y;
+            apt-get install -y kubectl
+
+    - name: Run Docker exec commands to install kubectl
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip";
+            unzip awscliv2.zip;
+            ./aws/install && rm -rf awscliv2.zip ./aws
+
+    - name: Run Docker exec commands to install eksctl
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        argv:
+          - /bin/bash
+          - -c
+          - |
+            ARCH=amd64;
+            PLATFORM=$(uname -s)_$ARCH;
+            curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz";
+            tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz;
+            install -m 0755 /tmp/eksctl /usr/local/bin && rm /tmp/eksctl
+
+- name: Install Required Jenkins Plugins
+  hosts: jenkins
+  tasks:
+    - name: Retrieve initial Jenkins admin password
+      shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
+      register: jenkins_password
+      changed_when: false
+
+    - name: Install required Jenkins plugins
+      community.general.jenkins_plugin:
+        url: "http://{{ ansible_host }}:{{ access_port }}"
+        url_username: admin
+        url_password: "{{ jenkins_password.stdout }}"
+        name: "{{ item }}"
+        state: present
+        with_dependencies: true
+      loop:
+        - aws-credentials         # AWS Credentials
+        - config-file-provider    # Config File Provider
+        - docker-plugin           # Docker
+        - docker-workflow         # Docker Pipeline
+        - adoptopenjdk            # Eclipse Temurin Installer
+        - email-ext               # Email Extension
+        - htmlpublisher           # HTML Publisher
+        - kubernetes              # Kubernetes
+        - kubernetes-cli          # Kubernetes CLI
+        - maven-plugin            # Maven Integration
+        - nexus-artifact-uploader # Nexus Artifact Uploader
+        - pipeline-maven          # Pipeline Maven Integration
+        - pipeline-aws            # Pipeline: AWS Steps
+        - sonar                   # SonarQube Scanner
+      register: plugin_install
+      when: jenkins_password is defined
+
+    - name: Restart Jenkins if plugins changed
+      docker_container:
+        name: jenkins_container
+        state: started
+        restart: true
+      when: plugin_install.changed
