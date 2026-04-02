@@ -94,7 +94,7 @@ locals {
 resource "local_file" "ansible_inventory" {
 	content  = templatefile("${path.root}/Templates/ansible_inventory.ini.tftpl", {
 		managed_nodes    = local.compute_instances
-		ansible_key_name = "${var.ansible_ssh_key_name}.pem"
+		ansible_key_name = "${var.project_prefix}-${var.ansible_ssh_key_name}.pem"
 		admin_user       = "${var.ec2_username}"
 	})
 	filename = "${path.root}/../Ansible/inventory.ini"
