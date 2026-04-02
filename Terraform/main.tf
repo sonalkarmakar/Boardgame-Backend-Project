@@ -76,6 +76,22 @@ module "ec2_module" {
 	            EOF
 }
 
+# Reboot EC2 instances once after creation
+resource "null_resource" "reboot_ec2_instances" {
+	for_each = module.ec2_module
+
+	triggers = {
+		instance_id = each.value.instance_id
+	}
+
+	provisioner "local-exec" {
+		command = "aws ec2 reboot-instances --instance-ids ${each.value.instance_id} --region ${var.infra_region}"
+	}
+
+	depends_on = [ module.ec2_module ]
+}
+
+# GENERATE FILES FROM TEMPLATES
 # Get public IP address and access port of nodes, excluding Ansible control node
 locals {
 	depends_on = [ module.sg_module, module.ec2_module ]
