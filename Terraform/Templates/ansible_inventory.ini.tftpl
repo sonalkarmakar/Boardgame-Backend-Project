@@ -1,6 +1,10 @@
 %{ for name, node in managed_nodes ~}
 [${lower(name)}]
-${node.public_ip} access_port=${node.host_port}
+%{ if name == "Monitoring" ~}
+${node.public_ip} blackbox_port=${node.host_port[0]} grafana_port=${node.host_port[1]} prometheus_port=${node.host_port[2]}
+%{ else ~}
+${node.public_ip} access_port=${node.host_port[0]}
+%{ endif ~}
 
 %{ endfor ~}
 [servers:children]

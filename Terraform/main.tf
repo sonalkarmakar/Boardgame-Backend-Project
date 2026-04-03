@@ -100,7 +100,15 @@ locals {
 		for key, instance in module.ec2_module :
 			key => {
 				public_ip = instance.public_ip
-				host_port = module.sg_module.external_access_ports[key]
+				host_port = (
+					key == "Monitoring" ?
+						[
+							module.sg_module.external_access_ports["Blackbox"],
+							module.sg_module.external_access_ports["Grafana"],
+							module.sg_module.external_access_ports["Prometheus"],
+						] :
+						[ module.sg_module.external_access_ports[key] ]
+				)
 			}
 			if key != "Ansible"
 	}
