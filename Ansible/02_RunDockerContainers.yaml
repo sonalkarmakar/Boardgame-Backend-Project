@@ -8,6 +8,9 @@
       shell: "getent group docker | cut -d: -f3"
       register: docker_gid
       changed_when: false
+      tags:
+        - pretask1
+        - jenkins
   tasks:
     - name: Run Jenkins container
       docker_container:
@@ -24,6 +27,11 @@
           - /usr/bin/docker:/usr/bin/docker:ro
         state: started
         restart_policy: unless-stopped
+      tags:
+        - task1
+        - jenkins
+        - docker
+        - container
 
 - name: Deploy Nexus container
   hosts: nexus
@@ -41,6 +49,11 @@
           - nexus_data:/nexus-data
         state: started
         restart_policy: unless-stopped
+      tags:
+        - task1
+        - nexus
+        - docker
+        - container
 
 - name: Deploy SonarQube container
   hosts: sonarqube
@@ -59,3 +72,8 @@
           - sonarqube_logs:/opt/sonarqube/logs
         state: started
         restart_policy: unless-stopped
+      tags:
+        - task1
+        - sonarqube
+        - docker
+        - container

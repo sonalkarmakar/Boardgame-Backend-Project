@@ -3,6 +3,9 @@
   hosts: jenkins
   pre_tasks:
     - name: Update APT cache
+      tags:
+        - pretask1
+        - dependency
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -13,6 +16,9 @@
             apt-get update -y
   tasks:
     - name: Install ca-certificates, curl, gnupg and unzip
+      tags:
+        - task1
+        - dependency
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -26,6 +32,10 @@
   hosts: jenkins
   tasks:
     - name: Run Docker exec commands to install Trivy
+      tags:
+        - task1
+        - trivy
+        - install
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -41,7 +51,11 @@
 - name: Install cluster tools inside Jenkins container
   hosts: jenkins
   tasks:
-    - name: Run Docker exec commands to install kubectl
+    - name: Run Docker exec commands to add kubectl repository
+      tags:
+        - task1
+        - kubectl
+        - repository
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -58,6 +72,10 @@
             apt-get install -y kubectl
 
     - name: Run Docker exec commands to install kubectl
+      tags:
+        - task1
+        - kubectl
+        - install
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -70,6 +88,11 @@
             ./aws/install && rm -rf awscliv2.zip ./aws
 
     - name: Run Docker exec commands to install eksctl
+      tags:
+        - task2
+        - eksctl
+        - repository
+        - install
       community.docker.docker_container_exec:
         container: jenkins_container
         user: root
@@ -90,6 +113,10 @@
       shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
       register: jenkins_password
       changed_when: false
+      tags:
+        - task1
+        - password
+        - plugin
 
     - name: Install required Jenkins plugins
       community.general.jenkins_plugin:
@@ -116,6 +143,10 @@
         - sonar                   # SonarQube Scanner
       register: plugin_install
       when: jenkins_password is defined
+      tags:
+        - task2
+        - install
+        - plugin
 
     - name: Restart Jenkins if plugins changed
       docker_container:
@@ -123,3 +154,7 @@
         state: started
         restart: true
       when: plugin_install.changed
+      tags:
+        - task3
+        - restart
+        - plugin

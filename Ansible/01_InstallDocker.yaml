@@ -2,31 +2,45 @@
 - name: Install Docker on Ubuntu servers
   hosts: servers
   become: true
-  tasks:
+  pre_tasks:
     - name: Update apt cache
       apt:
         update_cache: true
         cache_valid_time: 3600
+      tags:
+        - pretask1
+        - cache_update
 
     - name: Install required dependencies
       apt:
         name:
-          #- apt-transport-https
           - ca-certificates
           - curl
           - gnupg
           - lsb-release
         state: present
+      tags:
+        - pretask2
+        - dependency
 
+  tasks:
     - name: Add Docker GPG key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
+      tags:
+        - task1
+        - keyring
+        - download
 
     - name: Add Docker repository
       apt_repository:
         repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
+      tags:
+        - task2
+        - keyring
+        - repository
 
     - name: Install Docker
       apt:
@@ -36,18 +50,30 @@
           - containerd.io
         state: present
         update_cache: true
+      tags:
+        - task3
+        - installer
 
     - name: Start and enable Docker service
       systemd:
         name: docker
         state: started
         enabled: true
+      tags:
+        - task4
+        - service
 
     - name: Add Ansible user to docker group
       user:
         name: "{{ ansible_user }}"
         groups: docker
         append: true
+      tags:
+        - task5
+        - group
 
     - name: Flush handlers to restart Docker if needed
       meta: flush_handlers
+      tags:
+        - task6
+        - cleanup
