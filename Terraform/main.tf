@@ -56,6 +56,21 @@ module "sg_module" {
 	inbound_access_port = var.external_access_ports
 }
 
+# IAM USER MODULE
+module "iam_user" {
+	source = "./Modules/IAM"
+
+	username            = "${lower(var.project_prefix)}-${var.eks_cluster_admin_username}"
+	user_path           = "/"
+	display_name        = "${var.project_prefix}-${var.eks_cluster_admin_display}"
+	project_prefix      = var.project_prefix
+	managed_policies    = var.eks_admin_managed_policies
+	inline_policies     = {
+		for policy_file in fileset("${path.root}/Templates", "*.json.tftpl") :
+			split(".json.tftpl", policy_file)[0] => "${path.root}/Templates/${policy_file}"
+	}
+}
+
 # EC2 INSTANCE MODULE
 module "ec2_module" {
 	source     = "./Modules/EC2"
@@ -92,6 +107,18 @@ resource "null_resource" "reboot_ec2_instances" {
 }
 
 # GENERATE FILES FROM TEMPLATES
+# Store IAM User Access Key
+resource "local_file" "aws_access_key" {
+	content = templatefile("${path.root}/Templates/aws_access_key.csv.tftpl", {
+		access_key_id = module.iam_user.eks_admin_key_id,
+		access_key_secret = module.iam_user.eks_admin_key_secret
+	})
+
+	filename        = "${path.root}/${var.secrets_dir}/aws_access_key.csv"
+	file_permission = "0400"
+	depends_on      = [ module.iam_user ]
+}
+
 # Get public IP address and access port of nodes, excluding Ansible control node
 locals {
 	depends_on = [ module.sg_module, module.ec2_module ]

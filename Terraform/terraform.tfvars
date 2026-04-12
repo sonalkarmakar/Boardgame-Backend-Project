@@ -1,12 +1,15 @@
 # Project specifications
 secrets_dir = ".ssh"
+custom_policy_dir = "CustomIAMPolicies"
 
 # General infrastructure specifications
-infra_region         = "ap-south-1"
-project_prefix       = "BoardGame_Backend"
-ec2_ssh_key_name     = "EC2_SSH_key"
-ec2_username         = "ubuntu"
-ansible_ssh_key_name = "Ansible_SSH_key"
+infra_region               = "ap-south-1"
+project_prefix             = "BoardGame_Backend"
+ec2_ssh_key_name           = "EC2_SSH_key"
+ec2_username               = "ubuntu"
+ansible_ssh_key_name       = "Ansible_SSH_key"
+eks_cluster_admin_username = "cluster_admin"
+eks_cluster_admin_display  = "ClusterAdmin"
 
 # External access ports
 external_access_ports = {
@@ -23,6 +26,12 @@ external_access_ports = {
 
 # Security Group specifications
 sg_name = "Security_Group"
+
+# IAM User specifications
+eks_admin_managed_policies = [
+	"AWSCloudFormationFullAccess",
+	"AmazonEC2FullAccess",
+]
 
 # EC2 instance specifications
 ec2_instances = {
