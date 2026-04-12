@@ -5,6 +5,12 @@ variable "secrets_dir" {
 	default     = ".ssh"
 }
 
+variable "custom_policy_dir" {
+	description = "Directory containing the JSON file defining custom policies."
+	type        = string
+	default     = "CustomIAMPolicies"
+}
+
 # General infrastructure specifications
 variable "infra_region" {
 	description = "AWS Region where the infrastrucure will be created."
@@ -34,6 +40,18 @@ variable "ansible_ssh_key_name" {
 	description = "Name of the SSH key-pair to be used by Ansible to manage nodes."
 	type        = string
 	default     = "Ansible_SSH_key"
+}
+
+variable "eks_cluster_admin_username" {
+	description = "Username of the IAM User that will be the EKS cluster admin."
+	type        = string
+	default     = "cluster_admin"
+}
+
+variable "eks_cluster_admin_display" {
+	description = "Name showin in AWS Console for the EKS cluster admin."
+	type        = string
+	default     = "ClusterAdmin"
 }
 
 # Application access ports
@@ -76,6 +94,16 @@ variable "sg_name" {
 	default     = "Security_Group"
 }
 
+# IAM User specifications
+variable "eks_admin_managed_policies" {
+	description = "Policies required by the IAM user for cluster administration."
+	type        = list
+	default     = [
+		"AWSCloudFormationFullAccess",
+		"AmazonEC2FullAccess",
+	]
+}
+
 # EC2 specifications
 variable "ec2_instances" {
 	description = "Specifications for creating the EC2 instances requried for the project."
@@ -84,7 +112,7 @@ variable "ec2_instances" {
 		type      = string
 		root_size = number
 	}))
-	default = {
+	default     = {
 		Ansible = { # Ansible control node
 			name      = "Ansible"
 			type      = "t2.nano"
