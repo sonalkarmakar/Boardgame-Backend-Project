@@ -1,6 +1,6 @@
 # Project specifications
-secrets_dir = ".ssh"
-custom_policy_dir = "CustomIAMPolicies"
+secrets_dir         = ".secrets"
+access_key_filename = "AWS_Access_Key.csv"
 
 # General infrastructure specifications
 infra_region               = "ap-south-1"

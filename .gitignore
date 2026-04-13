@@ -1,6 +1,9 @@
+# AWS Access Key file
+AWS_Access_Key.csv
+
 # SSH key-pair files
-**/.ssh/*.pem
-**/.ssh/*.pub
+*.pem
+*.pub
 
 # Terraform.gitignore
 

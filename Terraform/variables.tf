@@ -2,13 +2,13 @@
 variable "secrets_dir" {
 	description = "Name of the directory containing secrets like SSH keys and AWS access keys."
 	type        = string
-	default     = ".ssh"
+	default     = ".secrets"
 }
 
-variable "custom_policy_dir" {
-	description = "Directory containing the JSON file defining custom policies."
+variable "access_key_filename" {
+	description = "Name of the file that will store the AWS Access Key for EKS cluster admin IAM user."
 	type        = string
-	default     = "CustomIAMPolicies"
+	default     = "AWS_Access_Key.csv"
 }
 
 # General infrastructure specifications
