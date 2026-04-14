@@ -180,7 +180,7 @@ pipeline {
 				withAWS(credentials: "${AWS_CRED_ID}", region: "${AWS_REGION}") {
 					sh '''
 					aws eks update-kubeconfig --region "${AWS_REGION}" --name "${EKS_CLUSTER_NAME}"
-					kubectl apply -f Kubernetes
+					kubectl apply -f Kubernetes/
 					'''
 				}
 			}
