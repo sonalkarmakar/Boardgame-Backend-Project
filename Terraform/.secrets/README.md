@@ -1,9 +1,15 @@
-# SSH Key Pair
-This directory holds the **SSH key-pair files**, the _Public (`.pub`)_ and the _Private (`.pem`)_ keys, when they're **created by Terraform**.
+# Secrets
+This directory holds sensitive data like access keys, SSH keys and credentials.
 
-> [!CAUTION]  
-> **SSH KEY-PAIR ARE CRITICAL AND SENSITIVE. Do not share with _unauthorised personnel_.**  
-> By default, **"`.pem`"** and **"`.pub`"** files inside this directory are mentioned inside **`.gitignore`** for excluding from Git tracking.
+> [!WARNING]  
+> **Do not share these with _unauthorised_ or _untrusted personnel_.**  
+> These credentials are **CRITICAL and SENSITIVE**. They're used for **authenticating access** to powerful resources like _AWS account_, _remote access_ to EC2 instances, etc.  
 
-> [!NOTE]  
-> This README file allows Git repositories to have this folder **created or pre-existing for Terraform**. If you wish to remove this `README.md` file, you will need to ensure that `local_file` resources don't get errors because the `.ssh` doesn't exist.
+## SSH Keys
+This directory stores the files containing the public and private SSH keys for the following purposes--
+- Accessing EC2 instances remotely.
+- Ansible remote access for automation.
+
+## AWS Access Keys
+This directory stores the AWS Access Keys created by Terraform for the following IAM Users--
+- EKS cluster administrator.
