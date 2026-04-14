@@ -137,7 +137,7 @@ locals {
 						[ module.sg_module.external_access_ports[key] ]
 				)
 			}
-			if key != "Ansible"
+			if key != "ControlNode"
 	}
 }
 

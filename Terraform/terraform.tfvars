@@ -35,9 +35,9 @@ eks_admin_managed_policies = [
 
 # EC2 instance specifications
 ec2_instances = {
-	Ansible = { # Ansible control node
+	ControlNode = { # Ansible and Kubernetes control node
 		name      = "Ansible"
-		type      = "t2.nano"
+		type      = "t2.micro"
 		root_size = 8
 	}
 	Jenkins = { # Jenkins host
