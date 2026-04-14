@@ -1,4 +1,3 @@
-# General infrastructure specifications
 variable "infra_region" {
 	description = "AWS Region where the infrastrucure will be created."
 	type        = string
