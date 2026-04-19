@@ -1,0 +1,182 @@
+---
+- name: Install kubectl, AWS CLI v2, and Eksctl for managing and deploying Application Cluster
+  hosts: localhost
+  become: yes
+  vars:
+    - kubectl_version: 1.35
+
+  pre_tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - gnupg
+          - unzip
+        state: present
+        update_cache: yes
+      tags:
+        - pretask1
+        - dependency
+
+  tasks:
+    - name: Create kubectl keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      tags:
+        - task1
+        - kubectl
+        - keyring
+
+    - name: Download kubectl Release.key to a temporary file
+      get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/Release.key
+        dest: /tmp/k8s-release.key
+        mode: '0644'
+      tags:
+        - task2
+        - kubectl
+        - keyring
+        - download
+
+    - name: Convert kubectl key to GPG binary and place in APT keyrings
+      command:
+        cmd: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s-release.key
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      tags:
+        - task3
+        - kubectl
+        - keyring
+        - repository
+
+    - name: Set correct permissions on kubectl keyring
+      file:
+        path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+        mode: '0644'
+      tags:
+        - task4
+        - kubectl
+        - keyring
+        - file_ops
+
+    - name: Add Kubernetes APT repository
+      copy:
+        content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/ /"
+        dest: /etc/apt/sources.list.d/kubernetes.list
+        mode: '0644'
+      tags:
+        - task5
+        - kubectl
+        - keyring
+        - repository
+        - file_ops
+
+    - name: Update APT cache after adding repository
+      apt:
+        update_cache: true
+      tags:
+        - task6
+        - kubectl
+        - repository
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+      tags:
+        - task7
+        - kubectl
+        - installer
+
+    - name: Download AWS CLI v2 compressed archive
+      get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+      tags:
+        - task8
+        - awscli
+        - download
+
+    - name: Unzip AWS CLI v2 compressed archive
+      unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp/
+        remote_src: yes
+      tags:
+        - task9
+        - awscli
+        - decompress
+
+    - name: Run AWS CLI v2 installer
+      command: /tmp/aws/install
+      become: yes
+      tags:
+        - task10
+        - awscli
+        - installer
+
+    - name: Download Eksctl compressed archive
+      get_url:
+        url: https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz
+        dest: /tmp/eksctl_Linux_amd64.tar.gz
+      tags:
+        - task11
+        - eksctl
+        - download
+
+    - name: Decompress Eksctl archive
+      unarchive:
+        src: /tmp/eksctl_Linux_amd64.tar.gz
+        dest: /tmp/
+      tags:
+        - task12
+        - eksctl
+        - decompress
+
+    - name: Run Eksctl installer
+      command: install -m 0755 /tmp/eksctl /usr/local/bin
+      become: yes
+      tags:
+        - task13
+        - eksctl
+        - installer
+
+  post_tasks:
+    - name: Remove kubectl residuals
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/k8s-release.key
+      tags:
+        - posttask1
+        - kubectl
+        - cleanup
+        - file_ops
+
+    - name: Remove AWS CLI v2 residuals
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/awscliv2.zip
+        - /tmp/aws
+      tags:
+        - posttask2
+        - awscli
+        - cleanup
+        - file_ops
+
+    - name: Remove Eksctl residuals
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/eksctl_Linux_amd64.tar.gz
+        - /tmp/eksctl
+      tags:
+        - posttask3
+        - eksctl
+        - cleanup
+        - file_ops
