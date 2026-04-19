@@ -113,8 +113,8 @@ variable "ec2_instances" {
 		root_size = number
 	}))
 	default     = {
-		Ansible = { # Ansible control node
-			name      = "Ansible"
+		ControlNode = { # Ansible and Kubernetes control node
+			name      = "ControlNode"
 			type      = "t2.nano"
 			root_size = 8
 		}
@@ -123,16 +123,11 @@ variable "ec2_instances" {
 			type      = "t2.small"
 			root_size = 20
 		}
-		# Kubernetes = { # Kubernetes cluster unit
-		# 	name      = "Kube_Cluster"
-		# 	type      = "t2.small"
-		# 	root_size = 20
-		# }
-		# Monitoring = { # Hosts Prometheus, Blackbox exporter and Grafana for monitoring
-		# 	name      = "Monitoring"
-		# 	type      = "t2.small"
-		# 	root_size = 16
-		# }
+		Monitoring = { # Hosts Prometheus, Blackbox exporter and Grafana for monitoring
+			name      = "Monitoring"
+			type      = "t2.small"
+			root_size = 16
+		}
 		Nexus = { # Nexus repository host
 			name      = "Nexus"
 			type      = "t2.small"
