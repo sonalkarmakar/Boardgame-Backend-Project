@@ -36,7 +36,7 @@ eks_admin_managed_policies = [
 # EC2 instance specifications
 ec2_instances = {
 	ControlNode = { # Ansible and Kubernetes control node
-		name      = "Ansible"
+		name      = "ControlNode"
 		type      = "t2.micro"
 		root_size = 8
 	}
