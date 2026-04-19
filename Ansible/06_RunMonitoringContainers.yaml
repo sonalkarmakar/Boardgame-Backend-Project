@@ -1,0 +1,289 @@
+---
+- name: Deploy lightweight Prometheus, Blackbox Exporter, and Grafana with Docker
+  hosts: monitoring
+  become: yes
+  vars:
+    prometheus_image: prom/prometheus:v3-distroless
+    blackbox_image: prom/blackbox-exporter:master
+    grafana_image: grafana/grafana:main
+    stack_dir: "/opt/monitoring"
+  vars_prompt:
+    - name: k8s_service_name
+      prompt: "Enter the Kubernetes service name"
+      private: no
+
+  pre_tasks:
+    - name: Extract external IP address
+      shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
+      register: service_external_ip
+      become_user: "{{ ansible_user }}"
+      tags:
+        - pretask1
+        - kubernetes
+        - service
+
+    - name: Create monitoring directory
+      file:
+        path: "{{ stack_dir }}"
+        state: directory
+        recurse: yes
+      tags:
+        - pretask2
+        - common
+        - file_ops
+
+    - name: Ensure Docker is running
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      tags:
+        - pretask3
+        - common
+        - docker
+
+    - name: Create Docker network
+      docker_network:
+        name: monitoring-net
+        state: present
+      tags:
+        - pretask3
+        - common
+        - docker
+
+  tasks:
+    - name: Create Prometheus config directory
+      file:
+        path: "{{ stack_dir }}/prometheus"
+        state: directory
+      tags:
+        - task1
+        - prometheus
+        - config
+        - file_ops
+
+    - name: Deploy Prometheus config
+      tags:
+        - task2
+        - prometheus
+        - config
+      copy:
+        dest: "{{ stack_dir }}/prometheus/prometheus.yml"
+        content: |
+          global:
+            scrape_interval: 15s
+          
+          scrape_configs:
+            - job_name: 'prometheus'
+              static_configs:
+                - targets: ['localhost:9090']
+            - job_name: 'blackbox'
+              metrics_path: /probe
+              params:
+                module: [http_2xx]
+              static_configs:
+                - targets:
+                  - https://prometheus.io
+                  - https://grafana.com
+                  - "{{ service_external_ip.stdout }}"
+              relabel_configs:
+                - source_labels: [__address__]
+                  target_label: __param_target
+                - source_labels: [__param_target]
+                  target_label: instance
+                - target_label: __address__
+                  replacement: "{{ ansible_host }}:{{ blackbox_port }}" #replacement: blackbox-exporter:9115
+
+    - name: Run Prometheus container
+      docker_container:
+        name: prometheus_container
+        image: "{{ prometheus_image }}" #quay.io/prometheus/prometheus:v{{ prometheus_version }}
+        state: started
+        restart_policy: always
+        networks:
+          - name: monitoring-net
+        volumes:
+          - "{{ stack_dir }}/prometheus:/etc/prometheus"
+        command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/etc/prometheus/console_libraries --web.console.templates=/etc/prometheus/consoles --storage.remote.flush-deadline=10m --web.enable-lifecycle"
+        ports:
+          - "{{ prometheus_port }}:9090"
+      tags:
+        - task3
+        - prometheus
+        - docker
+        - container
+
+    - name: Create Blackbox config directory
+      file:
+        path: "{{ stack_dir }}/blackbox"
+        state: directory
+      tags:
+        - task4
+        - blackbox
+        - config
+        - file_ops
+
+    - name: Deploy Blackbox config
+      tags:
+        - task5
+        - blackbox
+        - config
+      copy:
+        dest: "{{ stack_dir }}/blackbox/blackbox.yml"
+        content: |
+          modules:
+            http_2xx:
+              prober: http
+              http:
+                preferred_ip_protocol: "ip4"
+            http_post_2xx:
+              prober: http
+              http:
+                method: POST
+            tcp_connect:
+              prober: tcp
+            pop3s_banner:
+              prober: tcp
+              tcp:
+                query_response:
+                - expect: "^+OK"
+                tls: true
+                tls_config:
+                  insecure_skip_verify: false
+            grpc:
+              prober: grpc
+              grpc:
+                tls: true
+                preferred_ip_protocol: "ip4"
+            grpc_plain:
+              prober: grpc
+              grpc:
+                tls: false
+                service: "service1"
+            ssh_banner:
+              prober: tcp
+              tcp:
+                query_response:
+                - expect: "^SSH-2.0-"
+                - send: "SSH-2.0-blackbox-ssh-check"
+            ssh_banner_extract:
+              prober: tcp
+              timeout: 5s
+              tcp:
+                query_response:
+                - expect: "^SSH-2.0-([^ -]+)(?: (.*))?$"
+                  labels:
+                  - name: ssh_version
+                    value: "${1}"
+                  - name: ssh_comments
+                    value: "${2}"
+            irc_banner:
+              prober: tcp
+              tcp:
+                query_response:
+                - send: "NICK prober"
+                - send: "USER prober prober prober :prober"
+                - expect: "PING :([^ ]+)"
+                  send: "PONG ${1}"
+                - expect: "^:[^ ]+ 001"
+            icmp:
+              prober: icmp
+            icmp_ttl5:
+              prober: icmp
+              timeout: 5s
+              icmp:
+                ttl: 5
+            http_3xx:
+              prober: http
+              http:
+                preferred_ip_protocol: "ip4"
+                enable_http3: true
+                enable_http2: false
+                valid_http_versions: ["HTTP/3.0"]
+            postgresql:
+              prober: tcp
+              tcp:
+                query_response:
+                - send: !!binary AAAACATSFi8= # 0x00, 0x00, 0x00, 0x08, 0x04, 0xD2, 0x16, 0x2F - PostgreSQL SSLRequest
+                - expect_bytes: S # 0x53 - Reply will be 'S' if SSL is enabled, and 'N' if it is not.
+                - starttls: true
+
+    - name: Run Blackbox Exporter container
+      docker_container:
+        name: blackbox_exporter_container
+        image: "{{ blackbox_image }}" #quay.io/prometheus/blackbox-exporter:v{{ blackbox_version }}
+        state: started
+        restart_policy: always
+        networks:
+          - name: monitoring-net
+        volumes:
+          - "{{ stack_dir }}/blackbox/blackbox.yml:/etc/blackbox_exporter/config.yml"
+        command: "--config.file=/etc/blackbox_exporter/config.yml"
+        ports:
+          - "{{ blackbox_port }}:9115"
+      tags:
+        - task6
+        - blackbox
+        - docker
+        - container
+
+    - name: Create Grafana provisioning directories
+      file:
+        path: "{{ stack_dir }}/grafana/provisioning/{{ item }}"
+        state: directory
+      loop:
+        - datasources
+        - dashboards
+      tags:
+        - task7
+        - grafana
+        - config
+        - file_ops
+
+    - name: Create Grafana datasources config
+      tags:
+        - task8
+        - grafana
+        - config
+      copy:
+        dest: "{{ stack_dir }}/grafana/provisioning/datasources/datasource.yml"
+        content: |
+          apiVersion: 1
+          datasources:
+          - name: Prometheus
+            type: prometheus
+            access: proxy
+            url: "http://{{ ansible_host }}:{{ prometheus_port }}"
+            isDefault: true
+
+    - name: Run Grafana container
+      docker_container:
+        name: grafana_container
+        image: "{{ grafana_image }}" #grafana/grafana:{{ grafana_version }}
+        state: started
+        restart_policy: always
+        networks:
+          - name: monitoring-net
+        ports:
+          - "{{ grafana_port }}:3000"
+        env:
+          GF_SECURITY_ADMIN_USER: "admin"
+          GF_SECURITY_ADMIN_PASSWORD: "admin"
+        volumes:
+          - "{{ stack_dir }}/grafana:/etc/grafana/provisioning"
+          - grafana-data:/var/lib/grafana
+        user: "472:472"
+      tags:
+        - task9
+        - grafana
+        - docker
+        - container
+
+    - name: Create Docker volume for Grafana persistence
+      docker_volume:
+        name: grafana-data
+        state: present
+      tags:
+        - task10
+        - grafana
+        - docker
