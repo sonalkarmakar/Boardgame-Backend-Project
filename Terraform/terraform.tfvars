@@ -45,16 +45,11 @@ ec2_instances = {
 		type      = "t2.small"
 		root_size = 20
 	}
-	# Kubernetes = { # Kubernetes cluster unit
-	# 	name      = "Kube_Cluster"
-	# 	type      = "t2.small"
-	# 	root_size = 20
-	# }
-	# Monitoring = { # Will run Prometheus, Blackbox exporter and Grafana
-	# 	name      = "Monitoring"
-	# 	type      = "t2.small"
-	# 	root_size = 16
-	# }
+	Monitoring = { # Will run Prometheus, Blackbox exporter and Grafana
+		name      = "Monitoring"
+		type      = "t2.small"
+		root_size = 16
+	}
 	Nexus = { # Nexus repository host
 		name      = "Nexus"
 		type      = "t2.small"
