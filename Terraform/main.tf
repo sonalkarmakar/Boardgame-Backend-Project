@@ -83,27 +83,14 @@ module "ec2_module" {
 	instance_sg    = [ module.sg_module.security_group_id ]
 	root_vol_size  = each.value.root_size
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
-
+	
 	user_data = <<-EOF
 	            #!/usr/bin/env bash
 	            echo -e "Port 22\nPort ${var.external_access_ports["SSH_Alt"]}" | sudo tee -a /etc/ssh/sshd_config
 	            echo "${tls_private_key.ansible_ssh_key.public_key_openssh}" | sudo tee -a /home/${var.ec2_username}/.ssh/authorized_keys
+	            systemctl daemon-reexec
+	            systemctl restart ssh.socket ssh.service
 	            EOF
-}
-
-# Reboot EC2 instances once after creation
-resource "null_resource" "reboot_ec2_instances" {
-	for_each = module.ec2_module
-
-	triggers = {
-		instance_id = each.value.instance_id
-	}
-
-	provisioner "local-exec" {
-		command = "aws ec2 reboot-instances --instance-ids ${each.value.instance_id} --region ${var.infra_region}"
-	}
-
-	depends_on = [ module.ec2_module ]
 }
 
 # GENERATE FILES FROM TEMPLATES
