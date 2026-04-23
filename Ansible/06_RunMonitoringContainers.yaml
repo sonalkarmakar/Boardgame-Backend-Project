@@ -17,6 +17,7 @@
       shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
       register: service_external_ip
       become_user: "{{ ansible_user }}"
+      delegate_to: localhost
       tags:
         - pretask1
         - kubernetes
