@@ -1,5 +1,5 @@
 resource "aws_instance" "compute_instance" {
-	ami                    = "ami-019715e0d74f695be"
+	ami                    = "ami-05d2d839d4f73aafb"
 	instance_type          = var.instance_type
 	key_name               = var.ssh_public_key
 	vpc_security_group_ids = var.instance_sg
