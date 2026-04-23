@@ -135,11 +135,11 @@
 	<distributionManagement>
 		<repository>
 			<id>maven-releases</id>
-			<url>http://<!--NEXUS_IP_ADDRESS-->:8081/repository/maven-releases/</url>
+			<url>http://3.110.40.205:8081/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>maven-snapshots</id>
-			<url>http://<!--NEXUS_IP_ADDRESS-->:8081/repository/maven-snapshots/</url>
+			<url>http://3.110.40.205:8081/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
