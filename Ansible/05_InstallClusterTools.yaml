@@ -3,7 +3,7 @@
   hosts: localhost
   become: yes
   vars:
-    - kubectl_version: 1.35
+    kubectl_version: 1.35
 
   pre_tasks:
     - name: Install dependencies
