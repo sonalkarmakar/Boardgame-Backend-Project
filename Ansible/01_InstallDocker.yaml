@@ -77,3 +77,9 @@
       tags:
         - task6
         - cleanup
+
+    - name: Reset Ansible SSH connection for docker group membership
+      meta: reset_connection
+      tags:
+        - task7
+        - connection_reset
