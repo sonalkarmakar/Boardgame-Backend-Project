@@ -45,19 +45,19 @@ pipeline {
 
 		// Email Notification specifications
 		// Build Success
-		PASS_MAIL_FROM  = ""
+		PASS_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
 		PASS_MAIL_TO    = "abc@mail.com"
 		PASS_MAIL_CC    = "efg@mail.com"
 		PASS_MAIL_BCC   = "hij@mail.com"
-		PASS_MAIL_REPLY = "" // Used in the field "replyTo"
+		PASS_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
 		PASS_MAIL_SUBJ  = "Build SUCCESSFUL notification"
 		PASS_MAIL_BODY  = "Hello, this email is to notify the successful build and deployment."
 		// Build Failure
-		FAIL_MAIL_FROM  = ""
+		FAIL_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
 		FAIL_MAIL_TO    = "xyz@mail.com"
 		FAIL_MAIL_CC    = "uvw@mail.com"
 		FAIL_MAIL_BCC   = "rst@mail.com"
-		FAIL_MAIL_REPLY = "" // Used in the field "replyTo"
+		FAIL_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
 		FAIL_MAIL_SUBJ  = "Build FAILURE notification"
 		FAIL_MAIL_BODY  = "Hello, this email is to notify the failure of build and deployment."
 	}
@@ -189,22 +189,22 @@ pipeline {
 	post {
 		success {
 			mail(
-				from:    "${PASS_MAIL_FROM}",
+				from:    "${PASS_MAIL_FROM}",  // REMOVE IF NOT NEEDED
 				to:      "${PASS_MAIL_TO}",
 				cc:      "${PASS_MAIL_CC}",
 				bcc:     "${PASS_MAIL_BCC}",
-				replyTo: "${PASS_MAIL_REPLY}",
+				replyTo: "${PASS_MAIL_REPLY}", // REMOVE IF NOT NEEDED
 				subject: "${PASS_MAIL_SUBJ}",
 				body:    "${PASS_MAIL_BODY}",
 			)
 		}
 		failure {
 			mail(
-				from:    "${FAIL_MAIL_FROM}",
+				from:    "${FAIL_MAIL_FROM}",  // REMOVE IF NOT NEEDED
 				to:      "${FAIL_MAIL_TO}",
 				cc:      "${FAIL_MAIL_CC}",
 				bcc:     "${FAIL_MAIL_BCC}",
-				replyTo: "${FAIL_MAIL_REPLY}",
+				replyTo: "${FAIL_MAIL_REPLY}", // REMOVE IF NOT NEEDED
 				subject: "${FAIL_MAIL_SUBJ}",
 				body:    "${FAIL_MAIL_BODY}",
 			)
