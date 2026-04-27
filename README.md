@@ -17,5 +17,3 @@ List of required Jenkins plugins, taken from [Jenkins Plugin Index](https://plug
 - Pipeline Maven Integration (`pipeline-maven`)
 - Pipeline: AWS Steps (`pipeline-aws`)
 - SonarQube Scanner (`sonar`)
-
-This line is added to trigger GitHub Webhook.
