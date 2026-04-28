@@ -9,7 +9,7 @@ resource "aws_iam_user" "cluster_admin" {
 	}
 }
 
-# Attach necessary policies to IAM User
+# Attach necessary managed policies to IAM User
 resource "aws_iam_user_policy_attachment" "managed" {
 	user       = aws_iam_user.cluster_admin.name
 	for_each   = toset(var.managed_policies)
@@ -19,6 +19,7 @@ resource "aws_iam_user_policy_attachment" "managed" {
 # Get the AWS Account ID
 data "aws_caller_identity" "current" {}
 
+# Attach necessary custom policies to IAM User
 resource "aws_iam_user_policy" "inline_policy" {
 	for_each = var.inline_policies
 	name     = each.key
