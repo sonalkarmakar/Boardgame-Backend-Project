@@ -100,21 +100,31 @@ The playbooks are listed below:
 - `06_RunMonitoringContainers.yaml`: runs the Docker containers for Blackbox Exporter, Grafana and Prometheus.
 
 ### Linux
+The operating system used in the EC2 instances is Ubuntu, a Linux distribution.
 
 ## Source Code
+The source code of the application is acquired from [Boardgame](https://github.com/jaiswaladi246/Boardgame). See that project's page for more details about the application.
+
 ### Git
+Git is used as the version control system of this project, managing different changes and branches.
 
 ### GitHub and GitLab
+GitHub and GitLab are cloud platforms used to store this project's data and versioning online.
 
 ### Maven
+Maven is used to compile, build and package the application source code. Maven is run through Jenkins for build automation.
 
 ### SonarQube
+SonarQube scans the application source code for issues and vulnerabilities. SonarQube is running in a Docker container hosted by an EC2 instance.
 
 ### Nexus Repository
+All the different version of the Maven builds can be stored in the Nexus repository, which is running in a Docker container hosted in an EC2 instance.
 
 ### Jenkins
+Jenkins is the build-automation tool used for fetching, compiling, building, analyzing, pushing and deploying the application starting from its source code.
 
 ### Trivy
+Trivy is used for scanning the file-system, packaged Maven build and the deployable Docker image of the application. It's installed in the Jenkins container to be run in dedicated stages of the build.
 
 ## Deployment
 ### Docker
