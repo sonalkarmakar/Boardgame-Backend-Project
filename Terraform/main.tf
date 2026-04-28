@@ -84,6 +84,8 @@ module "ec2_module" {
 	root_vol_size  = each.value.root_size
 	ssh_public_key = aws_key_pair.ec2_ssh_key.key_name
 	
+	# (1) Adds alternate SSH port (2) Adds Ansible user's public key (3) Rexecutes and restarts SSH daemon to apply changes
+	# Must maintain consistent indentation, else changes aren't applied
 	user_data = <<-EOF
 	            #!/usr/bin/env bash
 	            echo -e "Port 22\nPort ${var.external_access_ports["SSH_Alt"]}" | sudo tee -a /etc/ssh/sshd_config

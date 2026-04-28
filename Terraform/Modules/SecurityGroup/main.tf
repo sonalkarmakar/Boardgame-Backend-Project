@@ -14,6 +14,7 @@ resource "aws_security_group" "project_security_group" {
 	}
 }
 
+# Allow inbound traffic from specified ports
 resource "aws_vpc_security_group_ingress_rule" "inbound_access" {
 	for_each = var.inbound_access_port
 	
@@ -28,6 +29,7 @@ resource "aws_vpc_security_group_ingress_rule" "inbound_access" {
 	}
 }
 
+# Allow all outbound traffic
 resource "aws_vpc_security_group_egress_rule" "outbound_access" {
 	ip_protocol       = "-1"
 	cidr_ipv4         = "0.0.0.0/0"
