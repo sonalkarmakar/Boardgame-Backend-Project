@@ -100,10 +100,12 @@ The playbooks are listed below:
 - `06_RunMonitoringContainers.yaml`: runs the Docker containers for Blackbox Exporter, Grafana and Prometheus.
 
 ### Linux
-The operating system used in the EC2 instances is Ubuntu, a Linux distribution.
+The operating system used in the EC2 instances is Ubuntu, a Linux distribution. It's also used to develop and run this project, but it's not mandatory for those cases.
 
 ## Source Code
 The source code of the application is acquired from [Boardgame](https://github.com/jaiswaladi246/Boardgame). See that project's page for more details about the application.
+
+No modifications were made to the application source code. However, few changes were made in regards of deployment, to suit the context of this project.
 
 ### Git
 Git is used as the version control system of this project, managing different changes and branches.
@@ -112,10 +114,16 @@ Git is used as the version control system of this project, managing different ch
 GitHub and GitLab are cloud platforms used to store this project's data and versioning online.
 
 ### Maven
-Maven is used to compile, build and package the application source code. Maven is run through Jenkins for build automation.
+Maven is used to compile, build and package the application source code.
+
+Maven is run through Jenkins in dedicated stages for build automation.
 
 ### SonarQube
-SonarQube scans the application source code for issues and vulnerabilities. SonarQube is running in a Docker container hosted by an EC2 instance.
+SonarQube scans the application source code for issues and vulnerabilities.
+
+SonarQube is running in a Docker container hosted by an EC2 instance.
+
+The scan is invoked through a Jenkins build stage.
 
 ### Nexus Repository
 All the different version of the Maven builds can be stored in the Nexus repository, which is running in a Docker container hosted in an EC2 instance.
@@ -124,18 +132,43 @@ All the different version of the Maven builds can be stored in the Nexus reposit
 Jenkins is the build-automation tool used for fetching, compiling, building, analyzing, pushing and deploying the application starting from its source code.
 
 ### Trivy
-Trivy is used for scanning the file-system, packaged Maven build and the deployable Docker image of the application. It's installed in the Jenkins container to be run in dedicated stages of the build.
+Trivy is used for scanning the file-system, packaged Maven build and the deployable Docker image of the application, for issues and vulnerabilities. It's installed in the Jenkins container to be run in dedicated stages of the build.
 
 ## Deployment
+The application source code is compiled and built into a Docker image that can be deployed in a Kubernetes cluster, which is hosted by AWS EKS infrastructure.
+
 ### Docker
+Docker is the containeristation tool used in this project for the following purpose:
+- Run Jenkins, Nexus Repository, SonarQube in respective containers for build operations.
+- Build the Docker image of the compiled application build and store in Docker Hub.
+- Run Blackbox Exporter, Grafana and Prometheus for monitoring deployed application.
 
 ### Kubernetes
+Kubernetes is the container orchestration tool used to deploy the application's Docker image in a cluster for external access online.
+
+The Control Node EC2 instance uses `kubectl` with `eksctl` and AWS CLI to manage and get information about the application cluster from the AWS EKS cluster. This can also be done in any machine of your choice if those tools are installed and configured as such.
+
+The `kubectl` installation in Jenkins is used to deploy the application builds to the AWS EKS cluster.
 
 ### AWS Elastic Kubernetes Service
+AWS EKS provides the infrastructure to host and manage external access of the application's Kubernetes cluster.
+
+It creates all the infrastructure resources (EC2 instances as nodes, networking, load balancers and elastic IP addresses) necessary to create a fully functioning application accessible online through an endpoint.
 
 ## Monitoring
+The monitoring tools used in this project are Blackbox Exporter, Grafana and Prometheus. They run in separate Docker containers hosted in the same EC2 instance, connected by a Docker network and a mounted volume for storing logging data.
+
+The Ansible playbook "`06_RunMonitoringContainers.yaml`" contains all the configurations used for their respective Docker containers.
+
 ### Blackbox Exporter
+Blackbox Exporter probes the application endpoint and checks if it's responding and functional. The data gathered can be accessed through port 9115 of the public IP address of the EC2 instance hosting Blackbox.
 
 ### Prometheus
+Prometheus gathers the data from Blackbox Exporter and logs them in a database, which is accessible through the port 9090 of it's host EC2 instance.
 
 ### Grafana
+Grafana is used for visualising the data from Prometheus using a pre-built dashboard.
+
+Visualisation is available after signing in at port 3000 of the hosting EC2 instance.
+
+The preset Prometheus dashboard is available from the [Grafana dashboard catalogue](https://grafana.com/grafana/dashboards/).
