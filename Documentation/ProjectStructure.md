@@ -45,10 +45,10 @@ Amazon Web Services (AWS) is used to host the following infrastructure resources
 	- _Grafana_: allow connecting to Grafana portal for dashboard configuration and data visualisation.
 	- _Prometheus_: allow storing metrics about probing application.
 - **Identity and Access Management (IAM)**: for better security, the tasks can be delegated to IAM users with just enough privileges for performing them.
-	- _Root User_: a Root User is necessary to have access to AWS resources, however it should be avoided as much as possible because of its highest privileges.
+	- _Root User_: a Root User is necessary to have access to AWS resources, but it should be avoided as much as possible because of its highest privileges.
 	- _Infrastructure Admin_: an IAM user able to provision and delete AWS infrastructure resources.
 	- _Cluster Admin_: an IAM user for administrating the EKS clusters.
-- **Elastic Kubernetes Service**: hosts the application's Kubernetes cluster in spcified AWS Region.
+- **Elastic Kubernetes Service**: provides infrastrucuture for hosting the application's Kubernetes cluster in spcified AWS Region.
 
 ### Terraform
 Terraform is used to automate provisioning the AWS infrastructure resources, except EKS (more details below).
@@ -103,7 +103,7 @@ The playbooks are listed below:
 The operating system used in the EC2 instances is Ubuntu, a Linux distribution. It's also used to develop and run this project, but it's not mandatory for those cases.
 
 ## Source Code
-The source code of the application is acquired from [Boardgame](https://github.com/jaiswaladi246/Boardgame). See that project's page for more details about the application.
+The source code of the application is acquired from [Boardgame](https://github.com/jaiswaladi246/Boardgame) project by [Aditya Jaiswal](https://github.com/jaiswaladi246). See that project's page for more details about the application.
 
 No modifications were made to the application source code. However, few changes were made in regards of deployment, to suit the context of this project.
 
