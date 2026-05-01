@@ -14,7 +14,7 @@
 
   pre_tasks:
     - name: Extract external IP address
-      shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
+      ansible.builtin.shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
       register: service_external_ip
       become_user: "{{ ansible_user }}"
       delegate_to: localhost
@@ -24,7 +24,7 @@
         - service
 
     - name: Create monitoring directory
-      file:
+      ansible.builtin.file:
         path: "{{ stack_dir }}"
         state: directory
         recurse: yes
@@ -34,7 +34,7 @@
         - file_ops
 
     - name: Ensure Docker is running
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         state: started
         enabled: yes
@@ -44,7 +44,7 @@
         - docker
 
     - name: Create Docker network
-      docker_network:
+      community.docker.docker_network:
         name: monitoring-net
         state: present
       tags:
@@ -54,7 +54,7 @@
 
   tasks:
     - name: Create Prometheus config directory
-      file:
+      ansible.builtin.file:
         path: "{{ stack_dir }}/prometheus"
         state: directory
       tags:
@@ -68,7 +68,7 @@
         - task2
         - prometheus
         - config
-      copy:
+      ansible.builtin.copy:
         dest: "{{ stack_dir }}/prometheus/prometheus.yml"
         content: |
           global:
@@ -96,7 +96,7 @@
                   replacement: "{{ ansible_host }}:{{ blackbox_port }}" #replacement: blackbox-exporter:9115
 
     - name: Run Prometheus container
-      docker_container:
+      community.docker.docker_container:
         name: prometheus_container
         image: "{{ prometheus_image }}" #quay.io/prometheus/prometheus:v{{ prometheus_version }}
         state: started
@@ -115,7 +115,7 @@
         - container
 
     - name: Create Blackbox config directory
-      file:
+      ansible.builtin.file:
         path: "{{ stack_dir }}/blackbox"
         state: directory
       tags:
@@ -129,7 +129,7 @@
         - task5
         - blackbox
         - config
-      copy:
+      ansible.builtin.copy:
         dest: "{{ stack_dir }}/blackbox/blackbox.yml"
         content: |
           modules:
@@ -210,7 +210,7 @@
                 - starttls: true
 
     - name: Run Blackbox Exporter container
-      docker_container:
+      community.docker.docker_container:
         name: blackbox_exporter_container
         image: "{{ blackbox_image }}" #quay.io/prometheus/blackbox-exporter:v{{ blackbox_version }}
         state: started
@@ -229,7 +229,7 @@
         - container
 
     - name: Create Grafana provisioning directories
-      file:
+      ansible.builtin.file:
         path: "{{ stack_dir }}/grafana/provisioning/{{ item }}"
         state: directory
       loop:
@@ -246,7 +246,7 @@
         - task8
         - grafana
         - config
-      copy:
+      ansible.builtin.copy:
         dest: "{{ stack_dir }}/grafana/provisioning/datasources/datasource.yml"
         content: |
           apiVersion: 1
@@ -258,7 +258,7 @@
             isDefault: true
 
     - name: Run Grafana container
-      docker_container:
+      community.docker.docker_container:
         name: grafana_container
         image: "{{ grafana_image }}" #grafana/grafana:{{ grafana_version }}
         state: started
@@ -281,7 +281,7 @@
         - container
 
     - name: Create Docker volume for Grafana persistence
-      docker_volume:
+      community.docker.docker_volume:
         name: grafana-data
         state: present
       tags:

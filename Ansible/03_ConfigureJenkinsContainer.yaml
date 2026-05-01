@@ -149,7 +149,7 @@
         - plugin
 
     - name: Restart Jenkins if plugins changed
-      docker_container:
+      community.docker.docker_container:
         name: jenkins_container
         state: started
         restart: true
