@@ -2,12 +2,13 @@
 - name: Install kubectl, AWS CLI v2, and Eksctl for managing and deploying Application Cluster
   hosts: localhost
   become: yes
-  vars:
+  vars: # Change as needed
     kubectl_version: 1.35
+    temp_storage: "/home/{{ ansible_user }}/temporary"
 
   pre_tasks:
     - name: Install dependencies
-      apt:
+      ansible.builtin.apt:
         name:
           - gnupg
           - unzip
@@ -17,63 +18,24 @@
         - pretask1
         - dependency
 
-  tasks:
-    - name: Create kubectl keyrings directory
-      file:
-        path: /etc/apt/keyrings
+    - name: Create temporary storage directory
+      ansible.builtin.file:
+        path: "{{ temp_storage }}"
         state: directory
-        mode: '0755'
-      tags:
-        - task1
-        - kubectl
-        - keyring
 
-    - name: Download kubectl Release.key to a temporary file
-      get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/Release.key
-        dest: /tmp/k8s-release.key
-        mode: '0644'
-      tags:
-        - task2
-        - kubectl
-        - keyring
-        - download
-
-    - name: Convert kubectl key to GPG binary and place in APT keyrings
-      command:
-        cmd: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/k8s-release.key
-      args:
-        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-      tags:
-        - task3
-        - kubectl
-        - keyring
-        - repository
-
-    - name: Set correct permissions on kubectl keyring
-      file:
-        path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-        mode: '0644'
-      tags:
-        - task4
-        - kubectl
-        - keyring
-        - file_ops
-
+  tasks:
     - name: Add Kubernetes APT repository
-      copy:
-        content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/ /"
-        dest: /etc/apt/sources.list.d/kubernetes.list
-        mode: '0644'
-      tags:
-        - task5
-        - kubectl
-        - keyring
-        - repository
-        - file_ops
+      ansible.builtin.deb822_repository:
+        name: kubernetes
+        types: [deb]
+        uris: "https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/"
+        signed_by: "https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/deb/Release.key"
+        suites: [/]
+        state: present
+        enabled: yes
 
     - name: Update APT cache after adding repository
-      apt:
+      ansible.builtin.apt:
         update_cache: true
       tags:
         - task6
@@ -81,7 +43,7 @@
         - repository
 
     - name: Install kubectl
-      apt:
+      ansible.builtin.apt:
         name: kubectl
         state: present
       tags:
@@ -90,18 +52,18 @@
         - installer
 
     - name: Download AWS CLI v2 compressed archive
-      get_url:
+      ansible.builtin.get_url:
         url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: /tmp/awscliv2.zip
+        dest: "{{ temp_storage }}/awscliv2.zip"
       tags:
         - task8
         - awscli
         - download
 
     - name: Unzip AWS CLI v2 compressed archive
-      unarchive:
-        src: /tmp/awscliv2.zip
-        dest: /tmp/
+      ansible.builtin.unarchive:
+        src: "{{ temp_storage }}/awscliv2.zip"
+        dest: "{{ temp_storage }}"
         remote_src: yes
       tags:
         - task9
@@ -109,7 +71,7 @@
         - decompress
 
     - name: Run AWS CLI v2 installer
-      command: /tmp/aws/install
+      ansible.builtin.command: "{{ temp_storage }}/aws/install"
       become: yes
       tags:
         - task10
@@ -117,25 +79,26 @@
         - installer
 
     - name: Download Eksctl compressed archive
-      get_url:
-        url: https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz
-        dest: /tmp/eksctl_Linux_amd64.tar.gz
+      ansible.builtin.get_url:
+        url: "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
+        dest: "{{ temp_storage }}/eksctl_Linux_amd64.tar.gz"
       tags:
         - task11
         - eksctl
         - download
 
     - name: Decompress Eksctl archive
-      unarchive:
-        src: /tmp/eksctl_Linux_amd64.tar.gz
-        dest: /tmp/
+      ansible.builtin.unarchive:
+        src: "{{ temp_storage }}/eksctl_Linux_amd64.tar.gz"
+        dest: "{{ temp_storage }}"
+        remote_src: yes
       tags:
         - task12
         - eksctl
         - decompress
 
     - name: Run Eksctl installer
-      command: install -m 0755 /tmp/eksctl /usr/local/bin
+      ansible.builtin.command: "install -m 0755 {{ temp_storage }}/eksctl /usr/local/bin"
       become: yes
       tags:
         - task13
@@ -143,40 +106,20 @@
         - installer
 
   post_tasks:
-    - name: Remove kubectl residuals
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - /tmp/k8s-release.key
-      tags:
-        - posttask1
-        - kubectl
-        - cleanup
-        - file_ops
+    - name: Enable command auto-completion
+      ansible.builtin.blockinfile:
+        path: "/home/{{ ansible_user }}/.profile"
+        state: present
+        insertafter: EOF
+        block: |
+          # AWS CLI command completion
+          complete -C "$(which aws_completer)" aws
+          # Eksctl command completion
+          . <(eksctl completion bash)
+          # kubectl command completion
+          . <(kubectl completion bash)
 
-    - name: Remove AWS CLI v2 residuals
-      file:
-        path: "{{ item }}"
+    - name: Remove temporary storage directory
+      ansible.builtin.file:
+        path: "{{ temp_storage }}"
         state: absent
-      loop:
-        - /tmp/awscliv2.zip
-        - /tmp/aws
-      tags:
-        - posttask2
-        - awscli
-        - cleanup
-        - file_ops
-
-    - name: Remove Eksctl residuals
-      file:
-        path: "{{ item }}"
-        state: absent
-      loop:
-        - /tmp/eksctl_Linux_amd64.tar.gz
-        - /tmp/eksctl
-      tags:
-        - posttask3
-        - eksctl
-        - cleanup
-        - file_ops
