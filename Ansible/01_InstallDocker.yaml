@@ -4,7 +4,7 @@
   become: true
   pre_tasks:
     - name: Update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
       tags:
@@ -12,7 +12,7 @@
         - cache_update
 
     - name: Install required dependencies
-      apt:
+      ansible.builtin.apt:
         name:
           - ca-certificates
           - curl
@@ -25,7 +25,7 @@
 
   tasks:
     - name: Add Docker repository with GPG key
-      deb822_repository:
+      ansible.builtin.deb822_repository:
         name: docker
         types: [deb]
         uris: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}"
@@ -34,7 +34,7 @@
         signed_by: "https://download.docker.com/linux/{{ ansible_facts['distribution'] | lower }}/gpg"
 
     - name: Install Docker
-      apt:
+      ansible.builtin.apt:
         name:
           - docker-ce
           - docker-ce-cli
@@ -46,7 +46,7 @@
         - installer
 
     - name: Start and enable Docker service
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         state: started
         enabled: true
@@ -55,7 +55,7 @@
         - service
 
     - name: Add Ansible user to docker group
-      user:
+      ansible.builtin.user:
         name: "{{ ansible_user }}"
         groups: docker
         append: true
@@ -64,13 +64,13 @@
         - group
 
     - name: Flush handlers to restart Docker if needed
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
       tags:
         - task6
         - cleanup
 
     - name: Reset Ansible SSH connection for docker group membership
-      meta: reset_connection
+      ansible.builtin.meta: reset_connection
       tags:
         - task7
         - connection_reset
