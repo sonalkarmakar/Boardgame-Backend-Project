@@ -2,7 +2,7 @@
 
 [BoardGame Source Code](https://github.com/jaiswaladi246/Boardgame)
 
-List of required Jenkins plugins, taken from [Jenkins Plugin Index](https://plugins.jenkins.io/)--
+List of required Jenkins plugins, taken from [Jenkins Plugin Index](https://plugins.jenkins.io/):
 - AWS Credentials (`aws-credentials`)
 - Config File Provider (`config-file-provider`)
 - Docker (`docker-plugin`)
