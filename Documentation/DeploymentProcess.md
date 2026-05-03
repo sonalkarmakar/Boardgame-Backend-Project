@@ -25,9 +25,10 @@ The steps for deploying this project are described below.
 
 ## Step 1: Configure and run Terraform code
 - Open the file **`Terraform/terraform.tfvars`** and modify the values of the defined variables as per your reuqirement. Leave default values for variables that aren't required.
-	> [!IMPORTANT]  
-	> Your ISP might be blocking port 22 traffic on your networks.  
-	> As such, it's recommended to keep `SSH_Alt = 443` in the `external_access_ports` variable, as it's the HTTPS port that's never blocked.  
+
+> [!IMPORTANT]  
+> Your ISP might be blocking port 22 traffic on your networks.  
+> As such, it's recommended to keep `SSH_Alt = 443` in the `external_access_ports` variable, as it's the HTTPS port that's never blocked.  
 
 - Open the **`Terraform`** directory in your **terminal** and run the following commands and wait for execution completion:
 	- Initialise Terraform:
