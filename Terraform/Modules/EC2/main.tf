@@ -1,3 +1,18 @@
+data "aws_ami" "latest_ubuntu_lts" {
+	most_recent = true
+	owners      = ["099720109477"]
+
+	filter {
+		name   = "name"
+		values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-*-amd64-server-*"]
+	}
+
+	filter {
+		name   = "root-device-type"
+		values = ["ebs"]
+	}
+}
+
 resource "aws_instance" "compute_instance" {
 	ami                    = "ami-07a00cf47dbbc844c"
 	instance_type          = var.instance_type
