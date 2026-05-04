@@ -2,12 +2,7 @@
 The steps for deploying this project are described below.
 
 ## Prerequisites
-- [Install **Git**](https://git-scm.com/install/) and clone this repository to your preferred working directory.
-	```sh
-	# Choose one below
-	git clone https://github.com/sonalkarmakar/Boardgame-Backend-Project.git # using HTTPS
-	git clone git@github.com:sonalkarmakar/Boardgame-Backend-Project.git # using SSH
-	```
+- Create/acquire a [**Docker Hub**](http://hub.docker.com/) account.
 - Create/acquire an [**AWS account**](https://aws.amazon.com/resources/create-account/) with privileges to create and delete the following resources:
 	- EC2 instances
 	- Security Group with inbound and outbound rules
@@ -15,6 +10,12 @@ The steps for deploying this project are described below.
 	- AWS Access Key
 - [Generate an **Access Key**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS account that has the privileges mentioned above. Avoid using Root User, create an IAM User if needed.
 - [Install **Terraform**](https://developer.hashicorp.com/terraform/install).
+- [Install **Git**](https://git-scm.com/install/) and clone this repository to your preferred working directory.
+	```sh
+	# Choose one below
+	git clone https://github.com/sonalkarmakar/Boardgame-Backend-Project.git # using HTTPS
+	git clone git@github.com:sonalkarmakar/Boardgame-Backend-Project.git # using SSH
+	```
 - [Install **AWS CLI v2**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 - Configure AWS CLI to connect to you AWS account:
 	- Run the command `aws configure`.
@@ -125,19 +126,19 @@ The steps for deploying this project are described below.
 - Select _Disable anonymous access_ option in the **Configure Anonymous Access** page.
 
 ## Step 5: Prepare SonarQube and generate token
-### Initial configuration
+### Step 5.1: Initial configuration
 - Open the **SonarQube web interface** by going to `http://<SonarQube-EC2-instance-public-IP-address>:9000`.
 - Enter "**`admin`**" in **both _Username_ and _Password_** fields to login with the initial admin credentials.
 - Create the **new admin password** in the **Update your password** page. Ensure to follow the password rules shown on screen.
 - The SonarQube home page should now be visible.
 
-### Generate token
+### Step 5.2: Generate token
 - [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
 - **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
 
 
 ## Step 6: Prepare Jenkins for building
-### Initial configuration
+### Step 6.1: Initial configuration
 - Open the **Jenkins web interface** by going to `http://<Jenkins-EC2-instance-public-IP-address>:8080`.
 - Enter the **initial Jenkins admin password** retrieved by `05_RetrieveInitialPasswords.yaml` Ansible playbook, in the **Unlock Jenkins** page.
 - Choose your preferred _plugins setup option_ in the **Customize Jenkins** page.
@@ -145,4 +146,14 @@ The steps for deploying this project are described below.
 - Verify the URL in the Instance Configuration page and click on Save and Finish button.
 - The next page should display messages saying that _Jenkins is ready to use_. Click the **Start using Jenkins** button to open the Jenkins home page.
 
-### Add credentials
+### Step 6.2: Add credentials
+- Add Global credentials in Jenkins for the following as the specified types:
+	| Credentials                | Jenkins Credential Type                                                                     | Description                                                                                                     |
+	|----------------------------|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+	| **AWS Access Key**         | AWS Credentials (via [AWS Credentials plugin](https://plugins.jenkins.io/aws-credentials/)) | Access Key generated using Terraform for EKS admin IAM User, stored in `Terraform/.secrets/AWS_Access_Key.csv`. |
+	| **Docker Hub credentials** | Username with password                                                                      | Username and password of your Docker Hub account.                                                               |
+	| **SonarQube Token**        | Secret text                                                                                 | SonarQube token generated in [previous step](#step-52-generate-token).                                          |
+
+### Step 6.3: Create Maven configuration file
+- Ensure that the plugin [Config File Provider](https://plugins.jenkins.io/config-file-provider/) is installed in Jenkins.
+- Go to _**Manage Jenkins** > **Managed files**_ (under _**System Configuration** section_).
