@@ -27,7 +27,7 @@ The steps for deploying this project are described below.
 - Open the file **`Terraform/terraform.tfvars`** and modify the values of the defined variables as per your reuqirement. Leave default values for variables that aren't required.
 
 > [!IMPORTANT]  
-> Your ISP might be blocking port 22 traffic on your networks.  
+> **Your ISP might be _blocking port 22_ traffic on your networks.**  
 > As such, it's recommended to keep `SSH_Alt = 443` in the `external_access_ports` variable, as it's the HTTPS port that's never blocked.  
 
 - Open the **`Terraform`** directory in your **terminal** and run the following commands and wait for execution completion:
@@ -104,12 +104,45 @@ The steps for deploying this project are described below.
 	ADD SCREENSHOT HERE
 	```
 - Run the playbooks
+	```sh
+	ansible-playbook -i ~/Ansible/inventory.ini ~/Ansible/<playbook-file-name>
+	```
 	- Run `01_InstallDocker.yaml` to **install Docker** in the EC2 instances.
 	- Run `02_RunDockerContainers.yaml` to **run the required Docker containers** in their respective EC2 instances.
 	- Run `03_ConfigureJenkinsContainer.yaml` to **install necessary tools and plugins** inside the Jenkins container running the _Jenkins EC2 instance_.
 	- Run `04_InstallClusterTools.yaml` to install **AWS CLI v2**, **`eksctl`** and **`kubectl`** in the _Control Node_.
-	- Run `05_RunMonitoringContainers.yaml` to run **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_.
+	- Run `05_RetrieveInitialPasswords.yaml` to get the **intial admin passwords** for **Jenkins and Nexus** portals. Secure them safely for initial configuration.
+	- Run `06_RunMonitoringContainers.yaml` to run **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
 > - The playbook "`06_RunMonitoringContainers.yaml`" can also be ran _after_ the application has been deployed. It's your choice.  
+
+## Step 4: Prepare Nexus Repository
+- Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
+- Enter the **initial Nexus Repository admin password** retrieved by `05_RetrieveInitialPasswords.yaml` Ansible playbook, in the _Login_ page.
+- Create the **new admin password** when prompted, then continue to the next setup pages.
+- Select _Disable anonymous access_ option in the **Configure Anonymous Access** page.
+
+## Step 5: Prepare SonarQube and generate token
+### Initial configuration
+- Open the **SonarQube web interface** by going to `http://<SonarQube-EC2-instance-public-IP-address>:9000`.
+- Enter "**`admin`**" in **both _Username_ and _Password_** fields to login with the initial admin credentials.
+- Create the **new admin password** in the **Update your password** page. Ensure to follow the password rules shown on screen.
+- The SonarQube home page should now be visible.
+
+### Generate token
+- [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
+- **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
+
+
+## Step 6: Prepare Jenkins for building
+### Initial configuration
+- Open the **Jenkins web interface** by going to `http://<Jenkins-EC2-instance-public-IP-address>:8080`.
+- Enter the **initial Jenkins admin password** retrieved by `05_RetrieveInitialPasswords.yaml` Ansible playbook, in the **Unlock Jenkins** page.
+- Choose your preferred _plugins setup option_ in the **Customize Jenkins** page.
+- Enter **new admin credentials** in the **Create First Admin User** page.
+- Verify the URL in the Instance Configuration page and click on Save and Finish button.
+- The next page should display messages saying that _Jenkins is ready to use_. Click the **Start using Jenkins** button to open the Jenkins home page.
+
+### Add credentials
