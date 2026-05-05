@@ -52,10 +52,11 @@ The steps for deploying this project are described below.
 
 ## Step 2: Connect to Control Node and prepare it
 - Open the [**AWS Console EC2 Instances page**](https://console.aws.amazon.com/ec2/home?#Instances:) and sign in to your AWS account.
-- Ensure that you're in the correct AWS Region from the top-right corner of the web-page.
+- Ensure that you're in the **correct AWS Region** from the _top-right corner_ of the web-page.
 - Copy the public IP address of the **Control Node** instance. It should be in _Running_ state and have the name in the format "`<Project_Prefix>-<InstanceName>`".
 - Copy the following items to the specified directories of the **Control Node** using **Secure Copy (`scp`)**:
 	> ℹ️ **Info:** The generated SSH keys are named in the format "`<Project_Prefix>-<Ansible_SSH_Key_Name>`". If you haven't changed the default values in `terraform.tfvars`, the commands below require no modification to key names.  
+
 	- `Ansible/` directory with its contents to _home directory_.
 		```sh
 		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 -r Ansible/ ubuntu@<ControlNode-Public-IP>:~/
@@ -145,6 +146,25 @@ The steps for deploying this project are described below.
 - Enter **new admin credentials** in the **Create First Admin User** page.
 - Verify the URL in the Instance Configuration page and click on Save and Finish button.
 - The next page should display messages saying that _Jenkins is ready to use_. Click the **Start using Jenkins** button to open the Jenkins home page.
+- Go to _**Manage Jenkins** > **Plugins**_ (under _**System Configuration** section_) and ensure that the following plugins are active:
+	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials) (`aws-credentials`)
+	- [Config File Provider](https://plugins.jenkins.io/config-file-provider) (`config-file-provider`)
+	- [Docker](https://plugins.jenkins.io/docker-plugin) (`docker-plugin`)
+	- [Docker Pipeline](https://plugins.jenkins.io/docker-workflow) (`docker-workflow`)
+	- [Eclipse Temurin Installer](https://plugins.jenkins.io/adoptopenjdk) (`adoptopenjdk`)
+	- [Email Extension](https://plugins.jenkins.io/email-ext) (`email-ext`)
+	- [HTML Publisher](https://plugins.jenkins.io/htmlpublisher) (`htmlpublisher`)
+	- [Kubernetes](https://plugins.jenkins.io/kubernetes) (`kubernetes`)
+	- [Kubernetes CLI](https://plugins.jenkins.io/kubernetes-cli) (`kubernetes-cli`)
+	- [Maven Integration](https://plugins.jenkins.io/maven-plugin) (`maven-plugin`)
+	- [Nexus Artifact Uploader](https://plugins.jenkins.io/nexus-artifact-uploader) (`nexus-artifact-uploader`)
+	- [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven) (`pipeline-maven`)
+	- [Pipeline: AWS Steps](https://plugins.jenkins.io/pipeline-aws) (`pipeline-aws`)
+	- [SonarQube Scanner](https://plugins.jenkins.io/sonar) (`sonar`)
+
+> [!NOTE]  
+> All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
+> However, there might be issues where plugins get installed but not enabled.  
 
 ### Step 6.2: Add credentials
 - Add Global credentials in Jenkins for the following as the specified types:
@@ -152,8 +172,40 @@ The steps for deploying this project are described below.
 	|----------------------------|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 	| **AWS Access Key**         | AWS Credentials (via [AWS Credentials plugin](https://plugins.jenkins.io/aws-credentials/)) | Access Key generated using Terraform for EKS admin IAM User, stored in `Terraform/.secrets/AWS_Access_Key.csv`. |
 	| **Docker Hub credentials** | Username with password                                                                      | Username and password of your Docker Hub account.                                                               |
-	| **SonarQube Token**        | Secret text                                                                                 | SonarQube token generated in [previous step](#step-52-generate-token).                                          |
+	| **SonarQube Token**        | Secret text                                                                                 | SonarQube token generated in [previous section](#step-52-generate-token).                                          |
+- Note down the **credential IDs** you used for Jenkins to uniquely identify each credential.
 
 ### Step 6.3: Create Maven configuration file
-- Ensure that the plugin [Config File Provider](https://plugins.jenkins.io/config-file-provider/) is installed in Jenkins.
-- Go to _**Manage Jenkins** > **Managed files**_ (under _**System Configuration** section_).
+- Go to _**Manage Jenkins** > **Managed files**_ (under _**System Configuration** section_). This option appears if [Config File Provider](https://plugins.jenkins.io/config-file-provider/) plugin is _installed and active_.
+- [**Add a new config file**](https://plugins.jenkins.io/config-file-provider/#plugin-content-load-your-configuration-file-content) of type _Global Maven settings.xml_, with a **config file ID** of your preference. Note down the config file ID.
+- Modify the XML file using the _Content_ field and add the code below **within the `<servers></servers>` ("servers", plural) tag**.
+	```xml
+	      <server>
+	        <id>maven-releases</id> <!-- Repository ID -->
+	        <username><!-- NEXUS_REPO_ADMIN_USERNAME --></username>
+	        <password><!-- NEXUS_REPO_ADMIN_PASSWORD --></password>
+	      <server>
+	      <server>
+	        <id>maven-snapshots</id> <!-- Repository ID -->
+	        <username><!-- NEXUS_REPO_ADMIN_USERNAME --></username>
+	        <password><!-- NEXUS_REPO_ADMIN_PASSWORD --></password>
+	      <server>
+	```
+	Replace **`<!-- NEXUS_REPO_ADMIN_USERNAME -->`** and **`<!-- NEXUS_REPO_ADMIN_PASSWORD -->`** with the _Nexus Repository admin **username** and **password**_ respectively, as set in [step 4](#step-4-prepare-nexus-repository).
+
+### Step 6.4: Configure Tools for Jenkins
+Go to _**Manage Jenkins** > **Tools**_ (under _**System Configuration** section_) and install the requried tools as described below.
+#### Step 6.4.1: Add Java Development Kit
+- Scroll down to **JDK installataions** section.
+- Click on _**Add JDK** button_.
+- Enter a name in the _**Name** field_ as per your preference and note it down.
+- Leave the **JAVA_HOME** field _blank_ and check the _**Install automatically** checkbox_.
+- Click on the _**Add Installer** button_ and select the option "**Install from adoptium.net**" (requires [Eclipse Temurin Installer](https://plugins.jenkins.io/adoptopenjdk) plugin).
+- Select Java version _17 or newer_ from the _**Version** dropdown_.
+#### Step 6.4.2: Add SonarQube Scanner
+- Scroll down to _**SonarQube Scanner installations** section_ (requires [SonarQube Scanner](https://plugins.jenkins.io/sonar) plugin).
+- Click on _**Add SonarQube Scanner** button_.
+- Enter a name in the _**Name** field_ as per your preference and note it down.
+- Ensure that the _**Install automatically** checkbox_ is checked.
+- Select the **latest version of SonarQube** from the _Version_ dropdown under the _Install from Maven Central_ section.
+#### Step 6.4.3: Add Maven
