@@ -252,3 +252,110 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Click on the _**Test configuration** button_.
 
 If configured properly, it will display the message "_Email was successfully sent_".
+
+## Step 7: Prepare Jenkins build job
+Prepare a Jenkins job for building and deploying the application by following the instructions below.
+
+### Step 7.1: Create Jenkins pipeline job
+- Open Jenkins dashboard/home page.
+- Click on the _**Create a job** button_ in the centre, or the _**New Item** button_ in the _side-pane_ on the right.
+- In the _**New Item** page_, enter a _name for the job_, then select _**Pipeline**_ under "_Select an item type_".
+- Click on the _**OK** button_ at the bottom.
+
+### Step 7.2: Configure pipeline job
+- Open Jenkins dashboard/home page and click on your job from the list.
+- In the _**Configure** page_ of the job, enter an appropriate description in the _**Description** field_ of the _**General** section_.
+- Scroll down to the _**Triggers** section_ and _check the box_ for the option "**GitHub hook trigger for GITScm polling**".
+- [Create a GitHub webhook](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) with the values for the fields specified below.
+	- **Payload URL**: `http://<jenkins-host-address>:8080/github-webhook/` ('`/`' is needed at the end)
+	- **Content type**: `application/json`
+	- **Which events would you like to trigger this webhook?**: `Send me everything`
+	
+	Unmentioned fields can be ignored or configured by preference.
+- Click on _**Apply** button_ at the bottom.
+
+### Step 7.3: Add the pipeline script
+- Scroll down to the _**Pipeline** section_ of the job's _**Configure** page_.
+- Select the option "**Pipeline script**" from the _**Definition** dropdown_.
+- Copy the code from the file `Jenkins/Jenkinsfile` and paste inside the editor under "**Script**".
+- Modify the variables in the pipeline script as specified below:
+	- In the "_**`tools`**_" block, put the names of **JDK** and **Maven** tools _inside double-quotes_, as configured in previous steps [**6.4.1**](#step-641-add-java-development-kit) and [**6.4.3**](#step-643-add-maven) respectively.
+		```groovy
+		tools {
+			jdk "JDK Tool Name"     // change as per your setup
+			maven "Maven Tool Name" // change as per your setup
+		}
+		```
+	- Provide the appropriate correct values for these critical vaiables in the "_**environment**_" block
+
+| Header 1 | Header 2 |
+|----------|----------|
+| Row 1    | Cell A   |
+| Row 2    | _        |
+|          | Cell B   |
+
+<table>
+  <tr>
+    <td>One</td>
+    <td>Two</td>
+  </tr>
+  <tr>
+    <td colspan="2">Three</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td>One</td>
+    <td>Two</td>
+  </tr>
+  <tr>
+    <td rowspan="2">Three</td>
+  </tr>
+</table>
+
+
+`GIT_REPO_URL   `: 
+`GIT_BRANCH_NAME`: 
+`SONARQUBE_SERVER_NAME`: 
+`MAVEN_GLOBAL_SETTINGS_CONFIG`: 
+
+
+
+TRIVY_FILES_DIR       = "Trivy"
+TRIVY_REPORTS_DIR     = "${env.TRIVY_FILES_DIR}/reports"
+TRIVY_TEMPLATE_URL    = "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl"
+TRIVY_TEMPLATE_FILE   = "${env.TRIVY_FILES_DIR}/trivy-template.tpl"
+TRIVY_FS_REPORT_FILE  = "trivy-fs-report.html"
+TRIVY_FS_REPORT_NAME  = "Trivy File-system Scan Report"
+TRIVY_BLD_REPORT_FILE = "trivy-bld-report.html"
+TRIVY_BLD_REPORT_NAME = "Trivy Build Scan Report"
+TRIVY_IMG_REPORT_FILE = "trivy-img-report.html"
+TRIVY_IMG_REPORT_NAME = "Trivy Image Scan Report"
+
+`DOCKER_NAMESPACE`: 
+`DOCKER_REPOSITORY`: 
+`DOCKER_IMAGE_TAG`: 
+`DOCKER_IMAGE_NAME`: 
+`DOCKER_CRED_ID`: 
+`DOCKER_REPO_URL`: 
+`DOCKERFILE_PATH`: 
+
+AWS_REGION  = "ap-south-1"
+AWS_CRED_ID = "AWS-Credentials"
+EKS_CLUSTER_NAME = "BoardGame-Deployment-Cluster"
+
+PASS_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
+PASS_MAIL_TO    = "abc@mail.com"
+PASS_MAIL_CC    = "efg@mail.com"
+PASS_MAIL_BCC   = "hij@mail.com"
+PASS_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
+PASS_MAIL_SUBJ  = "Build SUCCESSFUL notification"
+PASS_MAIL_BODY  = "Hello, this email is to notify the successful build and deployment."
+FAIL_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
+FAIL_MAIL_TO    = "xyz@mail.com"
+FAIL_MAIL_CC    = "uvw@mail.com"
+FAIL_MAIL_BCC   = "rst@mail.com"
+FAIL_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
+FAIL_MAIL_SUBJ  = "Build FAILURE notification"
+FAIL_MAIL_BODY  = "Hello, this email is to notify the failure of build and deployment."
