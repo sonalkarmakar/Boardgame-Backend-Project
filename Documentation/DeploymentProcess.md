@@ -295,23 +295,30 @@ Prepare a Jenkins job for building and deploying the application by following th
 |          | Cell B   |
 
 <table>
-  <tr>
-    <td>One</td>
-    <td>Two</td>
-  </tr>
-  <tr>
-    <td colspan="2">Three</td>
-  </tr>
+	<tr>
+		<td>One</td>
+		<td>Two</td>
+	</tr>
+	<tr>
+		<td colspan="2">Three</td>
+	</tr>
 </table>
 
 <table>
-  <tr>
-    <td>One</td>
-    <td>Two</td>
-  </tr>
-  <tr>
-    <td rowspan="2">Three</td>
-  </tr>
+	<tr>
+		<td>Col 1</td>
+		<td>Col 2</td>
+		<td>Col 3</td>
+	</tr>
+	<tr>
+		<td rowspan="2">Long</td>
+		<td>something</td>
+		<td>something more</td>
+	</tr>
+	<tr>
+		<td>something</td>
+		<td>something more</td>
+	</tr>
 </table>
 
 
