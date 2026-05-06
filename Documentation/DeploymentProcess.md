@@ -2,6 +2,7 @@
 The steps for deploying this project are described below.
 
 ## Prerequisites
+- [Optional] Create/acquire an **email address** with the feature of _password-authentication over SMTP_, to be used by Jenkins to send email notifications.
 - Create/acquire a [**Docker Hub**](http://hub.docker.com/) account.
 - Create/acquire an [**AWS account**](https://aws.amazon.com/resources/create-account/) with privileges to create and delete the following resources:
 	- EC2 instances
@@ -195,17 +196,59 @@ The steps for deploying this project are described below.
 
 ### Step 6.4: Configure Tools for Jenkins
 Go to _**Manage Jenkins** > **Tools**_ (under _**System Configuration** section_) and install the requried tools as described below.
+
 #### Step 6.4.1: Add Java Development Kit
-- Scroll down to **JDK installataions** section.
+- Scroll down to the _**JDK installataions** section_.
 - Click on _**Add JDK** button_.
 - Enter a name in the _**Name** field_ as per your preference and note it down.
 - Leave the **JAVA_HOME** field _blank_ and check the _**Install automatically** checkbox_.
 - Click on the _**Add Installer** button_ and select the option "**Install from adoptium.net**" (requires [Eclipse Temurin Installer](https://plugins.jenkins.io/adoptopenjdk) plugin).
 - Select Java version _17 or newer_ from the _**Version** dropdown_.
+
 #### Step 6.4.2: Add SonarQube Scanner
-- Scroll down to _**SonarQube Scanner installations** section_ (requires [SonarQube Scanner](https://plugins.jenkins.io/sonar) plugin).
+- Scroll down to the _**SonarQube Scanner installations** section_ (requires [SonarQube Scanner](https://plugins.jenkins.io/sonar) plugin).
 - Click on _**Add SonarQube Scanner** button_.
 - Enter a name in the _**Name** field_ as per your preference and note it down.
 - Ensure that the _**Install automatically** checkbox_ is checked.
 - Select the **latest version of SonarQube** from the _Version_ dropdown under the _Install from Maven Central_ section.
+
 #### Step 6.4.3: Add Maven
+- Scroll down to the _**Maven installations** section_ (requires [Maven Integration](https://plugins.jenkins.io/maven-plugin) and [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven) plugins).
+- Click on the _**Add Maven** button_.
+- Enter a name in the _**Name** field_ as per your preference and note it down.
+- Ensure that the _**Install automatically** checkbox_ is checked.
+- Select the **latest version of Maven** from the _Version_ dropdown under the _Install from Apache_ section.
+
+After configuring all the tools, scroll to the bottom of the page and click on _**Apply** button_ and then click on the _**Save** button_.
+
+### Step 6.5: Configure Jenkins system settings
+Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section_) and install the requried tools as described below.
+
+#### Step 6.5.1: Configure SonarQube settings
+- Scroll down to the _**SonarQube servers** section_ (requires requires [SonarQube Scanner](https://plugins.jenkins.io/sonar) plugin).
+- Enable the _**Environment variables** checkbox_ and click on the _**Add SonarQube** button_.
+- Enter a name in the _**Name** field_ as per your preference and note it down.
+- Enter the **SonarQube web-interface URL** in the _**Server URL** field_ as per the _specified format_ in that section.
+- Select the **SonarQube credentials** created in [step 6.2](#step-62-add-credentials) from the _**Server authenticaion** token dropdown_.
+
+> [!NOTE]  
+> The _Server authentication token_ dropdown might show the text entered in the _**Description** field_ of the Jenkins Credentials interface in step 6.2.  
+
+#### [Optional] Step 6.5.2: Configure email notification
+- Generate an "**App Password**" in your preferred email service provider for password-authentication over SMTP. Your provider may have a different name for the feature.
+- Scroll down to the _**E-mail Notification** section_.
+- Enter your provider's **SMTP server address** in the _**SMTP server** field_.
+- Click on the _**Advanced** button_ to open advanced configurations.
+- Enable the _**Use SMTP Authentication** checkbox_.
+- Enter the _full email address_ and _password_ in the _**User Name**_ and _**Password**_ fields respectively.
+- Enable _**Use SSL**_ and/or _**Use TLS**_ checkboxes as required by your provider.
+- Specify the _port_ in the _**SMTP Port** field_ as per your requirement, otherwise it will _default to port 465_.
+- Enter values as per your preference in the fields not mentioned above.
+- Click on the _**Apply**_ and _**Save**_ buttons at the bottom of the page.
+
+##### [Optional] Step 6.5.2a: Testing email notification
+- Enable the checkbox labeled "**Test configuration by sending test e-mail**".
+- Enter the _recipient email address_ in the _**Test e-mail recipient** field_.
+- Click on the _**Test configuration** button_.
+
+If configured properly, it will display the message "_Email was successfully sent_".
