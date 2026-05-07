@@ -286,83 +286,174 @@ Prepare a Jenkins job for building and deploying the application by following th
 			maven "Maven Tool Name" // change as per your setup
 		}
 		```
-	- Provide the appropriate correct values for these critical vaiables in the "_**environment**_" block
+	- Provide the **appropriate correct values** for these critical vaiables in the "_**environment**_" block
+		<table>
+			<tr>
+				<th>Topic</th>
+				<th>Variable Name</th>
+				<th>Description and Value</th>
+			</tr>
+			<tr>
+				<td rowspan="2">Git</td>
+				<td><code>GIT_REPO_URL</code></td>
+				<td>Remote git repository URL. It's this project's GitHub repository URL here.</td>
+			</tr>
+			<tr>
+				<td><code>GIT_BRANCH_NAME</code></td>
+				<td>Remote git repository branch name. Specify which branch you wish to use.</td>
+			</tr>
+			<tr>
+				<td rowspan="1">Trivy</td>
+				<td><code>TRIVY_TEMPLATE_URL</code></td>
+				<td>Template HTML for Trivy reports from <a href="https://github.com/aquasecurity/trivy/tree/main">Trivy's GitHub repository</a> (<code>/contrib/html.tpl</code> file). <b>Avoid changing, refer repo if necessary.</b></td>
+			</tr>
+			<tr>
+				<td rowspan="1">SonarQube</td>
+				<td><code>SONARQUBE_SERVER_NAME</code></td>
+				<td>Name used for SonarQube server in <a href="#step-651-configure-sonarqube-settings">step 6.5.1</a>.</td>
+			</tr>
+			<tr>
+				<td rowspan="1">Maven</td>
+				<td><code>MAVEN_GLOBAL_SETTINGS_CONFIG</code></td>
+				<td>Name used for Global Maven Configuration File in <a href="#step-63-create-maven-configuration-file">step 6.3</a>.</td>
+			</tr>
+			<tr>
+				<td rowspan="4">Docker</td>
+				<td><code>DOCKER_NAMESPACE</code></td>
+				<td>Your Docker Hub account namespace. Typically it's your <i>Docker Hub username</i>.</td>
+			</tr>
+			<tr>
+				<td><code>DOCKER_CRED_ID</code></td>
+				<td>Unique ID used in Jenkins for Docker Hub credentials in <a href="#step-62-add-credentials">step 6.2</a>.</td>
+			</tr>
+			<tr>
+				<td><code>DOCKER_REPO_URL</code></td>
+				<td>Docker Hub endpoint API URL. Using version 1 (https://index.docker.io/v1/) here. <b>Don't change if not necessary.</b></td>
+			</tr>
+			<tr>
+				<td><code>DOCKERFILE_PATH</code></td>
+				<td>Path to Dockerfile for building image. It's "<code>Docker/Dockerfile</code>" for this project.</td>
+			</tr>
+			<tr>
+				<td rowspan="1">AWS Access Key</td>
+				<td><code>AWS_CRED_ID</code></td>
+				<td>Unique ID used in Jenkins for AWS Credentials in <a href="#step-62-add-credentials">step 6.2</a>.</td>
+			</tr>
+		</table>
 
-| Header 1 | Header 2 |
-|----------|----------|
-| Row 1    | Cell A   |
-| Row 2    | _        |
-|          | Cell B   |
-
-<table>
-	<tr>
-		<td>One</td>
-		<td>Two</td>
-	</tr>
-	<tr>
-		<td colspan="2">Three</td>
-	</tr>
-</table>
-
-<table>
-	<tr>
-		<td>Col 1</td>
-		<td>Col 2</td>
-		<td>Col 3</td>
-	</tr>
-	<tr>
-		<td rowspan="2">Long</td>
-		<td>something</td>
-		<td>something more</td>
-	</tr>
-	<tr>
-		<td>something</td>
-		<td>something more</td>
-	</tr>
-</table>
-
-
-`GIT_REPO_URL   `: 
-`GIT_BRANCH_NAME`: 
-`SONARQUBE_SERVER_NAME`: 
-`MAVEN_GLOBAL_SETTINGS_CONFIG`: 
-
-
-
-TRIVY_FILES_DIR       = "Trivy"
-TRIVY_REPORTS_DIR     = "${env.TRIVY_FILES_DIR}/reports"
-TRIVY_TEMPLATE_URL    = "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl"
-TRIVY_TEMPLATE_FILE   = "${env.TRIVY_FILES_DIR}/trivy-template.tpl"
-TRIVY_FS_REPORT_FILE  = "trivy-fs-report.html"
-TRIVY_FS_REPORT_NAME  = "Trivy File-system Scan Report"
-TRIVY_BLD_REPORT_FILE = "trivy-bld-report.html"
-TRIVY_BLD_REPORT_NAME = "Trivy Build Scan Report"
-TRIVY_IMG_REPORT_FILE = "trivy-img-report.html"
-TRIVY_IMG_REPORT_NAME = "Trivy Image Scan Report"
-
-`DOCKER_NAMESPACE`: 
-`DOCKER_REPOSITORY`: 
-`DOCKER_IMAGE_TAG`: 
-`DOCKER_IMAGE_NAME`: 
-`DOCKER_CRED_ID`: 
-`DOCKER_REPO_URL`: 
-`DOCKERFILE_PATH`: 
-
-AWS_REGION  = "ap-south-1"
-AWS_CRED_ID = "AWS-Credentials"
-EKS_CLUSTER_NAME = "BoardGame-Deployment-Cluster"
-
-PASS_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
-PASS_MAIL_TO    = "abc@mail.com"
-PASS_MAIL_CC    = "efg@mail.com"
-PASS_MAIL_BCC   = "hij@mail.com"
-PASS_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
-PASS_MAIL_SUBJ  = "Build SUCCESSFUL notification"
-PASS_MAIL_BODY  = "Hello, this email is to notify the successful build and deployment."
-FAIL_MAIL_FROM  = "sender@mail.com" // Email ID of sender. Use if configured sender ID is different. REMOVE IF NOT NEEDED.
-FAIL_MAIL_TO    = "xyz@mail.com"
-FAIL_MAIL_CC    = "uvw@mail.com"
-FAIL_MAIL_BCC   = "rst@mail.com"
-FAIL_MAIL_REPLY = "receiver@mail.com" // Used in the field "replyTo". REMOVE IF NOT NEEDED.
-FAIL_MAIL_SUBJ  = "Build FAILURE notification"
-FAIL_MAIL_BODY  = "Hello, this email is to notify the failure of build and deployment."
+	- Change values to _your preference_ or _leave default_ for these variables in the "_**environment**_" block
+		<table>
+			<tr>
+				<th>Topic</th>
+				<th>Variable Name</th>
+				<th>Description and Value</th>
+			</tr>
+			<tr>
+				<td rowspan="7">Trivy</td>
+				<td><code>TRIVY_FILES_DIR</code></td>
+				<td>Jenkins workspace directory for storing Trivy files.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_FS_REPORT_FILE</code></td>
+				<td>File name of Trivy's file-system scan report.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_FS_REPORT_NAME</code></td>
+				<td>Name of the Trivy's file-system scan report.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_BLD_REPORT_FILE</code></td>
+				<td>File name of Trivy's build scan report.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_BLD_REPORT_NAME</code></td>
+				<td>Name of the Trivy's build scan report.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_IMG_REPORT_FILE</code></td>
+				<td>File name of Trivy's image scan report.</td>
+			</tr>
+			<tr>
+				<td><code>TRIVY_IMG_REPORT_NAME</code></td>
+				<td>Name of the Trivy's image scan report.</td>
+			</tr>
+			<tr>
+				<td rowspan="3">Docker</td>
+				<td><code>DOCKER_REPOSITORY</code></td>
+				<td>Your Docker Hub repository name.</td>
+			</tr>
+			<tr>
+				<td><code>DOCKER_IMAGE_TAG</code></td>
+				<td>Tags for the Docker image.</td>
+			</tr>
+			<tr>
+				<td><code>DOCKER_IMAGE_NAME</code></td>
+				<td>Name of the Docker image.</td>
+			</tr>
+			<tr>
+				<td rowspan="2">AWS</td>
+				<td><code>AWS_REGION</code></td>
+				<td>AWS Region where the project is deployed.</td>
+			</tr>
+			<tr>
+				<td><code>EKS_CLUSTER_NAME</code></td>
+				<td>Name of the Elastic Kubernetes Cluster where the application is deployed.</td>
+			</tr>
+			<tr>
+				<td rowspan="14">Email Notifications</td>
+				<td><code>PASS_MAIL_FROM</code></td>
+				<td>Build success notification email sender.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_TO</code></td>
+				<td>Build success notification email recipient.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_CC</code></td>
+				<td>Build success notification email carbon copy.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_BCC</code></td>
+				<td>Build success notification email blind carbon copy.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_REPLY</code></td>
+				<td>Build success notification email reply recipient.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_SUBJ</code></td>
+				<td>Build success notification email subject.</td>
+			</tr>
+			<tr>
+				<td><code>PASS_MAIL_BODY</code></td>
+				<td>Build success notification email message body.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_FROM</code></td>
+				<td>Build failure notification email sender.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_TO</code></td>
+				<td>Build failure notification email recipient.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_CC</code></td>
+				<td>Build failure notification email carbon copy.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_BCC</code></td>
+				<td>Build failure notification email blind carbon copy.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_REPLY</code></td>
+				<td>Build failure notification email reply recipient.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_SUBJ</code></td>
+				<td>Build failure notification email subject.</td>
+			</tr>
+			<tr>
+				<td><code>FAIL_MAIL_BODY</code></td>
+				<td>Build failure notification email message body.</td>
+			</tr>
+		</table>
