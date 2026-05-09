@@ -115,11 +115,13 @@ The steps for deploying this project are described below.
 	- Run `03_ConfigureJenkinsContainer.yaml` to **install necessary tools and plugins** inside the Jenkins container running the _Jenkins EC2 instance_.
 	- Run `04_InstallClusterTools.yaml` to install **AWS CLI v2**, **`eksctl`** and **`kubectl`** in the _Control Node_.
 	- Run `05_RetrieveInitialPasswords.yaml` to get the **intial admin passwords** for **Jenkins and Nexus** portals. Secure them safely for initial configuration.
-	- Run `06_RunMonitoringContainers.yaml` to run **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_.
+	- Don't run `06_RunMonitoringContainers.yaml` yet.
+	
+	The playbook `06_RunMonitoringContainers.yaml` runs **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_ for monitoring the application **after deployment**.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
-> - The playbook "`06_RunMonitoringContainers.yaml`" can also be ran _after_ the application has been deployed. It's your choice.  
+> - The playbook "`06_RunMonitoringContainers.yaml`" _must be ran **after**_ the application has been deployed.  
 
 ## Step 4: Prepare Nexus Repository
 - Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
@@ -457,3 +459,71 @@ Prepare a Jenkins job for building and deploying the application by following th
 				<td>Build failure notification email message body.</td>
 			</tr>
 		</table>
+
+> [!IMPORTANT]  
+> Passing **blank variables (`VAR_NAME = ""`)** to email notification syntax will cause Jenkins to show **build failure** despite successful execution of all stages.  
+> It's better to **remove unnecessary fields** from the email notification syntax in the "_`post`_" section of the pipeline script.
+
+## Step 8: Create EKS Cluster
+- Login to **Control Node EC2 instance**.
+- Ensure that **AWS CLI v2**, **Eksctl** and **`kubectl`** are installed.
+	```sh
+	which aws eksctl kubectl # should output the executable path for each
+	```
+	If they aren't installed, run the Ansible playbook **`04_InstallClusterTools.yaml`**:
+	```sh
+	ansible-playbook -i ~/Ansible/inventory.ini ~/Ansible/04_InstallClusterTools.yaml
+	```
+- **Configure AWS CLI** with the _EKS admin IAM User_ created using Terrform code.
+	- Run the command `aws configure`.
+	- Enter the _access key ID_ stored in `Terraform/.secrets/AWS_Access_Key.csv`.
+	- Enter the _access key Secret_ stored in `Terraform/.secrets/AWS_Access_Key.csv`.
+	- Enter your preferred [_AWS Region's code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
+	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
+- Run the `eksctl` command below with the specified values to create the EKS cluster.
+	```sh
+	eksctl create cluster \
+		--name <CLUSTER_NAME> \
+		--region <CLUSTER_REGION> \
+		--nodegroup-name <NODE_GRP_NAME> \
+		--node-type <NODE_TYPE> \
+		--nodes <NODES> \
+		--nodes-min <NODES_MIN> \
+		--nodes-max <NODES_MAX> \
+		--managed
+	```
+	- `<CLUSTER_NAME>`: cluster name as mentioned in the Jenkins pipeline script for variable "**`EKS_CLUSTER_NAME`**".
+	- `<CLUSTER_REGION>`: AWS Region as mentioned in the Jenkins pipeline script for variable "**`AWS_REGION`**".
+	- `<NODE_GRP_NAME>`: name of the group of cluster nodes.
+	- `<NODE_TYPE>`: instance type of cluster nodes (_t2.small or larger_).
+	- `<NODES>`: target number of cluster nodes.
+	- `<NODES_MIN>`: minimum number of cluster nodes during low traffic.
+	- `<NODES_MAX>`: maximum number of cluster nodes during high traffic.
+- Run the AWS CLI command below to add the EKS cluster to `kubectl` context. `<CLUSTER_REGION>` and `<CLUSTER_NAME>` must be the same as described above.
+	```sh
+	aws eks update-kubeconfig --region <CLUSTER_REGION> --name <CLUSTER_NAME>
+	```
+
+## Step 9: Build and Deploy the application
+- Open the _Jenkins web interface_ and go to the build created in [**Step 7**](#step-7-prepare-jenkins-build-job).
+- Commit the changes made to the **`pom.xml`** by the Terraform code. The Nexus Repository URL is added by the Terraform code when it's executed.
+- **Push the commit to the GitHub repository** to make the webhook trigger the Jenkins build process.
+- Monitor the build status from the Jenkins web interface.
+- Login to the **Control Node EC2 instance** when the pipeline is successfully executed.
+- Run the `kubectl` commands below to check the status of the _EKS cluster_.
+	- Check Kubernetes service status.
+		```sh
+		kubectl get svc
+		```
+	- Check Kubernetes deployment status.
+		```sh
+		kubectl get deploy
+		```
+	- Check Kubernetes pods status.
+		```sh
+		kubectl get pods
+		```
+- Once the pods, deployment and service are up and running, note down the Kubernetes **service name** and **external IP address** from the output of `kubectl get svc`.
+- Access the application website by going to the **Kubernetes external IP address**.
+
+## Step 10: Monitor deployed application
