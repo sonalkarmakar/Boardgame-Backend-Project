@@ -2,7 +2,7 @@
 The steps for deploying this project are described below.
 
 ## Prerequisites
-- [Optional] Create/acquire an **email address** with the feature of _password-authentication over SMTP_, to be used by Jenkins to send email notifications.
+- [_Optional_] Create/acquire an **email address** with the feature of _password-authentication over SMTP_, to be used by Jenkins to send email notifications.
 - Create/acquire a [**Docker Hub**](http://hub.docker.com/) account.
 - Create/acquire an [**AWS account**](https://aws.amazon.com/resources/create-account/) with privileges to create and delete the following resources:
 	- EC2 instances
@@ -121,7 +121,7 @@ The steps for deploying this project are described below.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
-> - The playbook "`06_RunMonitoringContainers.yaml`" _must be ran **after**_ the application has been deployed.  
+> - The playbook "`06_RunMonitoringContainers.yaml`" requires the external IP address for accessing the application, so it's ran after application deployment.  
 
 ## Step 4: Prepare Nexus Repository
 - Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
@@ -236,7 +236,7 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 > [!NOTE]  
 > The _Server authentication token_ dropdown might show the text entered in the _**Description** field_ of the Jenkins Credentials interface in step 6.2.  
 
-#### [Optional] Step 6.5.2: Configure email notification
+#### [_Optional_] Step 6.5.2: Configure email notification
 - Generate an "**App Password**" in your preferred email service provider for password-authentication over SMTP. Your provider may have a different name for the feature.
 - Scroll down to the _**E-mail Notification** section_.
 - Enter your provider's **SMTP server address** in the _**SMTP server** field_.
@@ -248,7 +248,7 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Enter values as per your preference in the fields not mentioned above.
 - Click on the _**Apply**_ and _**Save**_ buttons at the bottom of the page.
 
-##### [Optional] Step 6.5.2a: Testing email notification
+##### [_Optional_] Step 6.5.2a: Testing email notification
 - Enable the checkbox labeled "**Test configuration by sending test e-mail**".
 - Enter the _recipient email address_ in the _**Test e-mail recipient** field_.
 - Click on the _**Test configuration** button_.
@@ -527,3 +527,44 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Access the application website by going to the **Kubernetes external IP address**.
 
 ## Step 10: Monitor deployed application
+- Login to the **Control Node EC2 instance**.
+- Get the **Kubernetes service name** for the deployed application.
+	```sh
+	kubectl get svc
+	```
+- Run the Ansible playbook **`06_RunMonnitoringContainers.yaml`** and enter the _Kubernetes service name_ when prompted.
+- Get the public IP address of the **Monitoring** EC2 instance from the [_AWS EC2 Instances page_](https://console.aws.amazon.com/ec2/home?#Instances:) in your **chosen AWS region**. It should be in _Running_ state and have the name in the format "`<Project_Prefix>-<InstanceName>`".
+- Open the respective monitoring portals/web-interfaces:
+	- Blackbox Exporter: `http://<monitoring-instance-public-ip>:9115`
+	- Grafana: `http://<monitoring-instance-public-ip>:3000`
+	- Prometheus: `http://<monitoring-instance-public-ip>:9090`
+
+### Step 10.1: Configure Grafana for visualisation
+Follow the instructions below to configure Grafana for visualising data collected using Prometheus and Blackbox Exporter.
+
+#### Step 10.1.1: Initial configuration
+- Open the **Grafana web-interface** at **`http://<monitoring-instance-public-ip>:3000`**.
+- Login with the default credential "**`admin`**" for _both **username** and **password**_.
+- Create your **new password** as prompted.
+
+#### Step 10.1.2: Adding source for monitoring data
+- In the **Grafana Home page**, click on the _**Connections** menu_ in the _left side-panel_.
+- Click on **Data sources** under the _**Connections** menu_, then click on _**Add data source** button_ in the _**Data sources** page_.
+- In the _**Add data source** page_, search for _Prometheus_ in the **search bar** and click on it. Usually, Prometheus is already visible under the _Time series databases_ category.
+- In the **Prometheus data source page**,
+	- Enter a **Name** of your choice.
+	- Enter the **Prometheus server URL** (`http://<monitoring-instance-public-ip>:9090`) in the _**Connections** section_.
+- Scroll down to the bottom of the page and click on the _**Save & test** button_. If it displays the message "_Successfully queried the Prometheus API_", then it's configured correctly.
+
+#### Step 10.1.3: Creating Dashboard
+- Click on the _button with **plus icon (+)**_ beside the _search bar_ in the _top-right corner_ of the page, then click on **Import Dashboard**.
+- Open the [**Grafana Dashboard catalogue**](https://grafana.com/grafana/dashboards/) in a new tab of your web browser and search for "_Prometheus Blackbox Exporter_" in the catalogue.
+
+> [!NOTE]  
+> The URL to Grafana Dashboard catalogue should be mentioned in the **Import Dashboard** page in a message about _finding and importing dashboards_.
+
+- Click on your preferred dashboard from the search results and copy the **dashboard ID**.
+- Go back to the **Import Dashboard** page in your Grafana web-interface tab, and paste the ID in the field saying "_Grafana.com dashboard URL or ID_", then click on the _**Load** button_.  
+	If the pasted ID is correct, the page will get a sub-heading "_Importing dashboard from Grafana.com_" and the settings/options in the page will change.
+- From the dropdown menu labeled "_Select a Prometheus data source_", select the data source created in [**previous step**](#step-1012-adding-source-for-monitoring-data).
+- Click on the _**Import** button_ at the bottom to see your monitoring dashboard.
