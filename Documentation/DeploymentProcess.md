@@ -26,7 +26,7 @@ The steps for deploying this project are described below.
 	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
 
 ## Step 1: Configure and run Terraform code
-- Open the file **`Terraform/terraform.tfvars`** and modify the values of the defined variables as per your reuqirement. Leave default values for variables that aren't required.
+- Open the file **`Terraform/terraform.tfvars`** and modify the values of the defined variables as per your reuqirement. Leave _default values_ for variables that _you don't require_.
 
 > [!IMPORTANT]  
 > **Your ISP might be _blocking port 22_ traffic on your networks.**  
@@ -55,27 +55,30 @@ The steps for deploying this project are described below.
 - Open the [**AWS Console EC2 Instances page**](https://console.aws.amazon.com/ec2/home?#Instances:) and sign in to your AWS account.
 - Ensure that you're in the **correct AWS Region** from the _top-right corner_ of the web-page.
 - Copy the public IP address of the **Control Node** instance. It should be in _Running_ state and have the name in the format "`<Project_Prefix>-<InstanceName>`".
+	```
+	ADD EC2 INFO SCREENSHOT
+	```
 - Copy the following items to the specified directories of the **Control Node** using **Secure Copy (`scp`)**:
 	> ℹ️ **Info:** The generated SSH keys are named in the format "`<Project_Prefix>-<Ansible_SSH_Key_Name>`". If you haven't changed the default values in `terraform.tfvars`, the commands below require no modification to key names.  
 
-	- `Ansible/` directory with its contents to _home directory_.
+	- **`Ansible/` directory** with its contents to _home directory_.
 		```sh
 		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 -r Ansible/ ubuntu@<ControlNode-Public-IP>:~/
 		```
-	- `Kubernetes/` directory with its contents to the _home directory_.
+	- **`Kubernetes/` directory** with its contents to the _home directory_.
 		```sh
 		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 -r Kubernetes/ ubuntu@<ControlNode-Public-IP>:~/
 		```
-	- `Terraform/.secrets/BoardGame_Backend-Ansible_SSH_key.pem` to `~/.ssh/` directory.
+	- **`Terraform/.secrets/BoardGame_Backend-Ansible_SSH_key.pem`** to _`~/.ssh/`_ directory.
 		```sh
 		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 Terraform/.secret/BoardGame_Backend-Ansible_SSH_key.pem ubuntu@<ControlNode-Public-IP>:~/.ssh/
 		```
-- Connect to the Control Node EC2 instance using SSH.
+- Connect to the **Control Node** EC2 instance using **SSH**.
 	```sh
 	ssh -i Terraform/.secrets/BoardGame_Backend-Ansible_SSH_key.pem -p 443 ubuntu@<ControlNode-Public-IP>
 	```
 - Prepare the instance for running Ansible playbooks.
-	- Update repositories.
+	- Update the repositories.
 		```sh
 		sudo apt update -y
 		```
@@ -88,17 +91,17 @@ The steps for deploying this project are described below.
 		sudo apt install -y ansible
 		```
 ## Step 3: Configure and run Ansible in Control Node
-- Ensure that the `Ansible/` directory contains the 6 playbooks and the inventory INI file. If they're not present, use `scp` to copy them from your system.
+- Ensure that the **`Ansible/` directory** contains the **6 playbooks** and the **inventory INI** files. If they're not present, use `scp` to copy them from your system.
 	```
 	ADD SCREENSHOT HERE
 	```
-- Add remote hosts to list of known hosts. This may not be required, but the next step might fail without it.
+- Add **remote hosts** to **list of known hosts**. This may not be required, but the next step might fail without it.
 	```sh
 	ssh-keyscan -H {<remote-host-ip-address_separated-by-comma>} >> ~/.ssh/known_hosts
 	```
-	Here, "remote hosts" are the other EC2 instances created. Their public IP addresses should be in the file "`Ansible/inventory.ini`".  
+	Here, "remote hosts" are the _other EC2 instances created_. Their public IP addresses should be in the file "**`Ansible/inventory.ini`**".  
 	Type "`yes`" when it's waiting for your input.
-- Test Ansible connection to the Managed Nodes.
+- Test Ansible connection to the **managed nodes**.
 	```sh
 	ansible all -i ~/Ansible/inventory.ini -m ping
 	```
@@ -112,18 +115,21 @@ The steps for deploying this project are described below.
 	```
 	- Run `01_InstallDocker.yaml` to **install Docker** in the EC2 instances.
 	- Run `02_RunDockerContainers.yaml` to **run the required Docker containers** in their respective EC2 instances.
-	- Run `03_ConfigureJenkinsContainer.yaml` to **install necessary tools and plugins** inside the Jenkins container running the _Jenkins EC2 instance_.
+	- Run `03_ConfigureJenkinsContainer.yaml` to **install necessary tools and plugins** inside the Jenkins container running in the _Jenkins EC2 instance_.
 	- Run `04_InstallClusterTools.yaml` to install **AWS CLI v2**, **`eksctl`** and **`kubectl`** in the _Control Node_.
-	- Run `05_RetrieveInitialPasswords.yaml` to get the **intial admin passwords** for **Jenkins and Nexus** portals. Secure them safely for initial configuration.
+	- Run `05_RetrieveInitialPasswords.yaml` to get the **intial admin passwords** for **Jenkins and Nexus** portals. Store them in safely and securely for initial configuration.
 	- Don't run `06_RunMonitoringContainers.yaml` yet.
 	
 	The playbook `06_RunMonitoringContainers.yaml` runs **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_ for monitoring the application **after deployment**.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
-> - The playbook "`06_RunMonitoringContainers.yaml`" requires the external IP address for accessing the application, so it's ran after application deployment.  
+> - The playbook "`06_RunMonitoringContainers.yaml`" requires the **external IP address** for accessing the application, so it's ran after application deployment.  
 
 ## Step 4: Prepare Nexus Repository
+```
+NEXUS REPOSITORY DASHBOARD SCREENSHOT
+```
 - Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
 - Enter the **initial Nexus Repository admin password** retrieved by `05_RetrieveInitialPasswords.yaml` Ansible playbook, in the _Login_ page.
 - Create the **new admin password** when prompted, then continue to the next setup pages.
@@ -136,10 +142,16 @@ The steps for deploying this project are described below.
 - Create the **new admin password** in the **Update your password** page. Ensure to follow the password rules shown on screen.
 - The SonarQube home page should now be visible.
 
+```
+SONARQUBE HOME PAGE SCREENSHOT
+```
+
 ### Step 5.2: Generate token
 - [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
 - **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
-
+```
+SONARQUBE TOKEN GENERATION SCREENSHOT
+```
 
 ## Step 6: Prepare Jenkins for building
 ### Step 6.1: Initial configuration
@@ -149,6 +161,9 @@ The steps for deploying this project are described below.
 - Enter **new admin credentials** in the **Create First Admin User** page.
 - Verify the URL in the Instance Configuration page and click on Save and Finish button.
 - The next page should display messages saying that _Jenkins is ready to use_. Click the **Start using Jenkins** button to open the Jenkins home page.
+	```
+	JENKINS READY SCREENSHOT
+	```
 - Go to _**Manage Jenkins** > **Plugins**_ (under _**System Configuration** section_) and ensure that the following plugins are active:
 	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials) (`aws-credentials`)
 	- [Config File Provider](https://plugins.jenkins.io/config-file-provider) (`config-file-provider`)
@@ -164,12 +179,18 @@ The steps for deploying this project are described below.
 	- [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven) (`pipeline-maven`)
 	- [Pipeline: AWS Steps](https://plugins.jenkins.io/pipeline-aws) (`pipeline-aws`)
 	- [SonarQube Scanner](https://plugins.jenkins.io/sonar) (`sonar`)
+	```
+	JENKINS INSTALLED PLUGINS SCREENSHOT
+	```
 
 > [!NOTE]  
 > All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
 > However, there might be issues where plugins get installed but not enabled.  
 
 ### Step 6.2: Add credentials
+```
+JENKINS ADD CREDENTIALS SCREENSHOT
+```
 - Add Global credentials in Jenkins for the following as the specified types:
 	| Credentials                | Jenkins Credential Type                                                                     | Description                                                                                                     |
 	|----------------------------|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
@@ -195,6 +216,10 @@ The steps for deploying this project are described below.
 	      <server>
 	```
 	Replace **`<!-- NEXUS_REPO_ADMIN_USERNAME -->`** and **`<!-- NEXUS_REPO_ADMIN_PASSWORD -->`** with the _Nexus Repository admin **username** and **password**_ respectively, as set in [step 4](#step-4-prepare-nexus-repository).
+
+```
+CONFIG FILE EDITOR SCREENSHOT
+```
 
 ### Step 6.4: Configure Tools for Jenkins
 Go to _**Manage Jenkins** > **Tools**_ (under _**System Configuration** section_) and install the requried tools as described below.
@@ -248,6 +273,10 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Enter values as per your preference in the fields not mentioned above.
 - Click on the _**Apply**_ and _**Save**_ buttons at the bottom of the page.
 
+```
+JENKINS EMAIL NOTIFICATION SCREENSHOT
+```
+
 ##### [_Optional_] Step 6.5.2a: Testing email notification
 - Enable the checkbox labeled "**Test configuration by sending test e-mail**".
 - Enter the _recipient email address_ in the _**Test e-mail recipient** field_.
@@ -255,16 +284,27 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 
 If configured properly, it will display the message "_Email was successfully sent_".
 
+```
+JENKINS TEST EMAIL SCREENSHOT
+```
+
 ## Step 7: Prepare Jenkins build job
 Prepare a Jenkins job for building and deploying the application by following the instructions below.
 
 ### Step 7.1: Create Jenkins pipeline job
+```
+JENKINS NEW JOB SCREENSHOT
+```
 - Open Jenkins dashboard/home page.
 - Click on the _**Create a job** button_ in the centre, or the _**New Item** button_ in the _side-pane_ on the right.
 - In the _**New Item** page_, enter a _name for the job_, then select _**Pipeline**_ under "_Select an item type_".
 - Click on the _**OK** button_ at the bottom.
 
 ### Step 7.2: Configure pipeline job
+```
+JENKIS CONFIGURE PIPELINE SCREENSHOT
+```
+
 - Open Jenkins dashboard/home page and click on your job from the list.
 - In the _**Configure** page_ of the job, enter an appropriate description in the _**Description** field_ of the _**General** section_.
 - Scroll down to the _**Triggers** section_ and _check the box_ for the option "**GitHub hook trigger for GITScm polling**".
@@ -277,6 +317,10 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Click on _**Apply** button_ at the bottom.
 
 ### Step 7.3: Add the pipeline script
+```
+JENKINS PIPELINE SCRIPT SCREENSHOT
+```
+
 - Scroll down to the _**Pipeline** section_ of the job's _**Configure** page_.
 - Select the option "**Pipeline script**" from the _**Definition** dropdown_.
 - Copy the code from the file `Jenkins/Jenkinsfile` and paste inside the editor under "**Script**".
@@ -467,6 +511,9 @@ Prepare a Jenkins job for building and deploying the application by following th
 ## Step 8: Create EKS Cluster
 - Login to **Control Node EC2 instance**.
 - Ensure that **AWS CLI v2**, **Eksctl** and **`kubectl`** are installed.
+	```
+	WHICH COMMAND OUTPUT SCREENSHOT
+	```
 	```sh
 	which aws eksctl kubectl # should output the executable path for each
 	```
@@ -504,6 +551,10 @@ Prepare a Jenkins job for building and deploying the application by following th
 	aws eks update-kubeconfig --region <CLUSTER_REGION> --name <CLUSTER_NAME>
 	```
 
+```
+EKS CLUSTER CREATION COMPLETION SCREENSHOT
+```
+
 ## Step 9: Build and Deploy the application
 - Open the _Jenkins web interface_ and go to the build created in [**Step 7**](#step-7-prepare-jenkins-build-job).
 - Commit the changes made to the **`pom.xml`** by the Terraform code. The Nexus Repository URL is added by the Terraform code when it's executed.
@@ -526,6 +577,13 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Once the pods, deployment and service are up and running, note down the Kubernetes **service name** and **external IP address** from the output of `kubectl get svc`.
 - Access the application website by going to the **Kubernetes external IP address**.
 
+```
+POSSIBLE SCREENSHOTS:
+- JENKINS BUILD STATUS
+- DOCKER HUB IMAGE
+- DEPLOYED APPLICATION
+```
+
 ## Step 10: Monitor deployed application
 - Login to the **Control Node EC2 instance**.
 - Get the **Kubernetes service name** for the deployed application.
@@ -538,6 +596,8 @@ Prepare a Jenkins job for building and deploying the application by following th
 	- Blackbox Exporter: `http://<monitoring-instance-public-ip>:9115`
 	- Grafana: `http://<monitoring-instance-public-ip>:3000`
 	- Prometheus: `http://<monitoring-instance-public-ip>:9090`
+
+Now, Grafana needs to be configured to take the data and visualise in charts and graphs.
 
 ### Step 10.1: Configure Grafana for visualisation
 Follow the instructions below to configure Grafana for visualising data collected using Prometheus and Blackbox Exporter.
@@ -556,15 +616,31 @@ Follow the instructions below to configure Grafana for visualising data collecte
 	- Enter the **Prometheus server URL** (`http://<monitoring-instance-public-ip>:9090`) in the _**Connections** section_.
 - Scroll down to the bottom of the page and click on the _**Save & test** button_. If it displays the message "_Successfully queried the Prometheus API_", then it's configured correctly.
 
+```
+SUCCESSFUL SOURCE ADDITION SCREENSHOT
+```
+
 #### Step 10.1.3: Creating Dashboard
 - Click on the _button with **plus icon (+)**_ beside the _search bar_ in the _top-right corner_ of the page, then click on **Import Dashboard**.
 - Open the [**Grafana Dashboard catalogue**](https://grafana.com/grafana/dashboards/) in a new tab of your web browser and search for "_Prometheus Blackbox Exporter_" in the catalogue.
 
 > [!NOTE]  
-> The URL to Grafana Dashboard catalogue should be mentioned in the **Import Dashboard** page in a message about _finding and importing dashboards_.
+> The URL to Grafana Dashboard catalogue should be mentioned in the **Import Dashboard** page in a message about _finding and importing dashboards_.  
 
 - Click on your preferred dashboard from the search results and copy the **dashboard ID**.
 - Go back to the **Import Dashboard** page in your Grafana web-interface tab, and paste the ID in the field saying "_Grafana.com dashboard URL or ID_", then click on the _**Load** button_.  
 	If the pasted ID is correct, the page will get a sub-heading "_Importing dashboard from Grafana.com_" and the settings/options in the page will change.
 - From the dropdown menu labeled "_Select a Prometheus data source_", select the data source created in [**previous step**](#step-1012-adding-source-for-monitoring-data).
 - Click on the _**Import** button_ at the bottom to see your monitoring dashboard.
+
+```
+GRAFANA DASHBOARD SCREENSHOT
+```
+
+# Finally...
+After following all the steps in each stage above,...
+- The application is **deployed in AWS EKS cluster**, **accessible through the External IP** created by the _Kubernetes service_.
+- Application can be **monitored from the Grafana Dashboard** using the _data collected by_ **Prometheus** and **Blackbox Exporter**.
+- **Commits pushed** to application's _GitHub repository_ trigger **new Jenkins build** and **automatic deployment**, if there are no errors.
+- **Application builds** are stored in the **Nexus Repository**.
+- **Application's Docker image** is stored in your **Docker Hub account**.
