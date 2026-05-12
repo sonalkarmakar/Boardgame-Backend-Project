@@ -63,9 +63,25 @@ pipeline {
 	}
 
 	stages {
-		stage("Cloning Git Repository") {
+		stage('Cloning Source Code from Git Repository') {
 			steps {
-				git branch: "${GIT_BRANCH_NAME}", url: "${GIT_REPO_URL}"
+				checkout scmGit(
+					branches: [[name: "${GIT_BRANCH_NAME}"]],
+					extensions: [
+						sparseCheckout(
+							sparseCheckoutPaths: [
+								[path: '.mvn'],
+								[path: 'mvnw'],
+								[path: 'mvnw.cmd'],
+								[path: 'pom.xml'],
+								[path: 'src'],
+								[path: 'Docker'],
+								[path: 'Kubernetes']
+							]
+						)
+					],
+					userRemoteConfigs: [[url: "${GIT_REPO_URL}"]]
+				)
 			}
 		}
 		stage("Compiling with Maven") {
