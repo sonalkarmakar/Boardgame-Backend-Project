@@ -208,12 +208,12 @@ JENKINS ADD CREDENTIALS SCREENSHOT
 	        <id>maven-releases</id> <!-- Repository ID -->
 	        <username><!-- NEXUS_REPO_ADMIN_USERNAME --></username>
 	        <password><!-- NEXUS_REPO_ADMIN_PASSWORD --></password>
-	      <server>
+	      </server>
 	      <server>
 	        <id>maven-snapshots</id> <!-- Repository ID -->
 	        <username><!-- NEXUS_REPO_ADMIN_USERNAME --></username>
 	        <password><!-- NEXUS_REPO_ADMIN_PASSWORD --></password>
-	      <server>
+	      </server>
 	```
 	Replace **`<!-- NEXUS_REPO_ADMIN_USERNAME -->`** and **`<!-- NEXUS_REPO_ADMIN_PASSWORD -->`** with the _Nexus Repository admin **username** and **password**_ respectively, as set in [step 4](#step-4-prepare-nexus-repository).
 
