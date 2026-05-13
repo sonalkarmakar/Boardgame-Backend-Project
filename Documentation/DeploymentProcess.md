@@ -10,13 +10,22 @@ The steps for deploying this project are described below.
 	- IAM User
 	- AWS Access Key
 - [Generate an **Access Key**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS account that has the privileges mentioned above. Avoid using Root User, create an IAM User if needed.
-- [Install **Terraform**](https://developer.hashicorp.com/terraform/install).
-- [Install **Git**](https://git-scm.com/install/) and clone this repository to your preferred working directory.
+- Create a [**GitHub account**](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) and [**fork this repository**](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
+- [Install **Git**](https://git-scm.com/install/) and clone the **repository fork in your account** to your preferred working directory.
 	```sh
 	# Choose one below
-	git clone https://github.com/sonalkarmakar/Boardgame-Backend-Project.git # using HTTPS
-	git clone git@github.com:sonalkarmakar/Boardgame-Backend-Project.git # using SSH
+	git clone https://github.com/<your-github-id>/<repository-fork-name>.git # using HTTPS
+	git clone git@github.com:<your-github-id>/<repository-fork-name>.git # using SSH
 	```
+- [_Optional_] **Initialise Git** and add **add your repository fork as remote repository**.
+	```sh
+	cd /path/to/repo/clone # go in the cloned directory
+	git init # initialise git
+	git config user.name "Your Name" # configure your name
+	git config user.email <your-email-address> # configure your email address
+	git remote add <remote-repo-name> <remote-repo-url> # adding remote repo using SSH or HTTP link
+	```
+- [Install **Terraform**](https://developer.hashicorp.com/terraform/install).
 - [Install **AWS CLI v2**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 - Configure AWS CLI to connect to you AWS account:
 	- Run the command `aws configure`.
@@ -558,7 +567,17 @@ EKS CLUSTER CREATION COMPLETION SCREENSHOT
 ## Step 9: Build and Deploy the application
 - Open the _Jenkins web interface_ and go to the build created in [**Step 7**](#step-7-prepare-jenkins-build-job).
 - Commit the changes made to the **`pom.xml`** by the Terraform code. The Nexus Repository URL is added by the Terraform code when it's executed.
-- **Push the commit to the GitHub repository** to make the webhook trigger the Jenkins build process.
+	
+	Either make and commit the changes using [_GitHub website_](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files), or run the commands below if you've connected your repository fork to local working directory.
+	```sh
+	git add /path/to/pom.xml
+	git commit -m "My commit message for pom.xml"
+	```
+
+- **Push the commit to your GitHub repository fork** to make the webhook trigger the Jenkins build process.
+	```sh
+	git push <remote-repo-name> <branch-name>
+	```
 - Monitor the build status from the Jenkins web interface.
 - Login to the **Control Node EC2 instance** when the pipeline is successfully executed.
 - Run the `kubectl` commands below to check the status of the _EKS cluster_.
