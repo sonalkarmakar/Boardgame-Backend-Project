@@ -2,14 +2,22 @@
 The steps for deploying this project are described below.
 
 ## Prerequisites
-- [_Optional_] Create/acquire an **email address** with the feature of _password-authentication over SMTP_, to be used by Jenkins to send email notifications.
-- Create/acquire a [**Docker Hub**](http://hub.docker.com/) account.
+### AWS Setup
 - Create/acquire an [**AWS account**](https://aws.amazon.com/resources/create-account/) with privileges to create and delete the following resources:
 	- EC2 instances
 	- Security Group with inbound and outbound rules
 	- IAM User
 	- AWS Access Key
+- [Install **AWS CLI v2**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+- Configure AWS CLI to connect to you AWS account:
+	- Run the command `aws configure`.
+	- Enter the _access key ID_ that was generated previously.
+	- Enter the _access key Secret_.
+	- Enter your preferred [_AWS Region's code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
+	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
 - [Generate an **Access Key**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS account that has the privileges mentioned above. Avoid using Root User, create an IAM User if needed.
+
+### Git and GitHub Setup
 - Create a [**GitHub account**](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) and [**fork this repository**](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
 - [Install **Git**](https://git-scm.com/install/) and clone the **repository fork in your account** to your preferred working directory.
 	```sh
@@ -25,14 +33,10 @@ The steps for deploying this project are described below.
 	git config user.email <your-email-address> # configure your email address
 	git remote add <remote-repo-name> <remote-repo-url> # adding remote repo using SSH or HTTP link
 	```
+### Other requirements
+- Create/acquire a [**Docker Hub**](http://hub.docker.com/) account.
 - [Install **Terraform**](https://developer.hashicorp.com/terraform/install).
-- [Install **AWS CLI v2**](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
-- Configure AWS CLI to connect to you AWS account:
-	- Run the command `aws configure`.
-	- Enter the _access key ID_ that was generated previously.
-	- Enter the _access key Secret_.
-	- Enter your preferred [_AWS Region's code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
-	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
+- [_Optional_] Create/acquire an **email address** with the feature of _password-authentication over SMTP_, to be used by Jenkins to send email notifications.
 
 ## Step 1: Configure and run Terraform code
 - Open the file **`Terraform/terraform.tfvars`** and modify the values of the defined variables as per your reuqirement. Leave _default values_ for variables that _you don't require_.
