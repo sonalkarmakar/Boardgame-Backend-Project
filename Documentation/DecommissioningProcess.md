@@ -12,7 +12,7 @@ The project has to be deployed once for you to be able to follow the decommissio
 > For smooth operation, ensure that the **EKS cluster is deleted _before_ destroying Terraform-provisioned resources**.  
 >   
 > In case the resources provisioned by Terraform are destroyed _before_ deleting the cluster,  
-> - Get a system for deleting EKS cluster and install [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [`eksctl`](https://docs.aws.amazon.com/eks/latest/eksctl/installation.html), and [`kubectl`](https://k8s-docs.netlify.app/en/docs/tasks/tools/install-kubectl/).  
+> - Get a system for deleting EKS cluster and install [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html), [`eksctl`](https://docs.aws.amazon.com/eks/latest/eksctl/installation.html), and [`kubectl`](https://k8s-docs.netlify.app/en/docs/tasks/tools/install-kubectl/). You can create an EC2 instance if you want.  
 > - If it's not done already, [generate an AWS Access Key](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS Account that **can delete EKS clusters**.
 > - **Configure AWS CLI v2 to use your AWS account** with EKS cluster deletion privilege:
 > 	- Run the command `aws configure`.
@@ -85,5 +85,6 @@ The project has to be deployed once for you to be able to follow the decommissio
 		```
 
 ## Unaffected items
-If the deployment is done at least once, and then the infrastructure resources are decommissioned, then the following items will remain unaffected after decommissioning:
+If the deployment is done at least once, and later the infrastructure resources are decommissioned, then the following items will remain unaffected after decommissioning:
 - Docker Hub image of the application.
+- Application source code in both GitHub and local repository.
