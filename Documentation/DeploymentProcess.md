@@ -122,9 +122,9 @@ The steps for deploying this project are described below.
 	
 	[Enter "yes" when prompted by Ansible ping](/Documentation/Attachments/Ansible_SSH_Yes.png "Enter \"yes\" when prompted by Ansible ping")
 
-	<center>
+	<p float="center">
 	<img src="./Attachments/Ansible_SSH_Yes.png" height="600" alt="Enter &quot;yes&quot; when prompted by Ansible ping">
-	</center>
+	</p>
 
 - Run the playbooks
 	```sh
@@ -151,9 +151,9 @@ The steps for deploying this project are described below.
 
 [Nexus Repository Dashboard](/Documentation/Attachments/Nexus_Repository_Dashboard.png "Nexus Repository Dashboard")
 
-<center>
+<p float="center">
 <img src="./Attachments/Nexus_Repository_Dashboard.png" width="900" alt="Nexus Repository Dashboard">
-</center>
+</p>
 
 ## Step 5: Prepare SonarQube and generate token
 ### Step 5.1: Initial configuration
@@ -164,9 +164,9 @@ The steps for deploying this project are described below.
 
 [SonarQube Home Page](/Documentation/Attachments/SonarQube_HomePage.png "SonarQube Home Page")
 
-<center>
+<p float="center">
 <img src="./Attachments/SonarQube_HomePage.png" width="900" alt="SonarQube Home Page">
-</center>
+</p>
 
 ### Step 5.2: Generate token
 - [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
@@ -174,9 +174,9 @@ The steps for deploying this project are described below.
 
 [SonarQube Token Generation](/Documentation/Attachments/SonarQube_TokenGeneration.png "SonarQube Token Generation")
 
-<center>
+<p float="center">
 <img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation">
-</center>
+</p>
 
 ## Step 6: Prepare Jenkins for building
 ### Step 6.1: Initial configuration
@@ -189,9 +189,9 @@ The steps for deploying this project are described below.
 	
 	[Jenkins read to use](/Documentation/Attachments/Jenkins_Ready.png "Jenkins read to use")
 
-	<center>
+	<p float="center">
 	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins read to use">
-	</center>
+	</p>
 
 - Go to _**Manage Jenkins** > **Plugins**_ (under _**System Configuration** section_) and ensure that the following plugins are active:
 	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials) (`aws-credentials`)
@@ -211,9 +211,9 @@ The steps for deploying this project are described below.
 	
 	[Jenkins Installed Plugins](/Documentation/Attachments/Jenkins_Installed_Plugins.png "Jenkins Installed Plugins")
 
-	<center>
+	<p float="center">
 	<img src="./Attachments/Jenkins_Installed_Plugins.png" width="1100" alt="Jenkins Installed Plugins">
-	</center>
+	</p>
 
 > [!NOTE]  
 > All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
@@ -222,9 +222,9 @@ The steps for deploying this project are described below.
 ### Step 6.2: Add credentials
 [Jenkins Adding Credentials](/Documentation/Attachments/Jenkins_Add_Credentials.png "Jenkins Adding Credentials")
 
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials">
-</center>
+</p>
 
 - Add Global credentials in Jenkins for the following as the specified types:
 	| Credentials                | Jenkins Credential Type                                                                     | Description                                                                                                     |
@@ -254,9 +254,9 @@ The steps for deploying this project are described below.
 
 [Editor of Config File Provider](/Documentation/Attachments/Jenkins_ConfigFile_Editor.png "Editor of Config File Provider")
 
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_ConfigFile_Editor.png" width="1000" alt="Editor of Config File Provider">
-</center>
+</p>
 
 ### Step 6.4: Configure Tools for Jenkins
 Go to _**Manage Jenkins** > **Tools**_ (under _**System Configuration** section_) and install the requried tools as described below.
@@ -312,9 +312,9 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 
 [Jenkins Email Notification](/Documentation/Attachments/Jenkins_Email_Notification.png)
 
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_Email_Notification.png" width="550" alt="Jenkins Email Notification" title="Jenkins Email Notification">
-</center>
+</p>
 
 ##### [_Optional_] Step 6.5.2a: Testing email notification
 - Enable the checkbox labeled "**Test configuration by sending test e-mail**".
@@ -322,20 +322,20 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Click on the _**Test configuration** button_.
 
 If configured properly, it will display the message "_Email was successfully sent_".
-<center>
+<p float="center">
 
 ![Jenkins Test Email](/Documentation/Attachments/Jenkins_Email_Testing.png)
 
-</center>
+</p>
 
 ## Step 7: Prepare Jenkins build job
 Prepare a Jenkins job for building and deploying the application by following the instructions below.
 
 ### Step 7.1: Create Jenkins pipeline job
 [Jenkins Create New Job](/Documentation/Attachments/Jenkins_New_Job.png)
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_New_Job.png" width="600" alt="Jenkins Create New Job" title="Jenkins Create New Job">
-</center>
+</p>
 
 - Open Jenkins dashboard/home page.
 - Click on the _**Create a job** button_ in the centre, or the _**New Item** button_ in the _side-pane_ on the right.
@@ -344,9 +344,9 @@ Prepare a Jenkins job for building and deploying the application by following th
 
 ### Step 7.2: Configure pipeline job
 [Jenkins Configure Pipeline](/Documentation/Attachments/Jenkins_Configure_Pipeline.png)
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_Configure_Pipeline.png" width="1000" alt="Jenkins Configure Pipeline" title="Jenkins Configure Pipeline">
-</center>
+</p>
 
 - Open Jenkins dashboard/home page and click on your job from the list.
 - In the _**Configure** page_ of the job, enter an appropriate description in the _**Description** field_ of the _**General** section_.
@@ -361,9 +361,9 @@ Prepare a Jenkins job for building and deploying the application by following th
 
 ### Step 7.3: Add the pipeline script
 [Jenkins Pipeline Script](/Documentation/Attachments/Jenkins_Pipeline_Script.png)
-<center>
+<p float="center">
 <img src="./Attachments/Jenkins_Pipeline_Script.png" width="800" alt="Jenkins Pipeline Script" title="Jenkins Pipeline Script">
-</center>
+</p>
 
 - Scroll down to the _**Pipeline** section_ of the job's _**Configure** page_.
 - Select the option "**Pipeline script**" from the _**Definition** dropdown_.
@@ -555,9 +555,11 @@ Prepare a Jenkins job for building and deploying the application by following th
 ## Step 8: Create EKS Cluster
 - Login to **Control Node EC2 instance**.
 - Ensure that **AWS CLI v2**, **Eksctl** and **`kubectl`** are installed.
-	```
-	WHICH COMMAND OUTPUT SCREENSHOT
-	```
+	<p float="center">
+
+	![Path to cluster tools' executables](/Documentation/Attachments/Cluster_Tools_Path.png)
+
+	</p>
 	```sh
 	which aws eksctl kubectl # should output the executable path for each
 	```
@@ -596,9 +598,9 @@ Prepare a Jenkins job for building and deploying the application by following th
 	```
 
 [EKS cluster created](/Documentation/Attachments/eksctl_Cluster_Created.png)
-<center>
+<p float="center">
 <img src="./Attachments/eksctl_Cluster_Created.png" width="800" alt="EKS cluster created" title="EKS cluster created">
-</center>
+</p>
 
 ## Step 9: Build and Deploy the application
 - Open the _Jenkins web interface_ and go to the build created in [**Step 7**](#step-7-prepare-jenkins-build-job).
@@ -675,9 +677,9 @@ Follow the instructions below to configure Grafana for visualising data collecte
 - Scroll down to the bottom of the page and click on the _**Save & test** button_. If it displays the message "_Successfully queried the Prometheus API_", then it's configured correctly.
 
 [Grafana Data Source added](/Documentation/Attachments/Grafana_DataSource_Added.png)
-<center>
+<p float="center">
 <img src="./Attachments/Grafana_DataSource_Added.png" width="900" alt="Grafana Data Source added" title="Grafana Data Source added">
-</center>
+</p>
 
 #### Step 10.1.3: Creating Dashboard
 - Click on the _button with **plus icon (+)**_ beside the _search bar_ in the _top-right corner_ of the page, then click on **Import Dashboard**.
@@ -693,9 +695,9 @@ Follow the instructions below to configure Grafana for visualising data collecte
 - Click on the _**Import** button_ at the bottom to see your monitoring dashboard.
 
 [Grafana Dashboard](/Documentation/Attachments/Grafana_Dashboard.png)
-<center>
+<p float="center">
 <img src="./Attachments/Grafana_Dashboard.png" width="1200" alt="Grafana Dashboard" title="Grafana Dashboard">
-</center>
+</p>
 
 # Finally...
 After following all the steps in each stage above,...
