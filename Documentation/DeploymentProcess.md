@@ -189,7 +189,7 @@ The steps for deploying this project are described below.
 	
 	[Jenkins ready to use](/Documentation/Attachments/Jenkins_Ready.png "Jenkins ready to use")
 
-	<div style="display: flex; justify-content: center">
+	<div style="text-align: center">
 	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins ready to use" title="Jenkins ready to use">
 	</div>
 
