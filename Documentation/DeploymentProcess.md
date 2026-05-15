@@ -189,9 +189,9 @@ The steps for deploying this project are described below.
 	
 	[Jenkins ready to use](/Documentation/Attachments/Jenkins_Ready.png "Jenkins ready to use")
 
-	
-	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins ready to use" title="Jenkins ready to use" style="display: block; margin-left: auto; margin-right: auto">
-	
+	<div style="display: flex; justify-content: center">
+	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins ready to use" title="Jenkins ready to use">
+	</div>
 
 - Go to _**Manage Jenkins** > **Plugins**_ (under _**System Configuration** section_) and ensure that the following plugins are active:
 	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials) (`aws-credentials`)
