@@ -165,7 +165,7 @@ The steps for deploying this project are described below.
 - The SonarQube home page should now be visible.
 
 <center>
-<img src="./Attachments/SonarQube_HomePage.png" width="900" alt="SonarQube Home Page">
+<img src="./Attachments/SonarQube_HomePage.png" width="900" alt="SonarQube Home Page" title="SonarQube Home Page">
 </center>
 
 ### Step 5.2: Generate token
@@ -173,7 +173,7 @@ The steps for deploying this project are described below.
 - **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
 
 <center>
-<img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation">
+<img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation" title="SonarQube Token Generation">
 </center>
 
 ## Step 6: Prepare Jenkins for building
@@ -215,7 +215,7 @@ The steps for deploying this project are described below.
 
 ### Step 6.2: Add credentials
 <center>
-<img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials">
+<img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials" title="Jenkins Adding Credentials">
 </center>
 
 - Add Global credentials in Jenkins for the following as the specified types:
@@ -245,7 +245,7 @@ The steps for deploying this project are described below.
 	Replace **`<!-- NEXUS_REPO_ADMIN_USERNAME -->`** and **`<!-- NEXUS_REPO_ADMIN_PASSWORD -->`** with the _Nexus Repository admin **username** and **password**_ respectively, as set in [step 4](#step-4-prepare-nexus-repository).
 
 <center>
-<img src="./Attachments/Jenkins_ConfigFile_Editor.png" width="1000" alt="Editor of Config File Provider">
+<img src="./Attachments/Jenkins_ConfigFile_Editor.png" width="1000" alt="Editor of Config File Provider" title="Editor of Config File Provider">
 </center>
 
 ### Step 6.4: Configure Tools for Jenkins
