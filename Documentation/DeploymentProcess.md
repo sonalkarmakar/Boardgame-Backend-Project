@@ -69,7 +69,7 @@ The steps for deploying this project are described below.
 - Ensure that you're in the **correct AWS Region** from the _top-right corner_ of the web-page.
 - Copy the public IP address of the **Control Node** instance. It should be in _Running_ state and have the name in the format "`<Project_Prefix>-<InstanceName>`".
 	
-	![EC2 Information in AWS Console](/Documentation/Attachments/AWS_EC2Instance_Info.png)
+	![EC2 Information in AWS Console](/Documentation/Attachments/AWS_EC2Instance_Info.png "EC2 Information in AWS Console")
 
 - Copy the following items to the specified directories of the **Control Node** using **Secure Copy (`scp`)**:
 	> ℹ️ **Info:** The generated SSH keys are named in the format "`<Project_Prefix>-<Ansible_SSH_Key_Name>`". If you haven't changed the default values in `terraform.tfvars`, the commands below require no modification to key names.  
@@ -106,7 +106,7 @@ The steps for deploying this project are described below.
 ## Step 3: Configure and run Ansible in Control Node
 - Ensure that the **`Ansible/` directory** contains the **6 playbooks** and the **inventory INI** files. If they're not present, use `scp` to copy them from your system.
 	
-	![Ansible Playbook and Inventory files](/Documentation/Attachments/Ansible_Files.png)
+	![Ansible Playbook and Inventory files](/Documentation/Attachments/Ansible_Files.png "Ansible Playbook and Inventory files")
 
 - Add **remote hosts** to **list of known hosts**. This may not be required, but the next step might fail without it.
 	```sh
@@ -120,7 +120,11 @@ The steps for deploying this project are described below.
 	```
 	If the step above was skipped, you will need to enter "`yes`" when it's waiting for your input.
 	
-	![Enter "yes" for first Ansible connections](/Documentation/Attachments/Ansible_SSH_Yes.png)
+	[Enter "yes" when prompted by Ansible ping](/Documentation/Attachments/Ansible_SSH_Yes.png "Enter \"yes\" when prompted by Ansible ping")
+
+	<center>
+	<img src="./Attachments/Ansible_SSH_Yes.png" height="600" alt="Enter &quot;yes&quot; when prompted by Ansible ping">
+	</center>
 
 - Run the playbooks
 	```sh
@@ -140,12 +144,16 @@ The steps for deploying this project are described below.
 > - The playbook "`06_RunMonitoringContainers.yaml`" requires the **external IP address** for accessing the application, so it's ran after application deployment.  
 
 ## Step 4: Prepare Nexus Repository
-![Nexus Repository Dashboard](/Documentation/Attachments/Nexus_Repository_Dashboard.png)
-
 - Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
 - Enter the **initial Nexus Repository admin password** retrieved by `05_RetrieveInitialPasswords.yaml` Ansible playbook, in the _Login_ page.
 - Create the **new admin password** when prompted, then continue to the next setup pages.
 - Select _Disable anonymous access_ option in the **Configure Anonymous Access** page.
+
+[Nexus Repository Dashboard](/Documentation/Attachments/Nexus_Repository_Dashboard.png "Nexus Repository Dashboard")
+
+<center>
+<img src="./Attachments/Nexus_Repository_Dashboard.png" width="900" alt="Nexus Repository Dashboard">
+</center>
 
 ## Step 5: Prepare SonarQube and generate token
 ### Step 5.1: Initial configuration
@@ -154,13 +162,21 @@ The steps for deploying this project are described below.
 - Create the **new admin password** in the **Update your password** page. Ensure to follow the password rules shown on screen.
 - The SonarQube home page should now be visible.
 
-![SonarQube Home Page](/Documentation/Attachments/SonarQube_HomePage.png)
+[SonarQube Home Page](/Documentation/Attachments/SonarQube_HomePage.png "SonarQube Home Page")
+
+<center>
+<img src="./Attachments/SonarQube_HomePage.png" width="900" alt="SonarQube Home Page">
+</center>
 
 ### Step 5.2: Generate token
 - [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
 - **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
 
-![SonarQube Token Generation](/Documentation/Attachments/SonarQube_TokenGeneration.png)
+[SonarQube Token Generation](/Documentation/Attachments/SonarQube_TokenGeneration.png "SonarQube Token Generation")
+
+<center>
+<img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation">
+</center>
 
 ## Step 6: Prepare Jenkins for building
 ### Step 6.1: Initial configuration
@@ -171,7 +187,11 @@ The steps for deploying this project are described below.
 - Verify the URL in the Instance Configuration page and click on Save and Finish button.
 - The next page should display messages saying that _Jenkins is ready to use_. Click the **Start using Jenkins** button to open the Jenkins home page.
 	
-	![Jenkins read to use](/Documentation/Attachments/Jenkins_Ready.png)
+	[Jenkins read to use](/Documentation/Attachments/Jenkins_Ready.png "Jenkins read to use")
+
+	<center>
+	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins read to use">
+	</center>
 
 - Go to _**Manage Jenkins** > **Plugins**_ (under _**System Configuration** section_) and ensure that the following plugins are active:
 	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials) (`aws-credentials`)
@@ -189,14 +209,22 @@ The steps for deploying this project are described below.
 	- [Pipeline: AWS Steps](https://plugins.jenkins.io/pipeline-aws) (`pipeline-aws`)
 	- [SonarQube Scanner](https://plugins.jenkins.io/sonar) (`sonar`)
 	
-	![Jenkins Installed Plugins](/Documentation/Attachments/Jenkins_Installed_Plugins.png)
+	[Jenkins Installed Plugins](/Documentation/Attachments/Jenkins_Installed_Plugins.png "Jenkins Installed Plugins")
+
+	<center>
+	<img src="./Attachments/Jenkins_Installed_Plugins.png" width="1100" alt="Jenkins Installed Plugins">
+	</center>
 
 > [!NOTE]  
 > All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
 > However, there might be issues where plugins get installed but not enabled.  
 
 ### Step 6.2: Add credentials
-![Jenkins Adding Credentials](/Documentation/Attachments/Jenkins_Add_Credentials.png)
+[Jenkins Adding Credentials](/Documentation/Attachments/Jenkins_Add_Credentials.png "Jenkins Adding Credentials")
+
+<center>
+<img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials">
+</center>
 
 - Add Global credentials in Jenkins for the following as the specified types:
 	| Credentials                | Jenkins Credential Type                                                                     | Description                                                                                                     |
@@ -224,7 +252,11 @@ The steps for deploying this project are described below.
 	```
 	Replace **`<!-- NEXUS_REPO_ADMIN_USERNAME -->`** and **`<!-- NEXUS_REPO_ADMIN_PASSWORD -->`** with the _Nexus Repository admin **username** and **password**_ respectively, as set in [step 4](#step-4-prepare-nexus-repository).
 
-![Editor of Config File Provider](/Documentation/Attachments/Jenkins_ConfigFile_Editor.png)
+[Editor of Config File Provider](/Documentation/Attachments/Jenkins_ConfigFile_Editor.png "Editor of Config File Provider")
+
+<center>
+<img src="./Attachments/Jenkins_ConfigFile_Editor.png" width="1000" alt="Editor of Config File Provider">
+</center>
 
 ### Step 6.4: Configure Tools for Jenkins
 Go to _**Manage Jenkins** > **Tools**_ (under _**System Configuration** section_) and install the requried tools as described below.
@@ -278,7 +310,11 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Enter values as per your preference in the fields not mentioned above.
 - Click on the _**Apply**_ and _**Save**_ buttons at the bottom of the page.
 
-![Jenkins Email Notification](/Documentation/Attachments/Jenkins_Email_Notification.png)
+[Jenkins Email Notification](/Documentation/Attachments/Jenkins_Email_Notification.png)
+
+<center>
+<img src="./Attachments/Jenkins_Email_Notification.png" width="550" alt="Jenkins Email Notification" title="Jenkins Email Notification">
+</center>
 
 ##### [_Optional_] Step 6.5.2a: Testing email notification
 - Enable the checkbox labeled "**Test configuration by sending test e-mail**".
@@ -286,26 +322,36 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Click on the _**Test configuration** button_.
 
 If configured properly, it will display the message "_Email was successfully sent_".
+<center>
 
 ![Jenkins Test Email](/Documentation/Attachments/Jenkins_Email_Testing.png)
+
+</center>
 
 ## Step 7: Prepare Jenkins build job
 Prepare a Jenkins job for building and deploying the application by following the instructions below.
 
 ### Step 7.1: Create Jenkins pipeline job
-![Jenkins Create New Job](/Documentation/Attachments/Jenkins_New_Job.png)
+[Jenkins Create New Job](/Documentation/Attachments/Jenkins_New_Job.png)
+<center>
+<img src="./Attachments/Jenkins_New_Job.png" width="600" alt="Jenkins Create New Job" title="Jenkins Create New Job">
+</center>
+
 - Open Jenkins dashboard/home page.
 - Click on the _**Create a job** button_ in the centre, or the _**New Item** button_ in the _side-pane_ on the right.
 - In the _**New Item** page_, enter a _name for the job_, then select _**Pipeline**_ under "_Select an item type_".
 - Click on the _**OK** button_ at the bottom.
 
 ### Step 7.2: Configure pipeline job
-![Jenkins Configure Pipeline](/Documentation/Attachments/Jenkins_Configure_Pipeline.png)
+[Jenkins Configure Pipeline](/Documentation/Attachments/Jenkins_Configure_Pipeline.png)
+<center>
+<img src="./Attachments/Jenkins_Configure_Pipeline.png" width="1000" alt="Jenkins Configure Pipeline" title="Jenkins Configure Pipeline">
+</center>
 
 - Open Jenkins dashboard/home page and click on your job from the list.
 - In the _**Configure** page_ of the job, enter an appropriate description in the _**Description** field_ of the _**General** section_.
 - Scroll down to the _**Triggers** section_ and _check the box_ for the option "**GitHub hook trigger for GITScm polling**".
-- [Create a GitHub webhook](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) with the values for the fields specified below.
+- [Create a **GitHub webhook**](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) with the values for the fields specified below.
 	- **Payload URL**: `http://<jenkins-host-address>:8080/github-webhook/` ('`/`' is _needed_ at the end)
 	- **Content type**: `application/json`
 	- **Which events would you like to trigger this webhook?**: `Send me everything`
@@ -314,7 +360,10 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Click on _**Apply** button_ at the bottom.
 
 ### Step 7.3: Add the pipeline script
-![Jenkins Pipeline Script](/Documentation/Attachments/Jenkins_Pipeline_Script.png)
+[Jenkins Pipeline Script](/Documentation/Attachments/Jenkins_Pipeline_Script.png)
+<center>
+<img src="./Attachments/Jenkins_Pipeline_Script.png" width="800" alt="Jenkins Pipeline Script" title="Jenkins Pipeline Script">
+</center>
 
 - Scroll down to the _**Pipeline** section_ of the job's _**Configure** page_.
 - Select the option "**Pipeline script**" from the _**Definition** dropdown_.
@@ -546,7 +595,10 @@ Prepare a Jenkins job for building and deploying the application by following th
 	aws eks update-kubeconfig --region <CLUSTER_REGION> --name <CLUSTER_NAME>
 	```
 
-![EKS cluster created](/Documentation/Attachments/eksctl_Cluster_Created.png)
+[EKS cluster created](/Documentation/Attachments/eksctl_Cluster_Created.png)
+<center>
+<img src="./Attachments/eksctl_Cluster_Created.png" width="800" alt="EKS cluster created" title="EKS cluster created">
+</center>
 
 ## Step 9: Build and Deploy the application
 - Open the _Jenkins web interface_ and go to the build created in [**Step 7**](#step-7-prepare-jenkins-build-job).
@@ -580,10 +632,10 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Once the pods, deployment and service are up and running, note down the Kubernetes **service name** and **external IP address** from the output of `kubectl get svc`.
 - Access the application website by going to the **Kubernetes external IP address**.
 
-<p float="left">
-	<img src="./Attachments/Jenkins_Build_Status.png" width="200" />
-	<img src="./Attachments/DockerHub_Image.png" width="200" />
-	<img src="./Attachments/Deployed_Application.png" width="200" />
+<p float="center">
+	<img src="./Attachments/Jenkins_Build_Status.png" width="600" />
+	<img src="./Attachments/DockerHub_Image.png" width="600" />
+	<img src="./Attachments/Deployed_Application.png" width="600" />
 </p>
 
 | Jenkins Build Status                                                        | Docker Hub                                                    | Deployed Application                                                         |
@@ -622,7 +674,10 @@ Follow the instructions below to configure Grafana for visualising data collecte
 	- Enter the **Prometheus server URL** (`http://<monitoring-instance-public-ip>:9090`) in the _**Connections** section_.
 - Scroll down to the bottom of the page and click on the _**Save & test** button_. If it displays the message "_Successfully queried the Prometheus API_", then it's configured correctly.
 
-![Grafana Data Source added](/Documentation/Attachments/Grafana_DataSource_Added.png)
+[Grafana Data Source added](/Documentation/Attachments/Grafana_DataSource_Added.png)
+<center>
+<img src="./Attachments/Grafana_DataSource_Added.png" width="900" alt="Grafana Data Source added" title="Grafana Data Source added">
+</center>
 
 #### Step 10.1.3: Creating Dashboard
 - Click on the _button with **plus icon (+)**_ beside the _search bar_ in the _top-right corner_ of the page, then click on **Import Dashboard**.
@@ -637,7 +692,10 @@ Follow the instructions below to configure Grafana for visualising data collecte
 - From the dropdown menu labeled "_Select a Prometheus data source_", select the data source created in [**previous step**](#step-1012-adding-source-for-monitoring-data).
 - Click on the _**Import** button_ at the bottom to see your monitoring dashboard.
 
-![Grafana Dashboard](/Documentation/Attachments/Grafana_Dashboard.png)
+[Grafana Dashboard](/Documentation/Attachments/Grafana_Dashboard.png)
+<center>
+<img src="./Attachments/Grafana_Dashboard.png" width="1200" alt="Grafana Dashboard" title="Grafana Dashboard">
+</center>
 
 # Finally...
 After following all the steps in each stage above,...
