@@ -122,7 +122,7 @@ The steps for deploying this project are described below.
 	
 	[Enter "yes" when prompted by Ansible ping](/Documentation/Attachments/Ansible_SSH_Yes.png "Enter \"yes\" when prompted by Ansible ping")
 
-	<p float="center">
+	<p style="text-align: center;">
 	<img src="./Attachments/Ansible_SSH_Yes.png" height="600" alt="Enter &quot;yes&quot; when prompted by Ansible ping">
 	</p>
 
@@ -151,7 +151,7 @@ The steps for deploying this project are described below.
 
 [Nexus Repository Dashboard](/Documentation/Attachments/Nexus_Repository_Dashboard.png "Nexus Repository Dashboard")
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Nexus_Repository_Dashboard.png" width="900" alt="Nexus Repository Dashboard">
 </p>
 
@@ -164,7 +164,7 @@ The steps for deploying this project are described below.
 
 [SonarQube Home Page](/Documentation/Attachments/SonarQube_HomePage.png "SonarQube Home Page")
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/SonarQube_HomePage.png" width="900" alt="SonarQube Home Page">
 </p>
 
@@ -174,7 +174,7 @@ The steps for deploying this project are described below.
 
 [SonarQube Token Generation](/Documentation/Attachments/SonarQube_TokenGeneration.png "SonarQube Token Generation")
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation">
 </p>
 
@@ -189,7 +189,7 @@ The steps for deploying this project are described below.
 	
 	[Jenkins read to use](/Documentation/Attachments/Jenkins_Ready.png "Jenkins read to use")
 
-	<p float="center">
+	<p style="text-align: center;">
 	<img src="./Attachments/Jenkins_Ready.png" width="" alt="Jenkins read to use">
 	</p>
 
@@ -211,7 +211,7 @@ The steps for deploying this project are described below.
 	
 	[Jenkins Installed Plugins](/Documentation/Attachments/Jenkins_Installed_Plugins.png "Jenkins Installed Plugins")
 
-	<p float="center">
+	<p style="text-align: center;">
 	<img src="./Attachments/Jenkins_Installed_Plugins.png" width="1100" alt="Jenkins Installed Plugins">
 	</p>
 
@@ -222,7 +222,7 @@ The steps for deploying this project are described below.
 ### Step 6.2: Add credentials
 [Jenkins Adding Credentials](/Documentation/Attachments/Jenkins_Add_Credentials.png "Jenkins Adding Credentials")
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials">
 </p>
 
@@ -254,7 +254,7 @@ The steps for deploying this project are described below.
 
 [Editor of Config File Provider](/Documentation/Attachments/Jenkins_ConfigFile_Editor.png "Editor of Config File Provider")
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_ConfigFile_Editor.png" width="1000" alt="Editor of Config File Provider">
 </p>
 
@@ -312,7 +312,7 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 
 [Jenkins Email Notification](/Documentation/Attachments/Jenkins_Email_Notification.png)
 
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_Email_Notification.png" width="550" alt="Jenkins Email Notification" title="Jenkins Email Notification">
 </p>
 
@@ -322,7 +322,7 @@ Go to _**Manage Jenkins** > **System**_ (under _**System Configuration** section
 - Click on the _**Test configuration** button_.
 
 If configured properly, it will display the message "_Email was successfully sent_".
-<p float="center">
+<p style="text-align: center;">
 
 ![Jenkins Test Email](/Documentation/Attachments/Jenkins_Email_Testing.png)
 
@@ -333,7 +333,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 
 ### Step 7.1: Create Jenkins pipeline job
 [Jenkins Create New Job](/Documentation/Attachments/Jenkins_New_Job.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_New_Job.png" width="600" alt="Jenkins Create New Job" title="Jenkins Create New Job">
 </p>
 
@@ -344,7 +344,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 
 ### Step 7.2: Configure pipeline job
 [Jenkins Configure Pipeline](/Documentation/Attachments/Jenkins_Configure_Pipeline.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_Configure_Pipeline.png" width="1000" alt="Jenkins Configure Pipeline" title="Jenkins Configure Pipeline">
 </p>
 
@@ -361,7 +361,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 
 ### Step 7.3: Add the pipeline script
 [Jenkins Pipeline Script](/Documentation/Attachments/Jenkins_Pipeline_Script.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Jenkins_Pipeline_Script.png" width="800" alt="Jenkins Pipeline Script" title="Jenkins Pipeline Script">
 </p>
 
@@ -555,7 +555,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 ## Step 8: Create EKS Cluster
 - Login to **Control Node EC2 instance**.
 - Ensure that **AWS CLI v2**, **Eksctl** and **`kubectl`** are installed.
-	<p float="center">
+	<p style="text-align: center;">
 
 	![Path to cluster tools' executables](/Documentation/Attachments/Cluster_Tools_Path.png)
 
@@ -598,7 +598,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 	```
 
 [EKS cluster created](/Documentation/Attachments/eksctl_Cluster_Created.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/eksctl_Cluster_Created.png" width="800" alt="EKS cluster created" title="EKS cluster created">
 </p>
 
@@ -634,7 +634,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 - Once the pods, deployment and service are up and running, note down the Kubernetes **service name** and **external IP address** from the output of `kubectl get svc`.
 - Access the application website by going to the **Kubernetes external IP address**.
 
-<p float="center">
+<p style="text-align: center;">
 	<img src="./Attachments/Jenkins_Build_Status.png" width="600" />
 	<img src="./Attachments/DockerHub_Image.png" width="600" />
 	<img src="./Attachments/Deployed_Application.png" width="600" />
@@ -677,7 +677,7 @@ Follow the instructions below to configure Grafana for visualising data collecte
 - Scroll down to the bottom of the page and click on the _**Save & test** button_. If it displays the message "_Successfully queried the Prometheus API_", then it's configured correctly.
 
 [Grafana Data Source added](/Documentation/Attachments/Grafana_DataSource_Added.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Grafana_DataSource_Added.png" width="900" alt="Grafana Data Source added" title="Grafana Data Source added">
 </p>
 
@@ -695,7 +695,7 @@ Follow the instructions below to configure Grafana for visualising data collecte
 - Click on the _**Import** button_ at the bottom to see your monitoring dashboard.
 
 [Grafana Dashboard](/Documentation/Attachments/Grafana_Dashboard.png)
-<p float="center">
+<p style="text-align: center;">
 <img src="./Attachments/Grafana_Dashboard.png" width="1200" alt="Grafana Dashboard" title="Grafana Dashboard">
 </p>
 
