@@ -210,8 +210,11 @@ The steps for deploying this project are described below.
 	</center>
 
 > [!NOTE]  
-> All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
-> However, there might be issues where plugins get installed but not enabled.  
+> - All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
+> 	However, there might be issues where plugins get installed but not enabled.
+>  
+> - The _unique plugin names_ used in the Ansible playbook are obtained from their **corresponding** [**Jenkins Plugin Index**](https://plugins.jenkins.io/) webpage.  
+> 	For example, the plugin _AWS Credentials_ is identified in the plyabook by "_`aws-credentials`_", which is taken from its webpage _`plugins.jenkins.io/aws-credentials`_.  
 
 ### Step 6.2: Add credentials
 <center>
