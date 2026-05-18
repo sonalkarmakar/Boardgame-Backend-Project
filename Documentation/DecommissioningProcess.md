@@ -88,11 +88,12 @@ The project has to be deployed once for you to be able to follow the decommissio
 If the deployment is done at least once, and later the infrastructure resources are decommissioned, certain files/items are changed or unchanged after the decommissioning.
 
 ### Removed items
-Destroying the Terraform resources also destroys the following items:
+Any item/file generated or modified by Terraform code is considered to be provisioned by Terraform, and thus, removed when Terraform destroys the resources.
+
+Below are such items/files that are removed from the local repository:
 - Ansible inventory file (`Ansible/inventory.ini`).
 - `pom.xml` file.
-
-The items above are modified when Terraform provisions the resources, so they're also considered provisioned resources by Terraform, which is why they're also deleted.
+- Secrets like AWS Access Key, SSH key-pairs
 
 ### Unaffected items
 The following items will remain unaffected after decommissioning:
