@@ -31,7 +31,7 @@
 - name: Install Trivy inside Jenkins container
   hosts: jenkins
   tasks:
-    - name: Run Docker exec commands to install Trivy
+    - name: Run Docker exec commands to add Trivy repository and install from it
       tags:
         - task1
         - trivy
@@ -51,7 +51,7 @@
 - name: Install cluster tools inside Jenkins container
   hosts: jenkins
   tasks:
-    - name: Run Docker exec commands to add kubectl repository
+    - name: Run Docker exec commands to add kubectl repository and install from it
       tags:
         - task1
         - kubectl
@@ -71,9 +71,9 @@
             apt-get update -y;
             apt-get install -y kubectl
 
-    - name: Run Docker exec commands to install kubectl
+    - name: Run Docker exec commands to install AWS CLI v2
       tags:
-        - task1
+        - task2
         - kubectl
         - install
       community.docker.docker_container_exec:
@@ -89,7 +89,7 @@
 
     - name: Run Docker exec commands to install eksctl
       tags:
-        - task2
+        - task3
         - eksctl
         - repository
         - install
