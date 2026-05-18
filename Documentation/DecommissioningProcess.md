@@ -59,6 +59,11 @@ The project has to be deployed once for you to be able to follow the decommissio
 > [!NOTE]  
 > Ensure that the AWS Console is set to the **_correct AWS Region_** for all the pages mentioned above.  
 
+<p style="text-align: center">
+	<img src="./Attachments/Cluster_Deletion.png" height="350" alt="Application cluster deleted" title="Application cluster deleted">
+	<img src="./Attachments/Grafana_Application_Unavailable.png" height="350" alt="Application unavailable in Grafana Dashboard" title="Application unavailable in Grafana Dashboard">
+</p>
+
 ## Destroying resources provisioned by Terraform
 - <ins>_Step 1:_</ins> Open a temrinal in the system you used to create the resources with Terraform.
 - <ins>_Step 2:_</ins> Go inside the "`Terraform`" directory of the respository clone in your system.
@@ -83,6 +88,10 @@ The project has to be deployed once for you to be able to follow the decommissio
 		git add /path/to/pom.xml
 		git commit -m "Restoring placeholder/template pom.xml"
 		```
+
+<center>
+<img src="./Attachments/Terraform_Destruction.png" width="" alt="Resources provisioned by Terraform are destroyed" title="Resources provisioned by Terraform are destroyed">
+</center>
 
 ## Notable changes
 If the deployment is done at least once, and later the infrastructure resources are decommissioned, certain files/items are changed or unchanged after the decommissioning.
