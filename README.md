@@ -29,9 +29,11 @@ The project uses the following tools:
 	- [_Prometheus_](https://prometheus.io/docs/introduction/overview/#what-is-prometheus): record metrics about application endpoint (website) availability from Blackbox Exporter.
 
 ## Basic Structure
-```
-PROJECT STRUCTURE DIAGRAM
-```
+<center>
+
+![Basic Project Structure](/Documentation/Attachments/Basic_Project_Structure.svg "Basic Project Structure")
+
+</center>
 
 ## Notable Features
 - Mostly automated processes, requiring manual effort only for credentials, and initial setup of Jenkins, Nexus, SonarQube and Grafana.
