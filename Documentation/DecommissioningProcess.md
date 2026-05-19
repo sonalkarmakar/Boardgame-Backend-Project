@@ -1,3 +1,11 @@
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).
+
+---
+
 # Decommissioning Process
 There are 2 stages for decommissioning all the infrastucture created for this project:
 - Delete the AWS Elastic Kubernetes Service cluster.
@@ -116,3 +124,11 @@ Below are such items/files that are removed from the local repository:
 The following items will remain unaffected after decommissioning:
 - Docker Hub image of the application.
 - Application source code in both GitHub and local repository.
+
+---
+
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).

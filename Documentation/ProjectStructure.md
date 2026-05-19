@@ -1,3 +1,11 @@
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).
+
+---
+
 # Project Structure
 ## Contents
 - [Overview](#overview)
@@ -196,3 +204,11 @@ Grafana is used for visualising the data from Prometheus using a pre-built dashb
 Visualisation is available after signing in at port 3000 of the hosting EC2 instance.
 
 The preset Prometheus dashboard is available from the [Grafana dashboard catalogue](https://grafana.com/grafana/dashboards/).
+
+---
+
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).

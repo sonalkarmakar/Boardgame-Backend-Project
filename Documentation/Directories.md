@@ -1,3 +1,11 @@
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).
+
+---
+
 # Directories
 ## Contents
 - [Summary](#summary)
@@ -166,3 +174,11 @@ Contains the tempaltes for Terraform to generate other necessary files.
 - **`mvnw`**: shell script that invokes a wrapper for Maven.
 - **`mvnw.cmd`**: CMD script that invokes the Maven wrapper.
 - **`pom.xml`**: Maven's Project Object Model file that defines and describes the project's parameters.
+
+---
+
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Steps to deploy](/Documentation/DeploymentProcess.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).
