@@ -1,3 +1,11 @@
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).
+
+---
+
 # Deployment Process
 The steps for deploying this project are described below.
 
@@ -723,3 +731,11 @@ After following all the steps in each stage above,...
 - **Commits pushed** to application's _GitHub repository_ trigger **new Jenkins build** and **automatic deployment**, if there are no errors.
 - **Application builds** are stored in the **Nexus Repository**.
 - **Application's Docker image** is stored in your **Docker Hub account**.
+
+---
+
+> <ins>**Documentation Links**</ins>
+> - [Project README](/README.md).
+> - [Detailed project structure](/Documentation/ProjectStructure.md).
+> - [Description of the directories](/Documentation/Directories.md).
+> - [Steps to decommission](/Documentation/DecommissioningProcess.md).
