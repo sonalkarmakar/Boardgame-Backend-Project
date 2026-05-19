@@ -1,6 +1,42 @@
 # Deployment Process
 The steps for deploying this project are described below.
 
+## Contents
+- [Prerequisites](#prerequisites)
+- [AWS Setup](#aws-setup)
+- [Git and GitHub Setup](#git-and-github-setup)
+- [Other requirements](#other-requirements)
+- [Step 1: Configure and run Terraform code](#step-1-configure-and-run-terraform-code)
+- [Step 2: Connect to Control Node and prepare it](#step-2-connect-to-control-node-and-prepare-it)
+- [Step 3: Configure and run Ansible in Control Node](#step-3-configure-and-run-ansible-in-control-node)
+- [Step 4: Prepare Nexus Repository](#step-4-prepare-nexus-repository)
+- [Step 5: Prepare SonarQube and generate token](#step-5-prepare-sonarqube-and-generate-token)
+- [Step 5.1: Initial configuration](#step-51-initial-configuration)
+- [Step 5.2: Generate token](#step-52-generate-token)
+- [Step 6: Prepare Jenkins for building](#step-6-prepare-jenkins-for-building)
+- [Step 6.1: Initial configuration](#step-61-initial-configuration)
+- [Step 6.2: Add credentials](#step-62-add-credentials)
+- [Step 6.3: Create Maven configuration file](#step-63-create-maven-configuration-file)
+- [Step 6.4: Configure Tools for Jenkins](#step-64-configure-tools-for-jenkins)
+	- [Step 6.4.1: Add Java Development Kit](#step-641-add-java-development-kit)
+	- [Step 6.4.2: Add SonarQube Scanner](#step-642-add-sonarqube-scanner)
+	- [Step 6.4.3: Add Maven](#step-643-add-maven)
+- [Step 6.5: Configure Jenkins system settings](#step-65-configure-jenkins-system-settings)
+	- [Step 6.5.1: Configure SonarQube settings](#step-651-configure-sonarqube-settings)
+	- [[_Optional_] Step 6.5.2: Configure email notification](#optional-step-652-configure-email-notification)
+	- [[_Optional_] Step 6.5.2a: Testing email notification](#optional-step-652a-testing-email-notification)
+- [Step 7: Prepare Jenkins build job](#step-7-prepare-jenkins-build-job)
+- [Step 7.1: Create Jenkins pipeline job](#step-71-create-jenkins-pipeline-job)
+- [Step 7.2: Configure pipeline job](#step-72-configure-pipeline-job)
+- [Step 7.3: Add the pipeline script](#step-73-add-the-pipeline-script)
+- [Step 8: Create EKS Cluster](#step-8-create-eks-cluster)
+- [Step 9: Build and Deploy the application](#step-9-build-and-deploy-the-application)
+- [Step 10: Monitor deployed application](#step-10-monitor-deployed-application)
+- [Step 10.1: Configure Grafana for visualisation](#step-101-configure-grafana-for-visualisation)
+	- [Step 10.1.1: Initial configuration](#step-1011-initial-configuration)
+	- [Step 10.1.2: Adding source for monitoring data](#step-1012-adding-source-for-monitoring-data)
+	- [Step 10.1.3: Creating Dashboard](#step-1013-creating-dashboard)
+
 ## Prerequisites
 ### AWS Setup
 - Create/acquire an [**AWS account**](https://aws.amazon.com/resources/create-account/) with privileges to create and delete the following resources:
