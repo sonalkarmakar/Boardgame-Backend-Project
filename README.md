@@ -36,10 +36,10 @@ The project uses the following tools:
 </center>
 
 ## Notable Features
-- Mostly automated processes, requiring manual effort only for credentials, and initial setup of Jenkins, Nexus, SonarQube and Grafana.
-- Modular structure for customisability through variables.
-- Generates and deletes new credentials locally for every infrastructure deployment and destruction.
-- Containerised tools for fast and easy configuration through replicable environment.
+- Mostly **automated** processes through Terraform and Ansible, requiring manual effort only for credentials, and initial setup of Jenkins, Nexus, SonarQube and Grafana.
+- **Modular structure** for customisability through variables.
+- **Generates and deletes new credentials locally** for every infrastructure deployment and destruction.
+- **Containerised tools** for fast and easy configuration through replicable environment.
 
 ## Documentation
 - [Detailed project structure](/Documentation/ProjectStructure.md)
