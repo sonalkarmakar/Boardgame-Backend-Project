@@ -3,6 +3,14 @@ There are 2 stages for decommissioning all the infrastucture created for this pr
 - Delete the AWS Elastic Kubernetes Service cluster.
 - Destroying the resources provisioned by Terraform.
 
+## Contents
+- [Prerequisite](#prerequisite)
+- [Deleting EKS Cluster](#deleting-eks-cluster)
+- [Destroying resources provisioned by Terraform](#destroying-resources-provisioned-by-terraform)
+- [Notable changes](#notable-changes)
+	- [Removed items](#removed-items)
+	- [Unaffected items](#unaffected-items)
+
 ## Prerequisite
 The project has to be deployed once for you to be able to follow the decommissioning steps.
 

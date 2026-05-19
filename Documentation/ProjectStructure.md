@@ -1,4 +1,28 @@
 # Project Structure
+## Contents
+- [Overview](#overview)
+- [Infrastructure](#infrastructure)
+	- [Amazon Web Services (AWS)](#amazon-web-services-aws)
+	- [Terraform](#terraform)
+	- [Ansible](#ansible)
+	- [Linux](#linux)
+- [Source Code](#source-code)
+	- [Git](#git)
+	- [GitHub and GitLab](#github-and-gitlab)
+	- [Maven](#maven)
+	- [SonarQube](#sonarqube)
+	- [Nexus Repository](#nexus-repository)
+	- [Jenkins](#jenkins)
+	- [Trivy](#trivy)
+- [Deployment](#deployment)
+	- [Docker](#docker)
+	- [Kubernetes](#kubernetes)
+	- [AWS Elastic Kubernetes Service](#aws-elastic-kubernetes-service)
+- [Monitoring](#monitoring)
+	- [Blackbox Exporter](#blackbox-exporter)
+	- [Prometheus](#prometheus)
+	- [Grafana](#grafana)
+
 ## Overview
 This document contains the details about the different components required for this project.
 
