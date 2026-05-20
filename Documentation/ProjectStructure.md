@@ -34,6 +34,12 @@
 ## Overview
 This document contains the details about the different components required for this project.
 
+<center>
+
+![Basic Project Structure](/Documentation/Attachments/Basic_Project_Structure.svg)
+
+</center>
+
 The project uses the following tools:
 - **Infrastructure**
 	- _AWS_: hosts the infrastructure resources.
