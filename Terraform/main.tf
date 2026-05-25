@@ -88,8 +88,8 @@ module "ec2_module" {
 	# Must maintain consistent indentation, else changes aren't applied
 	user_data = <<-EOF
 	            #!/usr/bin/env bash
-	            echo -e "Port 22\nPort ${var.external_access_ports["SSH_Alt"]}" | sudo tee -a /etc/ssh/sshd_config
-	            echo "${tls_private_key.ansible_ssh_key.public_key_openssh}" | sudo tee -a /home/${var.ec2_username}/.ssh/authorized_keys
+	            echo -e "Port 22\nPort ${var.external_access_ports["SSH_Alt"]}" | tee -a /etc/ssh/sshd_config
+	            echo "${tls_private_key.ansible_ssh_key.public_key_openssh}" | tee -a /home/${var.ec2_username}/.ssh/authorized_keys
 	            systemctl daemon-reexec
 	            systemctl restart ssh.socket ssh.service
 	            EOF
