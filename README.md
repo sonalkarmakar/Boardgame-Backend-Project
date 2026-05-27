@@ -46,3 +46,114 @@ The project uses the following tools:
 - [Description of the directories](/Documentation/Directories.md)
 - [Steps to deploy](/Documentation/DeploymentProcess.md)
 - [Steps to decommission](/Documentation/DecommissioningProcess.md)
+
+## References and Acknowledgements
+- [Application source code](https://github.com/jaiswaladi246/Boardgame) by [Aditya Jaiswal](https://github.com/jaiswaladi246)
+- <details>
+	<summary>
+		<a href="https://docs.aws.amazon.com/">Amazon Web Services documentation</a>
+	</summary>
+
+	- [EC2 User Data script](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)
+	- [EC2 AMI guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/finding-an-ami.html)
+	- [Security Group rules for different cases](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-rules-reference.html)
+	- [Minimum privileges required for EKS administration](https://docs.aws.amazon.com/eks/latest/eksctl/minimum-iam-policies.html)
+
+  </details>
+
+- <details>
+	<summary>
+		<a href="https://repost.aws/">AWS re:Post forum</a>
+	</summary>
+
+	- [Changing SSH port in Ubuntu Server](https://repost.aws/questions/QUCnkc0Qz3Q7O6KC0n0VVKLA/need-help-with-adding-ssh-port-missing-sshd-service-and-rebooting-ec2-instance#COm2ll9S-CQ2yS_XQ1wkPHnA)
+
+  </details>
+
+- <details>
+	<summary>
+		<a href="https://developer.hashicorp.com/terraform/docs">Terraform documentation</a>
+	</summary>
+
+	- [Modules](https://developer.hashicorp.com/terraform/language/modules)
+	- [Variables](https://developer.hashicorp.com/terraform/language/values/variables)
+	- [Outputs](https://developer.hashicorp.com/terraform/language/values/outputs)
+	- [TLS private key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/ephemeral-resources/private_key)
+	- [Local file resource](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file)
+	- [Locals](https://developer.hashicorp.com/terraform/language/values/locals)
+	- [Terraform template]()
+
+  </details>
+
+- <details>
+	<summary>
+		<a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs">Terraform AWS Provider documentaion</a>
+	</summary>
+
+	- [EC2 key pair](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair)
+	- [EC2 AMI data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)
+	- [EC2 instance resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance)
+	- [IAM user resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user)
+	- [IAM user managed policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy_attachment)
+	- [IAM user inline policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy)
+	- [AWS caller identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity)
+	- [IAM Access Key resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key)
+	- [VPC resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc)
+	- [VPC Security Group resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)
+	- [Security Group ingress rules](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)
+	- [Security Group egress rules](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule)
+
+  </details>
+
+- <details>
+	<summary>
+		<a href="https://www.jenkins.io/doc/">Jenkins documentation</a>
+	</summary>
+
+	- [Jenkins Plugins Index](https://plugins.jenkins.io/)
+	- [AWS Credentials](https://plugins.jenkins.io/aws-credentials)
+	- [Config File Provider](https://plugins.jenkins.io/config-file-provider)
+	- [Docker](https://plugins.jenkins.io/docker-plugin)
+	- [Docker Pipeline](https://plugins.jenkins.io/docker-workflow)
+	- [Eclipse Temurin Installer](https://plugins.jenkins.io/adoptopenjdk)
+	- [Email Extension](https://plugins.jenkins.io/email-ext)
+	- [HTML Publisher](https://plugins.jenkins.io/htmlpublisher)
+	- [Kubernetes](https://plugins.jenkins.io/kubernetes)
+	- [Kubernetes CLI](https://plugins.jenkins.io/kubernetes-cli)
+	- [Maven Integration](https://plugins.jenkins.io/maven-plugin)
+	- [Nexus Artifact Uploader](https://plugins.jenkins.io/nexus-artifact-uploader)
+	- [Pipeline Maven Integration](https://plugins.jenkins.io/pipeline-maven)
+	- [Pipeline: AWS Steps](https://plugins.jenkins.io/pipeline-aws)
+	- [SonarQube Scanner](https://plugins.jenkins.io/sonar)
+
+  </details>
+
+- <details>
+	<summary>
+		<a href="https://docs.ansible.com/">Ansible documentation</a>
+	</summary>
+
+	- [Ansible Collection Index](https://docs.ansible.com/projects/ansible/latest/collections/)
+	- [ansible.builtin collection](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/index.html)
+		- [ansible.builtin.apt module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/apt_module.html#ansible-collections-ansible-builtin-apt-module)
+		- [ansible.bulitin.blockinfile module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/blockinfile_module.html#ansible-collections-ansible-builtin-blockinfile-module)
+		- [ansible.builtin.command module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/command_module.html#ansible-collections-ansible-builtin-command-module)
+		- [ansible.builtin.copy module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/copy_module.html#ansible-collections-ansible-builtin-copy-module)
+		- [ansible.builtin.deb822_repository module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/deb822_repository_module.html#ansible-collections-ansible-builtin-deb822-repository-module)
+		- [ansible.builtin.debug module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/debug_module.html#ansible-collections-ansible-builtin-debug-module)
+		- [ansible.builtin.file module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/file_module.html#ansible-collections-ansible-builtin-file-module)
+		- [ansible.builtin.get_url module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/get_url_module.html#ansible-collections-ansible-builtin-get-url-module)
+		- [ansible.builtin.meta module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/meta_module.html#ansible-collections-ansible-builtin-meta-module)
+		- [ansible.builtin.shell module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/shell_module.html#ansible-collections-ansible-builtin-shell-module)
+		- [ansible.builtin.systemd_service module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/systemd_service_module.html#ansible-collections-ansible-builtin-systemd-service-module)
+		- [ansible.builtin.unarchive module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/unarchive_module.html#ansible-collections-ansible-builtin-unarchive-module)
+		- [ansible.builtin.user module](https://docs.ansible.com/projects/ansible/latest/collections/ansible/builtin/user_module.html#ansible-collections-ansible-builtin-user-module)
+	- [community.docker collection](https://docs.ansible.com/projects/ansible/latest/collections/community/docker/index.html)
+		- [community.docker.docker_container module](https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_module.html#ansible-collections-community-docker-docker-container-module)
+		- [community.docker.docker_container_exec module](https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_container_exec_module.html#ansible-collections-community-docker-docker-container-exec-module)
+		- [community.docker.docker_network module](https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_network_module.html#ansible-collections-community-docker-docker-network-module)
+		- [community.docker.docker_volume module](https://docs.ansible.com/projects/ansible/latest/collections/community/docker/docker_volume_module.html#ansible-collections-community-docker-docker-volume-module)
+	- [community.general collection](https://docs.ansible.com/projects/ansible/latest/collections/community/general/index.html)
+		- [community.general.jenkins_plugin module](https://docs.ansible.com/projects/ansible/latest/collections/community/general/jenkins_plugin_module.html#ansible-collections-community-general-jenkins-plugin-module)
+
+  </details>
