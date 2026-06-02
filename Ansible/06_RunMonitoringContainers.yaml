@@ -14,54 +14,54 @@
 
   pre_tasks:
     - name: Extract external IP address
-      ansible.builtin.shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
-      register: service_external_ip
-      become_user: "{{ ansible_user }}"
-      delegate_to: localhost
       tags:
         - pretask1
         - kubernetes
         - service
+      ansible.builtin.shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
+      register: service_external_ip
+      become_user: "{{ ansible_user }}"
+      delegate_to: localhost
 
     - name: Create monitoring directory
-      ansible.builtin.file:
-        path: "{{ stack_dir }}"
-        state: directory
-        recurse: yes
       tags:
         - pretask2
         - common
         - file_ops
+      ansible.builtin.file:
+        path: "{{ stack_dir }}"
+        state: directory
+        recurse: yes
 
     - name: Ensure Docker is running
+      tags:
+        - pretask3
+        - common
+        - docker
       ansible.builtin.systemd_service:
         name: docker
         state: started
         enabled: yes
+
+    - name: Create Docker network
       tags:
         - pretask3
         - common
         - docker
-
-    - name: Create Docker network
       community.docker.docker_network:
         name: monitoring-net
         state: present
-      tags:
-        - pretask3
-        - common
-        - docker
 
   tasks:
     - name: Create Prometheus config directory
-      ansible.builtin.file:
-        path: "{{ stack_dir }}/prometheus"
-        state: directory
       tags:
         - task1
         - prometheus
         - config
         - file_ops
+      ansible.builtin.file:
+        path: "{{ stack_dir }}/prometheus"
+        state: directory
 
     - name: Deploy Prometheus config
       tags:
@@ -96,6 +96,11 @@
                   replacement: "{{ ansible_host }}:{{ blackbox_port }}" #replacement: blackbox-exporter:9115
 
     - name: Run Prometheus container
+      tags:
+        - task3
+        - prometheus
+        - docker
+        - container
       community.docker.docker_container:
         name: prometheus_container
         image: "{{ prometheus_image }}" #quay.io/prometheus/prometheus:v{{ prometheus_version }}
@@ -108,21 +113,16 @@
         command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus --web.console.libraries=/etc/prometheus/console_libraries --web.console.templates=/etc/prometheus/consoles --storage.remote.flush-deadline=10m --web.enable-lifecycle"
         ports:
           - "{{ prometheus_port }}:9090"
-      tags:
-        - task3
-        - prometheus
-        - docker
-        - container
 
     - name: Create Blackbox config directory
-      ansible.builtin.file:
-        path: "{{ stack_dir }}/blackbox"
-        state: directory
       tags:
         - task4
         - blackbox
         - config
         - file_ops
+      ansible.builtin.file:
+        path: "{{ stack_dir }}/blackbox"
+        state: directory
 
     - name: Deploy Blackbox config
       tags:
@@ -210,6 +210,11 @@
                 - starttls: true
 
     - name: Run Blackbox Exporter container
+      tags:
+        - task6
+        - blackbox
+        - docker
+        - container
       community.docker.docker_container:
         name: blackbox_exporter_container
         image: "{{ blackbox_image }}" #quay.io/prometheus/blackbox-exporter:v{{ blackbox_version }}
@@ -222,24 +227,19 @@
         command: "--config.file=/etc/blackbox_exporter/config.yml"
         ports:
           - "{{ blackbox_port }}:9115"
-      tags:
-        - task6
-        - blackbox
-        - docker
-        - container
 
     - name: Create Grafana provisioning directories
+      tags:
+        - task7
+        - grafana
+        - config
+        - file_ops
       ansible.builtin.file:
         path: "{{ stack_dir }}/grafana/provisioning/{{ item }}"
         state: directory
       loop:
         - datasources
         - dashboards
-      tags:
-        - task7
-        - grafana
-        - config
-        - file_ops
 
     - name: Create Grafana datasources config
       tags:
@@ -258,6 +258,11 @@
             isDefault: true
 
     - name: Run Grafana container
+      tags:
+        - task9
+        - grafana
+        - docker
+        - container
       community.docker.docker_container:
         name: grafana_container
         image: "{{ grafana_image }}" #grafana/grafana:{{ grafana_version }}
@@ -274,17 +279,12 @@
           - "{{ stack_dir }}/grafana:/etc/grafana/provisioning"
           - grafana-data:/var/lib/grafana
         user: "472:472"
-      tags:
-        - task9
-        - grafana
-        - docker
-        - container
 
     - name: Create Docker volume for Grafana persistence
-      community.docker.docker_volume:
-        name: grafana-data
-        state: present
       tags:
         - task10
         - grafana
         - docker
+      community.docker.docker_volume:
+        name: grafana-data
+        state: present

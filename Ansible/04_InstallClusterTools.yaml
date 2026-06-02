@@ -8,23 +8,30 @@
 
   pre_tasks:
     - name: Install dependencies
+      tags:
+        - pretask1
+        - dependency
       ansible.builtin.apt:
         name:
           - gnupg
           - unzip
         state: present
         update_cache: yes
-      tags:
-        - pretask1
-        - dependency
 
     - name: Create temporary storage directory
+      tags:
+        - pretask2
+        - tempdir
       ansible.builtin.file:
         path: "{{ temp_storage }}"
         state: directory
 
   tasks:
     - name: Add Kubernetes APT repository
+      tags:
+        - task1
+        - repository
+        - kubectl
       ansible.builtin.deb822_repository:
         name: kubernetes
         types: [deb]
@@ -35,78 +42,82 @@
         enabled: yes
 
     - name: Update APT cache after adding repository
+      tags:
+        - task2
+        - kubectl
+        - update
+        - repository
       ansible.builtin.apt:
         update_cache: true
-      tags:
-        - task6
-        - kubectl
-        - repository
 
     - name: Install kubectl
+      tags:
+        - task3
+        - kubectl
+        - installer
       ansible.builtin.apt:
         name: kubectl
         state: present
-      tags:
-        - task7
-        - kubectl
-        - installer
 
     - name: Download AWS CLI v2 compressed archive
+      tags:
+        - task4
+        - awscli
+        - download
       ansible.builtin.get_url:
         url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
         dest: "{{ temp_storage }}/awscliv2.zip"
-      tags:
-        - task8
-        - awscli
-        - download
 
     - name: Unzip AWS CLI v2 compressed archive
+      tags:
+        - task5
+        - awscli
+        - decompress
       ansible.builtin.unarchive:
         src: "{{ temp_storage }}/awscliv2.zip"
         dest: "{{ temp_storage }}"
         remote_src: yes
-      tags:
-        - task9
-        - awscli
-        - decompress
 
     - name: Run AWS CLI v2 installer
-      ansible.builtin.command: "{{ temp_storage }}/aws/install"
-      become: yes
       tags:
-        - task10
+        - task6
         - awscli
         - installer
+      ansible.builtin.command: "{{ temp_storage }}/aws/install"
+      become: yes
 
     - name: Download Eksctl compressed archive
+      tags:
+        - task7
+        - eksctl
+        - download
       ansible.builtin.get_url:
         url: "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
         dest: "{{ temp_storage }}/eksctl_Linux_amd64.tar.gz"
-      tags:
-        - task11
-        - eksctl
-        - download
 
     - name: Decompress Eksctl archive
+      tags:
+        - task8
+        - eksctl
+        - decompress
       ansible.builtin.unarchive:
         src: "{{ temp_storage }}/eksctl_Linux_amd64.tar.gz"
         dest: "{{ temp_storage }}"
         remote_src: yes
-      tags:
-        - task12
-        - eksctl
-        - decompress
 
     - name: Run Eksctl installer
-      ansible.builtin.command: "install -m 0755 {{ temp_storage }}/eksctl /usr/local/bin"
-      become: yes
       tags:
-        - task13
+        - task9
         - eksctl
         - installer
+      ansible.builtin.command: "install -m 0755 {{ temp_storage }}/eksctl /usr/local/bin"
+      become: yes
 
   post_tasks:
     - name: Enable command auto-completion
+      tags:
+        - posttask1
+        - autocomplete
       ansible.builtin.blockinfile:
         path: "/home/{{ ansible_user }}/.profile"
         state: present
@@ -120,6 +131,9 @@
           . <(kubectl completion bash)
 
     - name: Remove temporary storage directory
+      tags:
+        - posttask2
+        - cleanup
       ansible.builtin.file:
         path: "{{ temp_storage }}"
         state: absent

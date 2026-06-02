@@ -110,15 +110,19 @@
   hosts: jenkins
   tasks:
     - name: Retrieve initial Jenkins admin password
-      shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
-      register: jenkins_password
-      changed_when: false
       tags:
         - task1
         - password
         - plugin
+      shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
+      register: jenkins_password
+      changed_when: false
 
     - name: Install required Jenkins plugins
+      tags:
+        - task2
+        - install
+        - plugin
       community.general.jenkins_plugin:
         url: "http://{{ ansible_host }}:{{ access_port }}"
         url_username: admin
@@ -143,18 +147,14 @@
         - sonar                   # SonarQube Scanner
       register: plugin_install
       when: jenkins_password is defined
-      tags:
-        - task2
-        - install
-        - plugin
 
     - name: Restart Jenkins if plugins changed
+      tags:
+        - task3
+        - restart
+        - plugin
       community.docker.docker_container:
         name: jenkins_container
         state: started
         restart: true
       when: plugin_install.changed
-      tags:
-        - task3
-        - restart
-        - plugin

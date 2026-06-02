@@ -5,14 +5,19 @@
     jenkins_image: jenkins/jenkins:slim
   pre_tasks:
     - name: Get host Docker group GID
-      ansible.builtin.shell: "getent group docker | cut -d: -f3"
-      register: docker_gid
-      changed_when: false
       tags:
         - pretask1
         - jenkins
+      ansible.builtin.shell: "getent group docker | cut -d: -f3"
+      register: docker_gid
+      changed_when: false
   tasks:
     - name: Run Jenkins container
+      tags:
+        - task1
+        - jenkins
+        - docker
+        - container
       community.docker.docker_container:
         name: jenkins_container
         image: "{{ jenkins_image }}"
@@ -27,11 +32,6 @@
           - /usr/bin/docker:/usr/bin/docker:ro
         state: started
         restart_policy: unless-stopped
-      tags:
-        - task1
-        - jenkins
-        - docker
-        - container
 
 - name: Deploy Nexus container
   hosts: nexus
@@ -39,6 +39,11 @@
     nexus_image: sonatype/nexus3:3.89.1-alpine
   tasks:
     - name: Run Nexus container
+      tags:
+        - task1
+        - nexus
+        - docker
+        - container
       community.docker.docker_container:
         name: nexus_container
         image: "{{ nexus_image }}"
@@ -49,11 +54,6 @@
           - nexus_data:/nexus-data
         state: started
         restart_policy: unless-stopped
-      tags:
-        - task1
-        - nexus
-        - docker
-        - container
 
 - name: Deploy SonarQube container
   hosts: sonarqube
@@ -61,6 +61,11 @@
     sonarqube_image: sonarqube:community
   tasks:
     - name: Run SonarQube container
+      tags:
+        - task1
+        - sonarqube
+        - docker
+        - container
       community.docker.docker_container:
         name: sonarqube_container
         image: "{{ sonarqube_image }}"
@@ -72,8 +77,3 @@
           - sonarqube_logs:/opt/sonarqube/logs
         state: started
         restart_policy: unless-stopped
-      tags:
-        - task1
-        - sonarqube
-        - docker
-        - container
