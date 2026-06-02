@@ -189,7 +189,8 @@ The steps for deploying this project are described below.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
-> - The playbook "`06_RunMonitoringContainers.yaml`" requires the **external IP address** for accessing the application, so it's ran after application deployment.  
+> - Set the **`kubectl` version number** using the variable "`kubectl_version`" in the playbook "`04_InstallClusterTools.yaml`".  
+> - The playbook "`06_RunMonitoringContainers.yaml`" requires the **external IP address** for accessing the application, so it must be ran _after_ application deployment.  
 
 ## Step 4: Prepare Nexus Repository
 - Open the **Nexus Repository web interface** by going to `http://<Nexus-EC2-instance-public-IP-address>:8081`.
