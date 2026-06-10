@@ -9,7 +9,7 @@ pipeline {
 	environment {
 		// Git specifications
 		GIT_REPO_URL    = "https://github.com/sonalkarmakar/Boardgame-Backend-Project.git"
-		GIT_BRANCH_NAME = "main"
+		GIT_BRANCH_NAME = "github-main"
 
 		// SonarQube specifications
 		SONARQUBE_SERVER_NAME = "SonarQube Server"
