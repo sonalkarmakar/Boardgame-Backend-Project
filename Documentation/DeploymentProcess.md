@@ -19,31 +19,31 @@ The steps for deploying this project are described below.
 - [Step 3: Configure and run Ansible in Control Node](#step-3-configure-and-run-ansible-in-control-node)
 - [Step 4: Prepare Nexus Repository](#step-4-prepare-nexus-repository)
 - [Step 5: Prepare SonarQube and generate token](#step-5-prepare-sonarqube-and-generate-token)
-- [Step 5.1: Initial configuration](#step-51-initial-configuration)
-- [Step 5.2: Generate token](#step-52-generate-token)
+	- [Step 5.1: Initial configuration](#step-51-initial-configuration)
+	- [Step 5.2: Generate token](#step-52-generate-token)
 - [Step 6: Prepare Jenkins for building](#step-6-prepare-jenkins-for-building)
-- [Step 6.1: Initial configuration](#step-61-initial-configuration)
-- [Step 6.2: Add credentials](#step-62-add-credentials)
-- [Step 6.3: Create Maven configuration file](#step-63-create-maven-configuration-file)
-- [Step 6.4: Configure Tools for Jenkins](#step-64-configure-tools-for-jenkins)
-	- [Step 6.4.1: Add Java Development Kit](#step-641-add-java-development-kit)
-	- [Step 6.4.2: Add SonarQube Scanner](#step-642-add-sonarqube-scanner)
-	- [Step 6.4.3: Add Maven](#step-643-add-maven)
-- [Step 6.5: Configure Jenkins system settings](#step-65-configure-jenkins-system-settings)
-	- [Step 6.5.1: Configure SonarQube settings](#step-651-configure-sonarqube-settings)
-	- [[_Optional_] Step 6.5.2: Configure email notification](#optional-step-652-configure-email-notification)
-	- [[_Optional_] Step 6.5.2a: Testing email notification](#optional-step-652a-testing-email-notification)
+	- [Step 6.1: Initial configuration](#step-61-initial-configuration)
+	- [Step 6.2: Add credentials](#step-62-add-credentials)
+	- [Step 6.3: Create Maven configuration file](#step-63-create-maven-configuration-file)
+	- [Step 6.4: Configure Tools for Jenkins](#step-64-configure-tools-for-jenkins)
+		- [Step 6.4.1: Add Java Development Kit](#step-641-add-java-development-kit)
+		- [Step 6.4.2: Add SonarQube Scanner](#step-642-add-sonarqube-scanner)
+		- [Step 6.4.3: Add Maven](#step-643-add-maven)
+	- [Step 6.5: Configure Jenkins system settings](#step-65-configure-jenkins-system-settings)
+		- [Step 6.5.1: Configure SonarQube settings](#step-651-configure-sonarqube-settings)
+		- [[_Optional_] Step 6.5.2: Configure email notification](#optional-step-652-configure-email-notification)
+		- [[_Optional_] Step 6.5.2a: Testing email notification](#optional-step-652a-testing-email-notification)
 - [Step 7: Prepare Jenkins build job](#step-7-prepare-jenkins-build-job)
-- [Step 7.1: Create Jenkins pipeline job](#step-71-create-jenkins-pipeline-job)
-- [Step 7.2: Configure pipeline job](#step-72-configure-pipeline-job)
-- [Step 7.3: Add the pipeline script](#step-73-add-the-pipeline-script)
+	- [Step 7.1: Create Jenkins pipeline job](#step-71-create-jenkins-pipeline-job)
+	- [Step 7.2: Configure pipeline job](#step-72-configure-pipeline-job)
+	- [Step 7.3: Add the pipeline script](#step-73-add-the-pipeline-script)
 - [Step 8: Create EKS Cluster](#step-8-create-eks-cluster)
 - [Step 9: Build and Deploy the application](#step-9-build-and-deploy-the-application)
 - [Step 10: Monitor deployed application](#step-10-monitor-deployed-application)
-- [Step 10.1: Configure Grafana for visualisation](#step-101-configure-grafana-for-visualisation)
-	- [Step 10.1.1: Initial configuration](#step-1011-initial-configuration)
-	- [Step 10.1.2: Adding source for monitoring data](#step-1012-adding-source-for-monitoring-data)
-	- [Step 10.1.3: Creating Dashboard](#step-1013-creating-dashboard)
+	- [Step 10.1: Configure Grafana for visualisation](#step-101-configure-grafana-for-visualisation)
+		- [Step 10.1.1: Initial configuration](#step-1011-initial-configuration)
+		- [Step 10.1.2: Adding source for monitoring data](#step-1012-adding-source-for-monitoring-data)
+		- [Step 10.1.3: Creating Dashboard](#step-1013-creating-dashboard)
 
 ## Prerequisites
 ### AWS Setup
@@ -59,7 +59,7 @@ The steps for deploying this project are described below.
 	- Enter the _access key Secret_.
 	- Enter your preferred [_AWS Region's code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
 	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
-- [Generate an **Access Key**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS account that has the privileges mentioned above. Avoid using Root User, create an IAM User if needed.
+- [Generate an **Access Key**](https://docs.aws.amazon.com/IAM/latest/UserGuide/access-key-self-managed.html#Using_CreateAccessKey) for your AWS account that has the privileges mentioned above. It is strongly suggested to _avoid using Root User_, and instead, create an IAM User with minimum required privileges.
 
 ### Git and GitHub Setup
 - Create a [**GitHub account**](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github) and [**fork this repository**](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
@@ -69,7 +69,7 @@ The steps for deploying this project are described below.
 	git clone https://github.com/<your-github-id>/<repository-fork-name>.git # using HTTPS
 	git clone git@github.com:<your-github-id>/<repository-fork-name>.git # using SSH
 	```
-- [_Optional_] **Initialise Git** and add **add your repository fork as remote repository**.
+- [_Optional_] [**Initialise Git**](https://github.com/git-guides/git-init) and **add your _repository fork_ as [_remote repository_](https://github.com/git-guides/git-remote)**.
 	```sh
 	cd /path/to/repo/clone # go in the cloned directory
 	git init # initialise git
@@ -88,6 +88,8 @@ The steps for deploying this project are described below.
 > [!IMPORTANT]  
 > **Your ISP might be _blocking port 22_ traffic on your networks.**  
 > As such, it's recommended to keep `SSH_Alt = 443` in the `external_access_ports` variable, as it's the HTTPS port that's never blocked.  
+>   
+> However, listening for SSH on port 443 can cause **issues with SSL/TLS authentication**. Simply use some other port for SSH in that case.  
 
 - Open the **`Terraform`** directory in your **terminal** and run the following commands and wait for execution completion:
 	- Initialise Terraform:
@@ -183,9 +185,9 @@ The steps for deploying this project are described below.
 	- Run `03_ConfigureJenkinsContainer.yaml` to **install necessary tools and plugins** inside the Jenkins container running in the _Jenkins EC2 instance_.
 	- Run `04_InstallClusterTools.yaml` to install **AWS CLI v2**, **`eksctl`** and **`kubectl`** in the _Control Node_.
 	- Run `05_RetrieveInitialPasswords.yaml` to get the **intial admin passwords** for **Jenkins and Nexus** portals. Store them in safely and securely for initial configuration.
-	- Don't run `06_RunMonitoringContainers.yaml` yet.
+	- <ins>Don't run `06_RunMonitoringContainers.yaml` yet</ins>.
 	
-	The playbook `06_RunMonitoringContainers.yaml` runs **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_ for monitoring the application **after deployment**.
+	The playbook `06_RunMonitoringContainers.yaml` runs **Blackbox Exporter**, **Grafana** and **Prometheus** containers in the _Monitoring EC2 instance_ for monitoring the application **_after deployment_**.
 
 > [!NOTE]  
 > - All the playbooks are **named/numbered in the sequence** they should be run in.  
@@ -215,7 +217,7 @@ The steps for deploying this project are described below.
 
 ### Step 5.2: Generate token
 - [**Generate a token**](https://docs.sonarsource.com/sonarqube-server/user-guide/managing-tokens#generating-a-token) of type _Global Analysis Token_, with your preference for name and expiration.
-- **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be available later**_.
+- **Copy and save the token _IMMEDIATELY_**. This token will _**NOT be retrievable later**_.
 
 <center>
 <img src="./Attachments/SonarQube_TokenGeneration.png" width="900" alt="SonarQube Token Generation" title="SonarQube Token Generation">
@@ -256,10 +258,10 @@ The steps for deploying this project are described below.
 
 > [!NOTE]  
 > - All required Jenkins plugins should be installed automatically by the Ansible playbook "`03_ConfigureJenkinsContainer.yaml`".  
-> 	However, there might be issues where plugins get installed but not enabled.
->  
-> - The _unique plugin names_ used in the Ansible playbook are obtained from their **corresponding** [**Jenkins Plugin Index**](https://plugins.jenkins.io/) webpage.  
-> 	For example, the plugin _AWS Credentials_ is identified in the plyabook by "_`aws-credentials`_", which is taken from its webpage _`plugins.jenkins.io/aws-credentials`_.  
+> 	However, there might be issues where plugins are installed but not enabled.  
+>   
+> - The _unique plugin names_ used in the Ansible playbook are obtained from their **corresponding** [**Jenkins Plugin Index**](https://plugins.jenkins.io/) webpage URL.  
+> 	For example, the plugin _AWS Credentials_ is identified in the plyabook by "_`aws-credentials`_", which is taken from its webpage URL _`plugins.jenkins.io/aws-credentials`_.  
 
 ### Step 6.2: Add credentials
 <center>
@@ -275,7 +277,7 @@ The steps for deploying this project are described below.
 - Note down the **credential IDs** you used for Jenkins to uniquely identify each credential.
 
 ### Step 6.3: Create Maven configuration file
-- Go to _**Manage Jenkins** > **Managed files**_ (under _**System Configuration** section_). This option appears if [Config File Provider](https://plugins.jenkins.io/config-file-provider/) plugin is _installed and active_.
+- Go to _**Manage Jenkins** > **Managed files**_ (under _**System Configuration** section_). This option appears only if [Config File Provider](https://plugins.jenkins.io/config-file-provider/) plugin is _installed and active_.
 - [**Add a new config file**](https://plugins.jenkins.io/config-file-provider/#plugin-content-load-your-configuration-file-content) of type _Global Maven settings.xml_, with a **config file ID** of your preference. Note down the config file ID.
 - Modify the XML file using the _Content_ field and add the code below **within the `<servers></servers>` ("servers", plural) tag**.
 	```xml
@@ -388,7 +390,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 - [Create a **GitHub webhook**](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks#creating-a-repository-webhook) with the values for the fields specified below.
 	- **Payload URL**: `http://<jenkins-host-address>:8080/github-webhook/` ('`/`' is _needed_ at the end)
 	- **Content type**: `application/json`
-	- **Which events would you like to trigger this webhook?**: `Send me everything`
+	- **Which events would you like to trigger this webhook?**: `Just the push event`
 	
 	Unmentioned fields can be ignored or configured by preference.
 - Click on _**Apply** button_ at the bottom.
@@ -443,7 +445,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 			<tr>
 				<td rowspan="4">Docker</td>
 				<td><code>DOCKER_NAMESPACE</code></td>
-				<td>Your Docker Hub account namespace. Typically it's your <i>Docker Hub username</i>.</td>
+				<td>Your Docker Hub account namespace. It's typically your <i>Docker Hub username</i>.</td>
 			</tr>
 			<tr>
 				<td><code>DOCKER_CRED_ID</code></td>
@@ -525,65 +527,66 @@ Prepare a Jenkins job for building and deploying the application by following th
 			<tr>
 				<td rowspan="14">Email Notifications</td>
 				<td><code>PASS_MAIL_FROM</code></td>
-				<td>Build success notification email sender.</td>
+				<td>Sender of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_TO</code></td>
-				<td>Build success notification email recipient.</td>
+				<td>Recipient of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_CC</code></td>
-				<td>Build success notification email carbon copy.</td>
+				<td>Carbon Copy recipient of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_BCC</code></td>
-				<td>Build success notification email blind carbon copy.</td>
+				<td>Blind Carbon Copy recipient of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_REPLY</code></td>
-				<td>Build success notification email reply recipient.</td>
+				<td>Recipient of replies to build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_SUBJ</code></td>
-				<td>Build success notification email subject.</td>
+				<td>Subject of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>PASS_MAIL_BODY</code></td>
-				<td>Build success notification email message body.</td>
+				<td>Message Body of build success notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_FROM</code></td>
-				<td>Build failure notification email sender.</td>
+				<td>Sender of build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_TO</code></td>
-				<td>Build failure notification email recipient.</td>
+				<td>Recipient of build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_CC</code></td>
-				<td>Build failure notification email carbon copy.</td>
+				<td>Carbon Copy recipient of build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_BCC</code></td>
-				<td>Build failure notification email blind carbon copy.</td>
+				<td>Blind Carbon Copy recipient of build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_REPLY</code></td>
-				<td>Build failure notification email reply recipient.</td>
+				<td>Recipient of replies to build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_SUBJ</code></td>
-				<td>Build failure notification email subject.</td>
+				<td>Subject of build failure notification email.</td>
 			</tr>
 			<tr>
 				<td><code>FAIL_MAIL_BODY</code></td>
-				<td>Build failure notification email message body.</td>
+				<td>Message Body of build failure notification email.</td>
 			</tr>
 		</table>
 
 > [!IMPORTANT]  
 > Passing **blank variables (`VAR_NAME = ""`)** to email notification syntax will cause Jenkins to show **build failure** despite successful execution of all stages.  
-> It's better to **remove unnecessary fields** from the email notification syntax in the "_`post`_" section of the pipeline script.
+>   
+> It's better to **remove unused fields** from the email notification syntax in the "_`post`_" section of the pipeline script.
 
 ## Step 8: Create EKS Cluster
 - Login to **Control Node EC2 instance**.
@@ -593,9 +596,11 @@ Prepare a Jenkins job for building and deploying the application by following th
 	![Path to cluster tools' executables](/Documentation/Attachments/Cluster_Tools_Path.png "Path to cluster tools' executables")
 
 	</center>
+	
 	```sh
 	which aws eksctl kubectl # should output the executable path for each
 	```
+	
 	If they aren't installed, run the Ansible playbook **`04_InstallClusterTools.yaml`**:
 	```sh
 	ansible-playbook -i ~/Ansible/inventory.ini ~/Ansible/04_InstallClusterTools.yaml
@@ -604,7 +609,7 @@ Prepare a Jenkins job for building and deploying the application by following th
 	- Run the command `aws configure`.
 	- Enter the _access key ID_ stored in `Terraform/.secrets/AWS_Access_Key.csv`.
 	- Enter the _access key Secret_ stored in `Terraform/.secrets/AWS_Access_Key.csv`.
-	- Enter your preferred [_AWS Region's code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
+	- Enter your preferred [_AWS Region code_](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for this project.
 	- Enter your preferred [_output format_](https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-output-format.html).
 - Run the `eksctl` command below with the specified values to create the EKS cluster.
 	```sh
