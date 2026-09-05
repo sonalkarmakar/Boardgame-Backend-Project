@@ -157,3 +157,5 @@ The project uses the following tools:
 		- [community.general.jenkins_plugin module](https://docs.ansible.com/projects/ansible/latest/collections/community/general/jenkins_plugin_module.html#ansible-collections-community-general-jenkins-plugin-module)
 
   </details>
+
+> This project is also available in [GitLab](https://gitlab.com/sonalkarmakar/Boardgame-Backend-Project).
