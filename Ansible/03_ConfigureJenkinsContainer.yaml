@@ -114,7 +114,10 @@
         - task1
         - password
         - plugin
-      shell: docker exec jenkins_container cat /var/jenkins_home/secrets/initialAdminPassword
+      community.docker.docker_container_exec:
+        container: jenkins_container
+        user: root
+        command: cat /var/jenkins_home/secrets/initialAdminPassword
       register: jenkins_password
       changed_when: false
 
