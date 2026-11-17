@@ -1,13 +1,15 @@
 ---
 - name: Install dependencies inside Jenkins container
   hosts: jenkins
+  vars:
+    jenkins_container: jenkins_container
   pre_tasks:
     - name: Update APT cache
       tags:
         - pretask1
         - dependency
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -20,7 +22,7 @@
         - task1
         - dependency
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -30,6 +32,8 @@
 
 - name: Install Trivy inside Jenkins container
   hosts: jenkins
+  vars:
+    jenkins_container: jenkins_container
   tasks:
     - name: Run Docker exec commands to add Trivy repository and install from it
       tags:
@@ -37,7 +41,7 @@
         - trivy
         - install
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -50,6 +54,8 @@
 
 - name: Install cluster tools inside Jenkins container
   hosts: jenkins
+  vars:
+    jenkins_container: jenkins_container
   tasks:
     - name: Run Docker exec commands to add kubectl repository and install from it
       tags:
@@ -57,7 +63,7 @@
         - kubectl
         - repository
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -77,7 +83,7 @@
         - kubectl
         - install
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -94,7 +100,7 @@
         - repository
         - install
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         argv:
           - /bin/bash
@@ -108,6 +114,8 @@
 
 - name: Install Required Jenkins Plugins
   hosts: jenkins
+  vars:
+    jenkins_container: jenkins_container
   tasks:
     - name: Retrieve initial Jenkins admin password
       tags:
@@ -115,7 +123,7 @@
         - password
         - plugin
       community.docker.docker_container_exec:
-        container: jenkins_container
+        container: "{{ jenkins_container }}"
         user: root
         command: cat /var/jenkins_home/secrets/initialAdminPassword
       register: jenkins_password
@@ -157,7 +165,7 @@
         - restart
         - plugin
       community.docker.docker_container:
-        name: jenkins_container
+        name: "{{ jenkins_container }}"
         state: started
         restart: true
       when: plugin_install.changed
