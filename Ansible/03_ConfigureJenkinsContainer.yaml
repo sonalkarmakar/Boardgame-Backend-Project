@@ -156,9 +156,10 @@
         - pipeline-maven          # Pipeline Maven Integration
         - pipeline-aws            # Pipeline: AWS Steps
         - sonar                   # SonarQube Scanner
-      register: plugin_install
+      notify: Restart Jenkins if plugins changed
       when: jenkins_password is defined
 
+  handlers:
     - name: Restart Jenkins if plugins changed
       tags:
         - task3
@@ -168,4 +169,3 @@
         name: "{{ jenkins_container }}"
         state: started
         restart: true
-      when: plugin_install.changed
