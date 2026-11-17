@@ -48,7 +48,8 @@
           - -c
           - |
             curl -s https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | tee /usr/share/keyrings/trivy.gpg > /dev/null;
-            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | tee -a /etc/apt/sources.list.d/trivy.list;
+            echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" \
+            | tee -a /etc/apt/sources.list.d/trivy.list;
             apt-get update -y;
             apt-get install -y trivy
 
@@ -72,7 +73,8 @@
             mkdir -p -m 755 /etc/apt/keyrings;
             curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg;
             chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg; # allow unprivileged APT programs to read this keyring
-            echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list;
+            echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' \
+            | sudo tee /etc/apt/sources.list.d/kubernetes.list;
             chmod 644 /etc/apt/sources.list.d/kubernetes.list; # helps tools such as command-not-found to work correctly
             apt-get update -y;
             apt-get install -y kubectl
