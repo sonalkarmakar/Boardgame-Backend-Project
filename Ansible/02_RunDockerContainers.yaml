@@ -3,6 +3,7 @@
   hosts: jenkins
   vars:
     jenkins_image: jenkins/jenkins:slim
+    jenkins_container: jenkins_container # Container name
   pre_tasks:
     - name: Get host Docker group GID
       tags:
@@ -19,7 +20,7 @@
         - docker
         - container
       community.docker.docker_container:
-        name: jenkins_container
+        name: "{{ jenkins_container }}"
         image: "{{ jenkins_image }}"
         groups:
           - "{{ docker_gid.stdout }}"
@@ -37,6 +38,7 @@
   hosts: nexus
   vars:
     nexus_image: sonatype/nexus3:3.89.1-alpine
+    nexus_container: nexus_container # Container name
   tasks:
     - name: Run Nexus container
       tags:
@@ -45,7 +47,7 @@
         - docker
         - container
       community.docker.docker_container:
-        name: nexus_container
+        name: "{{ nexus_container }}"
         image: "{{ nexus_image }}"
         ports:
           - "{{ access_port }}:8081"
@@ -59,6 +61,7 @@
   hosts: sonarqube
   vars:
     sonarqube_image: sonarqube:community
+    sonarqube_container: sonarqube_container # Container name
   tasks:
     - name: Run SonarQube container
       tags:
@@ -67,7 +70,7 @@
         - docker
         - container
       community.docker.docker_container:
-        name: sonarqube_container
+        name: "{{ sonarqube_container }}"
         image: "{{ sonarqube_image }}"
         ports:
           - "{{ access_port }}:9000"
