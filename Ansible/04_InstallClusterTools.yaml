@@ -87,6 +87,7 @@
         - installer
       ansible.builtin.command: "{{ temp_storage }}/aws/install"
       become: true
+      changed_when: true
 
     - name: Download Eksctl compressed archive
       tags:
@@ -115,6 +116,7 @@
         - installer
       ansible.builtin.command: "install -m 0755 {{ temp_storage }}/eksctl /usr/local/bin"
       become: true
+      changed_when: true
 
   post_tasks:
     - name: Enable command auto-completion
