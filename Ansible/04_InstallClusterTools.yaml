@@ -25,6 +25,7 @@
       ansible.builtin.file:
         path: "{{ temp_storage }}"
         state: directory
+        mode: "755"
 
   tasks:
     - name: Add Kubernetes APT repository
@@ -67,6 +68,7 @@
       ansible.builtin.get_url:
         url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
         dest: "{{ temp_storage }}/awscliv2.zip"
+        mode: "755"
 
     - name: Unzip AWS CLI v2 compressed archive
       tags:
@@ -94,6 +96,7 @@
       ansible.builtin.get_url:
         url: "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
         dest: "{{ temp_storage }}/eksctl_Linux_amd64.tar.gz"
+        mode: "755"
 
     - name: Decompress Eksctl archive
       tags:
