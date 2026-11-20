@@ -73,7 +73,7 @@
         content: |
           global:
             scrape_interval: 15s
-          
+
           scrape_configs:
             - job_name: 'prometheus'
               static_configs:
@@ -103,7 +103,7 @@
         - container
       community.docker.docker_container:
         name: prometheus_container
-        image: "{{ prometheus_image }}" #quay.io/prometheus/prometheus:v{{ prometheus_version }}
+        image: "{{ prometheus_image }}" # Or, quay.io/prometheus/prometheus:v{{ prometheus_version }}
         state: started
         restart_policy: always
         networks:
@@ -217,7 +217,7 @@
         - container
       community.docker.docker_container:
         name: blackbox_exporter_container
-        image: "{{ blackbox_image }}" #quay.io/prometheus/blackbox-exporter:v{{ blackbox_version }}
+        image: "{{ blackbox_image }}" # Or, quay.io/prometheus/blackbox-exporter:v{{ blackbox_version }}
         state: started
         restart_policy: always
         networks:
@@ -265,7 +265,7 @@
         - container
       community.docker.docker_container:
         name: grafana_container
-        image: "{{ grafana_image }}" #grafana/grafana:{{ grafana_version }}
+        image: "{{ grafana_image }}" # Or, grafana/grafana:{{ grafana_version }}
         state: started
         restart_policy: always
         networks:
