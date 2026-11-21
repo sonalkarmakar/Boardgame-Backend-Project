@@ -1,7 +1,7 @@
 ---
 - name: Deploy lightweight Prometheus, Blackbox Exporter, and Grafana with Docker
   hosts: monitoring
-  become: yes
+  become: true
   vars:
     prometheus_image: prom/prometheus:v3-distroless
     blackbox_image: prom/blackbox-exporter:master
@@ -10,7 +10,7 @@
   vars_prompt:
     - name: k8s_service_name
       prompt: "Enter the Kubernetes service name"
-      private: no
+      private: false
 
   pre_tasks:
     - name: Extract external IP address
@@ -31,7 +31,7 @@
       ansible.builtin.file:
         path: "{{ stack_dir }}"
         state: directory
-        recurse: yes
+        recurse: true
 
     - name: Ensure Docker is running
       tags:
@@ -41,7 +41,7 @@
       ansible.builtin.systemd_service:
         name: docker
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Create Docker network
       tags:
