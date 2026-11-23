@@ -10,6 +10,8 @@
         - pretask1
         - jenkins
       ansible.builtin.shell: "set -o pipefail && getent group docker | cut -d: -f3"
+      args:
+        executable: "/bin/bash"
       register: docker_gid
       changed_when: false
   tasks:
