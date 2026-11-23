@@ -63,6 +63,7 @@
       ansible.builtin.file:
         path: "{{ stack_dir }}/prometheus"
         state: directory
+        mode: "755"
 
     - name: Deploy Prometheus config
       tags:
@@ -70,6 +71,7 @@
         - prometheus
         - config
       ansible.builtin.copy:
+        mode: "755"
         dest: "{{ stack_dir }}/prometheus/prometheus.yml"
         content: |
           global:
@@ -128,6 +130,7 @@
         - config
         - file_ops
       ansible.builtin.file:
+        mode: "755"
         path: "{{ stack_dir }}/blackbox"
         state: directory
 
@@ -137,6 +140,7 @@
         - blackbox
         - config
       ansible.builtin.copy:
+        mode: "755"
         dest: "{{ stack_dir }}/blackbox/blackbox.yml"
         content: |
           modules:
@@ -244,6 +248,7 @@
       ansible.builtin.file:
         path: "{{ stack_dir }}/grafana/provisioning/{{ item }}"
         state: directory
+        mode: "755"
       loop:
         - datasources
         - dashboards
@@ -254,6 +259,7 @@
         - grafana
         - config
       ansible.builtin.copy:
+        mode: "755"
         dest: "{{ stack_dir }}/grafana/provisioning/datasources/datasource.yml"
         content: |
           apiVersion: 1
