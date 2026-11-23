@@ -133,7 +133,7 @@ The steps for deploying this project are described below.
 		```
 	- **`Terraform/.secrets/BoardGame_Backend-Ansible_SSH_key.pem`** to _`~/.ssh/`_ directory.
 		```sh
-		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 Terraform/.secret/BoardGame_Backend-Ansible_SSH_key.pem ubuntu@<ControlNode-Public-IP>:~/.ssh/
+		scp -i Terraform/.secrets/BoardGame_Backend-EC2_SSH_key.pem -P 443 Terraform/.secrets/BoardGame_Backend-Ansible_SSH_key.pem ubuntu@<ControlNode-Public-IP>:~/.ssh/
 		```
 - Connect to the **Control Node** EC2 instance using **SSH**.
 	```sh
