@@ -20,8 +20,9 @@
         - service
       ansible.builtin.shell: "kubectl get svc {{ k8s_service_name }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'"
       register: service_external_ip
-      become_user: "{{ ansible_user }}"
+      become: false
       delegate_to: localhost
+      changed_when: false
 
     - name: Create monitoring directory
       tags:
