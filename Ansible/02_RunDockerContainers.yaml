@@ -9,11 +9,9 @@
       tags:
         - pretask1
         - jenkins
-      ansible.builtin.shell: "set -o pipefail && getent group docker | cut -d: -f3"
-      args:
-        executable: "/bin/bash"
-      register: docker_gid
-      changed_when: false
+      ansible.builtin.getent:
+        database: group
+        key: docker
   tasks:
     - name: Run Jenkins container
       tags:
@@ -25,7 +23,7 @@
         name: "{{ jenkins_container }}"
         image: "{{ jenkins_image }}"
         groups:
-          - "{{ docker_gid.stdout }}"
+          - "{{ ansible_facts['getent_group']['docker'][1] }}"
         ports:
           - "{{ access_port }}:8080"
         volumes:
