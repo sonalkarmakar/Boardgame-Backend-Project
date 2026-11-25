@@ -268,6 +268,7 @@ The steps for deploying this project are described below.
 <img src="./Attachments/Jenkins_Add_Credentials.png" width="400" alt="Jenkins Adding Credentials" title="Jenkins Adding Credentials">
 </center>
 
+- Open _**Manage Jenkins** > **Credentials**_ (under _**Security** section_) _> **System**_.
 - Add Global credentials in Jenkins for the following as the specified types:
 	| Credentials                | Jenkins Credential Type                                                                     | Description                                                                                                     |
 	|----------------------------|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
