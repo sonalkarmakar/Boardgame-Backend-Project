@@ -143,6 +143,7 @@
         name: "{{ item }}"
         state: present
         with_dependencies: true
+        timeout: 120 # server connection timeout
       loop:
         - aws-credentials         # AWS Credentials
         - config-file-provider    # Config File Provider
